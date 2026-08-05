@@ -4,17 +4,19 @@
 
 ## Sobre o projeto
 
-- **Empresa parceira:** [nome da empresa]
+- **Empresa parceira:** [Bulbe Energia]
 - **Problema que o projeto resolve:** [descrição breve do contexto e da demanda real da empresa]
-- **Continuidade:** este repositório é o backend construído no Projeto Ciência de Dados II, consumido pelo frontend entregue no Projeto Ciência de Dados I. Repositório do frontend: [link]
+- **Continuidade:** este repositório é o backend construído no Projeto Ciência de Dados II, consumido pelo frontend entregue no Projeto Ciência de Dados I. Repositório do frontend: [https://github.com/fernandadutra/backendBulbe_Matrix]
 
 ## Equipe
 
 | Nome | Matrícula | Frente principal |
-|---|---|---|
-| [nome do aluno] | [matrícula] | API / Banco de Dados / Autenticação / Testes |
-| [nome do aluno] | [matrícula] | |
-| [nome do aluno] | [matrícula] | |
+| [Augusto Gama]|[---]|---|
+| [Felipe Lara Alves Braga] | [2026079655] | API / Banco de Dados / Autenticação / Testes |
+| [Fernanda Vaccillotto Pimenta Dutra] | [202501398881] | |
+| [Leandro Dias de Oliveira] | [202501589693] | |
+| [Mariana Resende Maia] | [202502021348] | |
+| [Rafael Bentes Fonseca] | [202507011189] | |
 
 ## Tecnologias utilizadas
 
