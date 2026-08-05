@@ -11,7 +11,7 @@
 ## Equipe
 
 | Nome | Matrícula | Frente principal |
-| [Augusto Gama]|[---]|---|
+| [Augusto Gama Dias Lobo-Martins]|[202402786946]
 | [Felipe Lara Alves Braga] | [2026079655] | API / Banco de Dados / Autenticação / Testes |
 | [Fernanda Vaccillotto Pimenta Dutra] | [202501398881] | |
 | [Leandro Dias de Oliveira] | [202501589693] | |
