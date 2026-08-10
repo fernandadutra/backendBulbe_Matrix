@@ -1,18 +1,18 @@
-# [Nome do Projeto]
+# [Projeto BackEnd Squad Matrix]
 
-> Uma ou duas linhas descrevendo o que o sistema faz e para qual empresa parceira foi desenvolvido.
+> Interface mobile desenvolvida para a Bulbe Energia que reúne onboarding didático, acompanhamento do status da homologação junto à CEMIG em tempo real e um clube de benefícios. A aplicação utiliza o mascote Bulbinho para simplificar conceitos complexos, engajar o cliente e reduzir a inadimplência inicial durante os 90 a 120 dias de espera.
 
 ## Sobre o projeto
 
 - **Empresa parceira:** [Bulbe Energia]
-- **Problema que o projeto resolve:** [descrição breve do contexto e da demanda real da empresa]
-- **Continuidade:** este repositório é o backend construído no Projeto Ciência de Dados II, consumido pelo frontend entregue no Projeto Ciência de Dados I. Repositório do frontend: [https://github.com/fernandadutra/backendBulbe_Matrix]
+- **Problema que o projeto resolve:** [A fase de homologação regulatória junto à CEMIG demanda de 90 a 120 dias. Esse "vácuo operacional" gera desconfiança, cancelamentos precoces e inadimplência no primeiro boleto. A API provê cálculo de simulação de economia sem login, rastreamento ativo em 4 etapas do pedido de homologação e disponibilização de um Clube de Benefícios/Cashback para engajar o usuário antes da chegada da primeira fatura.]
+- **Continuidade:** este repositório é o backend construído no Projeto Ciência de Dados II, consumido pelo frontend entregue no Projeto Ciência de Dados I. Repositório do frontend: [https://github.com/fernandadutra/bulbe-squad-matrix]
 
 ## Equipe
 
-| Nome | Matrícula | Frente principal |
-| [Augusto Gama Dias Lobo-Martins]|[202402786946]
-| [Felipe Lara Alves Braga] | [2026079655] | API / Banco de Dados / Autenticação / Testes |
+| Nome | Matrícula | Frente principal | API / Banco de Dados / Autenticação / Testes |
+| [Augusto Gama Dias Lobo-Martins] | [202402786946] | |
+| [Felipe Lara Alves Braga] | [2026079655] | |
 | [Fernanda Vaccillotto Pimenta Dutra] | [202501398881] | |
 | [Leandro Dias de Oliveira] | [202501589693] | |
 | [Mariana Resende Maia] | [202502021348] | |
