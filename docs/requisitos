@@ -29,11 +29,12 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 
 ## Legenda
 
-- **RF, Requisito Funcional:** descreve o que o sistema deve fazer, uma função ou ação esperada.
-- **RNF, Requisito Não Funcional:** descreve como o sistema deve se comportar, uma qualidade ou restrição técnica.
-- **Prioridade Alta:** essencial para o funcionamento básico do sistema.
-- **Prioridade Média:** importante, mas não bloqueia a primeira entrega.
-- **Prioridade Baixa:** desejável, pode ficar para uma sprint futura.
+- **RF, Requisito Funcional:** descreve o que o sistema deve fazer, ou seja, uma funcionalidade, ação ou endpoint esperado pelo backend.
+- **RNF, Requisito Não Funcional:** descreve como o sistema deve se comportar, estabelecendo critérios de qualidade, desempenho, usabilidade, acessibilidade ou restrições técnicas da API.
+- **Prioridade Alta:** essencial para o funcionamento básico e para a jornada principal do produto, devendo ser entregue de forma prioritária.  
+- **Prioridade Média:** funcionalidade importante que agrega valor à experiência, mas não bloqueia a entrega inicial do sistema.
+- **Prioridade Baixa:** desejável, mas que pode ser postergada para fases futuras de desenvolvimento sem impactar o uso básico.
+WCAG (Web Content Accessibility Guidelines): diretrizes internacionais que orientam o desenvolvimento de interfaces acessíveis para pessoas com deficiência.
 
 ## Observações
 
