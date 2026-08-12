@@ -22,7 +22,7 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 | RF-01 | Acompanhamento de status do pedido / homologação |Disponibilizar endpoint GET /api/v1/orders/{id}/status para retornar o status atual do pedido, as etapas já concluídas, a etapa em andamento e a previsão da próxima atualização | RF | Alta |
 | RF-02 | Simulador de economia mensal e anual |Criar endpoint POST /api/v1/simulator/calculate que receba os dados de consumo do cliente e retorne a estimativa de economia mensal e anual, com memória de cálculo suficiente para apresentação no frontend. | RF | Alta |
 | RF-03 | Área de Benefícios com empresas parceiras |Prover endpoint GET /api/v1/benefits para retornar empresas parceiras, benefícios ativos, regras de uso, validade e condições de resgate, permitindo também registrar a utilização do benefício quando aplicável.| RF | Média |
-| RNF-01 | | [característica de qualidade, desempenho ou segurança] | RNF | |
+| RNF-01 | Suporte de funcionalidades pelo ToolTip Bulbinho |Fornecer endpoint GET /api/v1/help/tooltips que retorne textos de ajuda contextual do Bulbinho associados às telas, campos e funcionalidades, permitindo atualização do conteúdo sem necessidade de nova versão do aplicativo. | RF | Média |
 | RNF-02 | | | RNF | |
 
 ## Legenda
