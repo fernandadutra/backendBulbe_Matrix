@@ -35,8 +35,12 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 - **WCAG (Web Content Accessibility Guidelines):** diretrizes internacionais que orientam o desenvolvimento de interfaces acessíveis para pessoas com deficiência.
 
 ## Observações
-
+1- **Simulador de Economia (RF-02):** O requisito RF-02 foi priorizado como Alta por representar uma das funcionalidades centrais da jornada do cliente e permitir a visualização objetiva da estimativa de economia mensal e anual diretamente na aplicação
+2- **Acompanhamento do Pedido / Homologação (RF-01):** O requisito RF-01 foi priorizado como Alta por reduzir incertezas durante a jornada do usuário, oferecendo transparência sobre a evolução do pedido e mapeando em qual etapa burocrática a solicitação se encontra.
+3- **Acessibilidade e Desempenho (RNF-01 e RNF-02):** O cumprimento das diretrizes WCAG (RNF-01) e o tempo de resposta da API abaixo de 400ms (RNF-02) foram priorizados como Alta por serem características transversais do produto, essenciais para evitar retrabalhos, garantir a inclusão de usuários e proporcionar uma navegação fluida sem ansiedade.
+4- **Segurança de Documentos e LGPD (RNF-03):** O requisito RNF-03 foi priorizado como Alta pois o tráfego criptografado (HTTPS), a autenticação via tokens JWT e a proteção/armazenamento seguro dos dados sensíveis e das faturas de energia são premissas obrigatórias para garantir a privacidade do usuário em conformidade com a LGPD
 
 ## Próximos passos
 
-Estes requisitos serão utilizados na Aula 04 (Engenharia de Requisitos para APIs) para desenhar o contrato de endpoints da API.
+1- **Modelagem dos Payloads e Camada de Segurança:** Detalhar a estrutura dos corpos de requisição e resposta (como a memória de cálculo do simulador e as etapas da homologação), implementando os cabeçalhos de autorização por tokens JWT e as políticas de proteção de dados sensíveis exigidas pela LGPD
+2- **Desenho do Contrato da API REST:** Utilizar os requisitos funcionais e não funcionais para estruturar a especificação técnica da API (OpenAPI/Swagger), definindo os métodos HTTP (GET, POST), caminhos dos endpoints, parâmetros de busca, códigos de status de resposta e schemas JSON.
