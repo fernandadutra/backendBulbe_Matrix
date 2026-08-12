@@ -24,6 +24,8 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 | RF-03 | Área de Benefícios com empresas parceiras |Prover endpoint GET /api/v1/benefits para retornar empresas parceiras, benefícios ativos, regras de uso, validade e condições de resgate, permitindo também registrar a utilização do benefício quando aplicável.| RF | Média |
 | RF-04 | Suporte de funcionalidades pelo ToolTip Bulbinho |Fornecer endpoint GET /api/v1/help/tooltips que retorne textos de ajuda contextual do Bulbinho associados às telas, campos e funcionalidades, permitindo atualização do conteúdo sem necessidade de nova versão do aplicativo. | RF | Média |
 | RNF-01 | Acessibilidade por Design que atende aos requisitos WCAG| Garantir que a interface siga as diretrizes WCAG, contemplando navegação por teclado, contraste adequado, textos alternativos, rótulos semânticos, foco visível, compatibilidade com leitores de tela e estrutura acessível dos componentes. | RNF | Alta |
+| RNF-02 | Resposta rápida nas simulações e status da homologação| A API do backend deve responder às requisições de consulta de status e cálculo de economia em menos de 400ms para evitar ansiedade do usuário. | RNF | Alta |
+
 
 ## Legenda
 
