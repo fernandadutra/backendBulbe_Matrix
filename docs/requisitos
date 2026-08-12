@@ -20,7 +20,7 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 | ID | Funcionalidade do Frontend (Projeto I) | Requisito Técnico Derivado (Backend) | Tipo | Prioridade |
 |---|---|---|---|---|
 | RF-01 | Acompanhamento de status do pedido / homologação | Disponibilizar endpoint para retornar o status atual da solicitação, mapeando as etapas em andamento e previsões. | RF | Alta |
-| RF-02 | | | RF | |
+| RF-02 | | Simulador de economia mensal e anual |Criar endpoint POST /api/v1/simulator/calculate que receba os dados de consumo do cliente e retorne a estimativa de economia mensal e anual. | RF | Alta |
 | RF-03 | | | RF | |
 | RNF-01 | | [característica de qualidade, desempenho ou segurança] | RNF | |
 | RNF-02 | | | RNF | |
