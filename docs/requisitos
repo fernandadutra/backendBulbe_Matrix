@@ -25,16 +25,14 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 | RF-04 | Suporte de funcionalidades pelo ToolTip Bulbinho |Fornecer endpoint GET /api/v1/help/tooltips que retorne textos de ajuda contextual do Bulbinho associados às telas, campos e funcionalidades, permitindo atualização do conteúdo sem necessidade de nova versão do aplicativo. | RF | Média |
 | RNF-01 | Acessibilidade por Design que atende aos requisitos WCAG| Garantir que a interface siga as diretrizes WCAG, contemplando navegação por teclado, contraste adequado, textos alternativos, rótulos semânticos, foco visível, compatibilidade com leitores de tela e estrutura acessível dos componentes. | RNF | Alta |
 | RNF-02 | Resposta rápida nas simulações e status da homologação| A API do backend deve responder às requisições de consulta de status e cálculo de economia em menos de 400ms para evitar ansiedade do usuário. | RNF | Alta |
-
-
-## Legenda
+| RNF-03 | Segurança de Documentos e Conformidade com a LGPD |Garantir tráfego criptografado via HTTPS/TLS, autenticação/autorização via tokens JWT, proteção e armazenamento seguro de dados de faturas e informações pessoais dos usuários conforme a LGPD.| RNF | Alta |
 
 - **RF, Requisito Funcional:** descreve o que o sistema deve fazer, ou seja, uma funcionalidade, ação ou endpoint esperado pelo backend.
 - **RNF, Requisito Não Funcional:** descreve como o sistema deve se comportar, estabelecendo critérios de qualidade, desempenho, usabilidade, acessibilidade ou restrições técnicas da API.
 - **Prioridade Alta:** essencial para o funcionamento básico e para a jornada principal do produto, devendo ser entregue de forma prioritária.  
 - **Prioridade Média:** funcionalidade importante que agrega valor à experiência, mas não bloqueia a entrega inicial do sistema.
 - **Prioridade Baixa:** desejável, mas que pode ser postergada para fases futuras de desenvolvimento sem impactar o uso básico.
-WCAG (Web Content Accessibility Guidelines): diretrizes internacionais que orientam o desenvolvimento de interfaces acessíveis para pessoas com deficiência.
+- **WCAG (Web Content Accessibility Guidelines):** diretrizes internacionais que orientam o desenvolvimento de interfaces acessíveis para pessoas com deficiência.
 
 ## Observações
 
