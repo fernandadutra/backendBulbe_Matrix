@@ -1,0 +1,40 @@
+# Documento de Requisitos Técnicos, [Bulbe Matrix]
+
+## Identificação
+
+- **Projeto:** [Bulbe Matrix]
+- **Empresa parceira:** [Bulbe Energia]
+- **Equipe:** [Squad Matrix]
+- **Integrantes:** [Augusto Gama], [Felipe Lara], [Fernanda Dutra], [Leandro Dias], [Mariana Maia] e [Rafael Bentes]
+- **Data:** [12/08/2026]
+- **Sprint / Etapa:** Sprint 1, Elicitação
+
+## Como este documento foi construído
+
+Os requisitos abaixo foram levantados a partir da análise das funcionalidades já implementadas no frontend do Projeto Ciência de Dados I. 
+Para cada tela ou ação existente (Onboarding didático, Simulador com o Bulbinho, Status da Homologação CEMIG de 90 a 120 dias e Clube de Benefícios "Impulsione sua Fatura"), a equipe identificou o que o backend precisa oferecer para sustentá-la, classificando cada requisito como funcional (RF) ou não funcional (RNF).
+
+## Tabela de Requisitos
+
+| ID | Funcionalidade do Frontend (Projeto I) | Requisito Técnico Derivado (Backend) | Tipo | Prioridade |
+|---|---|---|---|---|
+| RF-01 | [tela ou ação do frontend] | [o que o backend deve fazer para sustentar essa tela] | RF | [Alta / Média / Baixa] |
+| RF-02 | | | RF | |
+| RF-03 | | | RF | |
+| RNF-01 | | [característica de qualidade, desempenho ou segurança] | RNF | |
+| RNF-02 | | | RNF | |
+
+## Legenda
+
+- **RF, Requisito Funcional:** descreve o que o sistema deve fazer, uma função ou ação esperada.
+- **RNF, Requisito Não Funcional:** descreve como o sistema deve se comportar, uma qualidade ou restrição técnica.
+- **Prioridade Alta:** essencial para o funcionamento básico do sistema.
+- **Prioridade Média:** importante, mas não bloqueia a primeira entrega.
+- **Prioridade Baixa:** desejável, pode ficar para uma sprint futura.
+
+## Observações
+
+
+## Próximos passos
+
+Estes requisitos serão utilizados na Aula 04 (Engenharia de Requisitos para APIs) para desenhar o contrato de endpoints da API.
