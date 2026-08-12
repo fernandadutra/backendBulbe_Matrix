@@ -12,9 +12,7 @@
 ## Como este documento foi construído
 
 Os requisitos abaixo foram levantados a partir da análise das funcionalidades mapeadas e desenvolvidas no frontend do Projeto Ciência de Dados I em 2026.1.
-
 Para cada tela ou ação do aplicativo, abrangendo a Tela de Onboarding Didático, as Dicas Contextuais do mascote Bulbinho, o Simulador de Economia, o Status da Homologação CEMIG (90 a 120 dias), o Clube de Benefícios "Impulsione sua Fatura" e o Formulário de Cadastro/Adesão com Envio de Faturas, a equipe Squad Matrix identificou e derivou as necessidades técnicas que a API e a infraestrutura de backend precisam fornecer para sustentar a aplicação mobile.
-
 Cada item foi classificado entre Requisito Funcional (RF), ações e regras de negócio do sistema — e Requisito Não Funcional (RNF) — restrições de desempenho, acessibilidade (WCAG), otimização para dispositivos de entrada, além dos critérios essenciais de Segurança da Informação e Privacidade de Dados conforme a LGPD.
 
 ## Tabela de Requisitos
