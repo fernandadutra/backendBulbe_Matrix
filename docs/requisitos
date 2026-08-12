@@ -19,7 +19,7 @@ Cada item foi classificado entre Requisito Funcional (RF), ações e regras de n
 
 | ID | Funcionalidade do Frontend (Projeto I) | Requisito Técnico Derivado (Backend) | Tipo | Prioridade |
 |---|---|---|---|---|
-| RF-01 | [tela ou ação do frontend] | [o que o backend deve fazer para sustentar essa tela] | RF | [Alta / Média / Baixa] |
+| RF-01 | Acompanhamento de status do pedido / homologação | Disponibilizar endpoint para retornar o status atual da solicitação, mapeando as etapas em andamento e previsões. | RF | Alta |
 | RF-02 | | | RF | |
 | RF-03 | | | RF | |
 | RNF-01 | | [característica de qualidade, desempenho ou segurança] | RNF | |
