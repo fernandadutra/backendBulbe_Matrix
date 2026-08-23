@@ -1,0 +1,30 @@
+@startuml
+
+left to right direction
+
+actor "Lead / Interessado" as Lead
+actor "Cliente aderido" as Cliente
+actor "Usuário com deficiência visual" as UsuarioDeficienteVisual
+actor "Usuário com baixa familiaridade digital" as UsuarioBaixaFamiliaridade
+
+rectangle "Bulbe Evolution" {
+
+    usecase "Acompanhar status\nda homologação" as UC01
+    usecase "Simular economia\nantes de aderir" as UC02
+    usecase "Consultar benefícios\ndisponíveis" as UC03
+    usecase "Resgatar um benefício" as UC04
+    usecase "Receber ajuda contextual\ndo Bulbinho" as UC05
+    usecase "Navegar o app por leitor\nde tela e teclado" as UC06
+}
+
+Lead --> UC02
+
+Cliente --> UC01
+Cliente --> UC03
+Cliente --> UC04
+
+UsuarioDeficienteVisual --> UC06
+
+UsuarioBaixaFamiliaridade --> UC05
+
+@enduml
