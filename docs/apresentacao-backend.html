@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Apresentação do backend Bulbe Matrix: rastreabilidade entre requisitos, user stories, endpoints e o diagrama de classes do domínio.">
+<meta name="description" content="Apresentação do backend Bulbe Matrix: rastreabilidade entre requisitos, user stories, endpoints, casos de uso e o diagrama de classes do domínio.">
 <style>*{margin:0;padding:0;box-sizing:border-box}img,svg{max-width:100%}</style>
 <title>Backend Bulbe Matrix</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -486,6 +486,130 @@
   </section>
 
   <section>
+    <h2>Casos de uso, quem precisa do quê</h2>
+    <p class="sub">
+      Modelagem comportamental do sistema, em
+      <code>docs/diagramas/diagrama-caso-de-uso.puml</code>. Quatro atores, seis casos de uso,
+      correspondência de um para um com as user stories. É o degrau entre a persona e o endpoint.
+    </p>
+
+    <div class="diagrama">
+      <svg viewBox="0 0 940 660" role="img" aria-labelledby="uc-titulo uc-desc">
+        <title id="uc-titulo">Diagrama de casos de uso do Bulbe Evolution</title>
+        <desc id="uc-desc">
+          Quatro atores interagem com o sistema Bulbe Evolution. O Lead, ou interessado, simula a
+          economia antes de aderir. O Cliente aderido acompanha o status da homologação, consulta os
+          benefícios disponíveis e resgata um benefício. O usuário com baixa familiaridade digital
+          recebe ajuda contextual do Bulbinho. O usuário com deficiência visual navega o aplicativo
+          por leitor de tela e teclado, caso de uso transversal que condiciona todos os demais.
+        </desc>
+
+        <defs>
+          <marker id="uc-pta" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="rgba(255,255,255,0.42)"></path>
+          </marker>
+        </defs>
+
+        <style>
+          .fig { stroke: rgba(255,255,255,0.72); stroke-width: 1.6; fill: none; stroke-linecap: round; }
+          .ator { font-family: "Poppins", sans-serif; font-size: 11.5px; font-weight: 600; fill: #ffffff; }
+          .persona { font-family: "JetBrains Mono", monospace; font-size: 9.5px; fill: rgba(255,255,255,0.45); }
+          .uc-nome { font-family: "Poppins", sans-serif; font-size: 12.5px; font-weight: 500; fill: #ffffff; text-anchor: middle; }
+          .uc-id { font-family: "JetBrains Mono", monospace; font-size: 9.5px; font-weight: 600; text-anchor: middle; }
+          .assoc { stroke: rgba(255,255,255,0.26); stroke-width: 1.2; fill: none; }
+          .limite { fill: rgba(255,255,255,0.03); stroke: rgba(255,255,255,0.18); stroke-width: 1.2; rx: 14; }
+          .limite-nome { font-family: "Poppins", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.6px; fill: rgba(255,255,255,0.55); }
+          .elipse { fill: rgba(255,255,255,0.05); stroke-width: 1.4; }
+        </style>
+
+        <!-- fronteira do sistema -->
+        <rect class="limite" x="300" y="36" width="600" height="580"></rect>
+        <text class="limite-nome" x="322" y="64">BULBE EVOLUTION</text>
+
+        <!-- associações -->
+        <path class="assoc" d="M240,116 L452,180" marker-end="url(#uc-pta)"></path>
+        <path class="assoc" d="M240,266 L452,124" marker-end="url(#uc-pta)"></path>
+        <path class="assoc" d="M240,266 L452,284" marker-end="url(#uc-pta)"></path>
+        <path class="assoc" d="M240,266 L452,368" marker-end="url(#uc-pta)"></path>
+        <path class="assoc" d="M240,440 L452,464" marker-end="url(#uc-pta)"></path>
+        <path class="assoc" d="M240,560 L452,560" marker-end="url(#uc-pta)"></path>
+
+        <!-- ator: Lead, P-01 -->
+        <circle class="fig" cx="48" cy="94" r="9"></circle>
+        <path class="fig" d="M48,103 V126 M32,112 H64 M48,126 L34,146 M48,126 L62,146"></path>
+        <text class="ator" x="78" y="113">Lead / Interessado</text>
+        <text class="persona" x="78" y="129">P-01</text>
+
+        <!-- ator: Cliente aderido, P-02 -->
+        <circle class="fig" cx="48" cy="244" r="9"></circle>
+        <path class="fig" d="M48,253 V276 M32,262 H64 M48,276 L34,296 M48,276 L62,296"></path>
+        <text class="ator" x="78" y="263">Cliente aderido</text>
+        <text class="persona" x="78" y="279">P-02</text>
+
+        <!-- ator: baixa familiaridade digital, P-04 -->
+        <circle class="fig" cx="48" cy="418" r="9"></circle>
+        <path class="fig" d="M48,427 V450 M32,436 H64 M48,450 L34,470 M48,450 L62,470"></path>
+        <text class="ator" x="78" y="430">Usuário com baixa</text>
+        <text class="ator" x="78" y="445">familiaridade digital</text>
+        <text class="persona" x="78" y="461">P-04</text>
+
+        <!-- ator: deficiência visual, P-03 -->
+        <circle class="fig" cx="48" cy="538" r="9"></circle>
+        <path class="fig" d="M48,547 V570 M32,556 H64 M48,570 L34,590 M48,570 L62,590"></path>
+        <text class="ator" x="78" y="550">Usuário com</text>
+        <text class="ator" x="78" y="565">deficiência visual</text>
+        <text class="persona" x="78" y="581">P-03</text>
+
+        <!-- casos de uso -->
+        <ellipse class="elipse" cx="600" cy="110" rx="148" ry="34" stroke="#5ea0ff"></ellipse>
+        <text class="uc-nome" x="600" y="106">Acompanhar status da homologação</text>
+        <text class="uc-id" x="600" y="124" fill="#5ea0ff">US-01 &middot; RF-01</text>
+
+        <ellipse class="elipse" cx="600" cy="200" rx="148" ry="34" stroke="#1fcd68"></ellipse>
+        <text class="uc-nome" x="600" y="196">Simular economia antes de aderir</text>
+        <text class="uc-id" x="600" y="214" fill="#1fcd68">US-02 &middot; RF-02</text>
+
+        <ellipse class="elipse" cx="600" cy="290" rx="148" ry="34" stroke="#ffd400"></ellipse>
+        <text class="uc-nome" x="600" y="286">Consultar benefícios disponíveis</text>
+        <text class="uc-id" x="600" y="304" fill="#ffd400">US-03 &middot; RF-03</text>
+
+        <ellipse class="elipse" cx="600" cy="380" rx="148" ry="34" stroke="#ffd400"></ellipse>
+        <text class="uc-nome" x="600" y="376">Resgatar um benefício</text>
+        <text class="uc-id" x="600" y="394" fill="#ffd400">US-04 &middot; RF-03</text>
+
+        <ellipse class="elipse" cx="600" cy="470" rx="148" ry="34" stroke="#ff9e1b"></ellipse>
+        <text class="uc-nome" x="600" y="466">Receber ajuda contextual do Bulbinho</text>
+        <text class="uc-id" x="600" y="484" fill="#ff9e1b">US-05 &middot; RF-04</text>
+
+        <ellipse class="elipse" cx="600" cy="560" rx="148" ry="34" stroke="#ffffff"
+                 stroke-dasharray="5 4"></ellipse>
+        <text class="uc-nome" x="600" y="556">Navegar por leitor de tela e teclado</text>
+        <text class="uc-id" x="600" y="574" fill="rgba(255,255,255,0.6)">US-06 &middot; RNF-01</text>
+      </svg>
+    </div>
+
+    <div class="legenda">
+      <span><i class="swatch" style="background:#5ea0ff"></i>RF-01, homologação</span>
+      <span><i class="swatch" style="background:#1fcd68"></i>RF-02, simulador</span>
+      <span><i class="swatch" style="background:#ffd400"></i>RF-03, benefícios</span>
+      <span><i class="swatch" style="background:#ff9e1b"></i>RF-04, dicas contextuais</span>
+      <span><i class="swatch" style="background:#ffffff;opacity:.7"></i>RNF-01, enabler transversal</span>
+    </div>
+
+    <p style="margin-top:26px">
+      Duas leituras que o diagrama entrega de imediato. A primeira: <strong>o único caso de uso
+      aberto ao público é a simulação</strong>, o que confirma o desenho de
+      <code>POST /simulacoes</code> como rota não autenticada e explica por que ela é a única com
+      limite de requisições. A segunda: <strong>US-06 é o caso de uso sem endpoint</strong>. Ele
+      aparece tracejado porque não é uma jornada isolada do usuário com deficiência visual, e sim
+      a condição de aceite das outras cinco. O ator existe no diagrama, o caso de uso existe, mas
+      a superfície de API correspondente está distribuída nos rótulos textuais de todos os
+      payloads.
+    </p>
+  </section>
+
+  <section>
     <h2>Bloco 1, escopo formal da Sprint 1</h2>
     <p class="sub">Onze endpoints, doze entidades, quatro requisitos funcionais e um não funcional.</p>
 
@@ -568,7 +692,7 @@
   </section>
 
   <section>
-    <h2>O diagrama de classes do Bloco 1</h2>
+    <h2>Diagrama de classes, o domínio do Bloco 1</h2>
     <p class="sub">
       As doze entidades que os payloads pressupõem, com as cardinalidades que o contrato
       exige. A cor de cada caixa marca o requisito que a originou.
@@ -880,17 +1004,20 @@
       <li>Confirmar se a integração com a CEMIG é automatizada ou manual, o que define a arquitetura de cache e fallback do RF-01.</li>
       <li>Elicitar o requisito de autenticação ainda na Sprint 1, e não na Sprint 2, por ser dependência técnica dos endpoints protegidos.</li>
       <li>Formalizar o contrato em OpenAPI 3.1, promovendo os objetos recorrentes a schemas reutilizáveis.</li>
-      <li>Modelar os casos de uso a partir dos endpoints do Bloco 1, na Modelagem Comportamental prevista na Aula 06.</li>
+      <li>Completar a Modelagem Comportamental da Aula 06: o diagrama de casos de uso já está versionado, faltam os diagramas de sequência das jornadas de simulação e de resgate.</li>
       <li>Definir o modelo de dados em <code>docs/banco-de-dados/</code> a partir da tabela de entidades.</li>
     </ol>
 
     <div class="nota">
       <p>
-        <strong>Sobre o diagrama.</strong> Não existe arquivo de diagrama versionado no
-        repositório: <code>docs/diagramas</code> é um placeholder de zero byte. O diagrama acima
-        foi desenhado a partir da tabela &ldquo;Entidades do domínio implícitas neste
-        contrato&rdquo;, que já traz atributos e cardinalidades e funciona como diagrama de
-        classes em forma tabular. Vale promovê-la a artefato próprio antes da modelagem de dados.
+        <strong>Sobre os dois diagramas.</strong> O de casos de uso tem fonte versionada em
+        <code>docs/diagramas/diagrama-caso-de-uso.puml</code> e foi redesenhado aqui apenas para
+        acompanhar a identidade visual da apresentação, sem alterar atores, casos ou associações.
+        O de classes ainda <strong>não tem fonte própria</strong>: foi derivado da tabela
+        &ldquo;Entidades do domínio implícitas neste contrato&rdquo;, que traz atributos e
+        cardinalidades e funciona como diagrama de classes em forma tabular. Promovê-la a um
+        segundo arquivo <code>.puml</code>, ao lado do de casos de uso, é pré-requisito da
+        modelagem de dados.
       </p>
     </div>
   </section>
