@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Apresentação do backend Bulbe Matrix: rastreabilidade entre requisitos, user stories, endpoints e o diagrama de classes do domínio.">
+<style>*{margin:0;padding:0;box-sizing:border-box}img,svg{max-width:100%}</style>
+<title>Backend Bulbe Matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+  :root {
+    --noite: #04063f;
+    --noite-2: #070a52;
+    --azul: #0a1080;
+    --azul-claro: #5ea0ff;
+    --verde: #1fcd68;
+    --verde-forte: #16a356;
+    --amarelo: #ffd400;
+    --laranja: #ff9e1b;
+    --vermelho: #ff5a5a;
+    --branco: #ffffff;
+    --texto: rgba(255, 255, 255, 0.78);
+    --texto-fraco: rgba(255, 255, 255, 0.48);
+    --vidro: rgba(255, 255, 255, 0.045);
+    --borda: rgba(255, 255, 255, 0.11);
+    --borda-forte: rgba(255, 255, 255, 0.2);
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--noite);
+    background-image:
+      radial-gradient(900px 620px at 88% -8%, rgba(31, 205, 104, 0.16), transparent 62%),
+      radial-gradient(760px 560px at 4% 2%, rgba(10, 16, 128, 0.85), transparent 66%);
+    background-attachment: fixed;
+    color: var(--texto);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+
+  /* ---------- cabeçalho ---------- */
+
+  .capa {
+    padding: 86px 0 52px;
+    border-bottom: 1px solid var(--borda);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--verde);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(31, 205, 104, 0.5), transparent);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.6rem, 6.4vw, 4.1rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--branco);
+    text-wrap: balance;
+  }
+
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(96deg, var(--verde) 10%, var(--amarelo) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lead {
+    max-width: 60ch;
+    font-size: 1.09rem;
+    color: var(--texto);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 15px;
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+    background: var(--vidro);
+    font-size: 0.83rem;
+    color: var(--texto-fraco);
+  }
+
+  .chip b {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--branco);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- seções ---------- */
+
+  section { padding-top: 74px; }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: clamp(1.5rem, 3vw, 1.95rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--branco);
+    text-wrap: balance;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--branco);
+  }
+
+  .sub {
+    margin: 0 0 26px;
+    max-width: 66ch;
+    color: var(--texto-fraco);
+  }
+
+  p { margin: 0 0 16px; max-width: 68ch; }
+
+  strong { color: var(--branco); font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    color: var(--azul-claro);
+    background: rgba(94, 160, 255, 0.1);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  /* ---------- cadeia ---------- */
+
+  .cadeia {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .elo {
+    flex: 1 1 130px;
+    padding: 16px 14px;
+    border: 1px solid var(--borda);
+    border-top: 2px solid var(--cor, var(--verde));
+    border-radius: 10px;
+    background: var(--vidro);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .elo span {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cor, var(--verde));
+    font-weight: 600;
+  }
+
+  .elo b {
+    color: var(--branco);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .seta {
+    align-self: center;
+    color: var(--texto-fraco);
+    font-family: var(--mono);
+    flex: 0 0 auto;
+  }
+
+  /* ---------- tabelas ---------- */
+
+  .rolagem {
+    overflow-x: auto;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: rgba(4, 6, 63, 0.5);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 660px;
+  }
+
+  th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--texto-fraco);
+    border-bottom: 1px solid var(--borda);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 15px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: rgba(255, 255, 255, 0.028); }
+
+  .rf {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--branco);
+    white-space: nowrap;
+  }
+
+  .rf small {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 0.76rem;
+    color: var(--texto-fraco);
+    letter-spacing: 0;
+  }
+
+  .rota {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--branco);
+  }
+
+  .rota > div { display: flex; align-items: center; gap: 8px; }
+
+  .verbo {
+    flex: 0 0 auto;
+    min-width: 54px;
+    text-align: center;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .get { background: rgba(31, 205, 104, 0.16); color: var(--verde); }
+  .post { background: rgba(94, 160, 255, 0.16); color: var(--azul-claro); }
+  .patch { background: rgba(255, 212, 0, 0.15); color: var(--amarelo); }
+  .delete { background: rgba(255, 90, 90, 0.15); color: var(--vermelho); }
+
+  .ents { color: var(--texto); font-size: 0.86rem; }
+  .ents b { font-weight: 600; }
+
+  .prio {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .prio.alta { color: var(--laranja); }
+  .prio.bloq { color: var(--vermelho); }
+  .prio.media { color: var(--amarelo); }
+  .prio.baixa { color: var(--texto-fraco); }
+
+  /* ---------- diagrama ---------- */
+
+  .diagrama {
+    overflow-x: auto;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: rgba(4, 6, 63, 0.5);
+    padding: 26px 22px;
+  }
+
+  .diagrama svg { display: block; min-width: 900px; width: 100%; height: auto; }
+
+  .legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--borda);
+    font-size: 0.79rem;
+    color: var(--texto-fraco);
+  }
+
+  .legenda span { display: flex; align-items: center; gap: 8px; }
+
+  .swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    flex: 0 0 auto;
+  }
+
+  /* ---------- cartões ---------- */
+
+  .cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 14px;
+  }
+
+  .cartao {
+    padding: 22px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: var(--vidro);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cartao p { margin: 0; font-size: 0.89rem; }
+
+  .cartao .marca {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--verde);
+  }
+
+  .card-cardinalidade b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--amarelo);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  /* ---------- fechamento ---------- */
+
+  .nota {
+    margin-top: 20px;
+    padding: 18px 20px;
+    border-left: 2px solid var(--laranja);
+    background: rgba(255, 158, 27, 0.06);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.89rem;
+  }
+
+  .nota p:last-child { margin-bottom: 0; }
+
+  .passos {
+    counter-reset: passo;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .passos li {
+    counter-increment: passo;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+
+  .passos li::before {
+    content: counter(passo, decimal-leading-zero);
+    flex: 0 0 auto;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--verde);
+  }
+
+  footer {
+    margin-top: 82px;
+    padding-top: 26px;
+    border-top: 1px solid var(--borda);
+    font-size: 0.8rem;
+    color: var(--texto-fraco);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 620px) {
+    .wrap { padding: 0 20px 72px; }
+    .capa { padding-top: 58px; }
+    .seta { display: none; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header class="capa">
+    <div class="eyebrow">Squad Matrix &middot; Bulbe Evolution &middot; Sprint 1</div>
+    <h1>Backend <em>Bulbe Matrix</em></h1>
+    <p class="lead">
+      Especificação de API construída de trás para frente: cada endpoint precisa apontar
+      para um requisito, uma história de usuário e uma entidade de domínio. O que não aponta
+      está declarado como lacuna, com o motivo escrito.
+    </p>
+    <div class="chips">
+      <span class="chip"><b>29</b> endpoints</span>
+      <span class="chip"><b>19</b> entidades de domínio</span>
+      <span class="chip"><b>6</b> user stories</span>
+      <span class="chip"><b>2</b> blocos de escopo</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>A cadeia de rastreabilidade</h2>
+    <p class="sub">
+      É a espinha do documento. Ler da esquerda para a direita responde
+      &ldquo;por que este endpoint existe?&rdquo;; ler ao contrário responde
+      &ldquo;quem atende este requisito?&rdquo;.
+    </p>
+
+    <div class="cadeia">
+      <div class="elo" style="--cor:#5ea0ff"><span>Origem</span><b>Requisito</b></div>
+      <div class="seta">&rarr;</div>
+      <div class="elo" style="--cor:#1fcd68"><span>Necessidade</span><b>User Story</b></div>
+      <div class="seta">&rarr;</div>
+      <div class="elo" style="--cor:#ffd400"><span>Contrato</span><b>Endpoint</b></div>
+      <div class="seta">&rarr;</div>
+      <div class="elo" style="--cor:#ff9e1b"><span>Modelo</span><b>Entidade</b></div>
+      <div class="seta">&rarr;</div>
+      <div class="elo" style="--cor:#ffffff"><span>Consumo</span><b>Tela</b></div>
+    </div>
+
+    <p>
+      Nenhum endpoint foi inventado. Os do <strong>Bloco 1</strong> nascem de um RF formal da
+      Sprint 1. Os do <strong>Bloco 2</strong> apareceram ao confrontar o contrato com o
+      protótipo de frontend já existente e estão registrados como lacunas de elicitação,
+      não como escopo aprovado.
+    </p>
+  </section>
+
+  <section>
+    <h2>Bloco 1, escopo formal da Sprint 1</h2>
+    <p class="sub">Onze endpoints, doze entidades, quatro requisitos funcionais e um não funcional.</p>
+
+    <div class="rolagem">
+      <table>
+        <thead>
+          <tr>
+            <th>Requisito</th>
+            <th>História</th>
+            <th>Endpoints</th>
+            <th>Entidades do diagrama</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rf">RF-01<small>Status da homologação</small></td>
+            <td class="rf">US-01</td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/pedidos</div>
+                <div><span class="verbo get">GET</span>/pedidos/{id}/status</div>
+              </div>
+            </td>
+            <td class="ents">Cliente &rarr; Instalação &rarr; <b>Pedido</b> &rarr; Etapa de Pedido</td>
+          </tr>
+          <tr>
+            <td class="rf">RF-02<small>Simulador de economia</small></td>
+            <td class="rf">US-02</td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo post">POST</span>/simulacoes</div>
+                <div><span class="verbo get">GET</span>/simulacoes[/{id}]</div>
+              </div>
+            </td>
+            <td class="ents"><b>Simulação</b> &rarr; Memória de Cálculo &rarr; Linha de Cálculo</td>
+          </tr>
+          <tr>
+            <td class="rf">RF-03<small>Clube de benefícios</small></td>
+            <td class="rf">US-03</td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/beneficios[/{id}]</div>
+                <div><span class="verbo get">GET</span>/trilhas</div>
+              </div>
+            </td>
+            <td class="ents">Trilha &rarr; <b>Benefício</b> &larr; Parceiro</td>
+          </tr>
+          <tr>
+            <td class="rf">RF-03<small>Resgate</small></td>
+            <td class="rf">US-04</td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo post">POST</span>/beneficios/{id}/resgates</div>
+                <div><span class="verbo get">GET</span>/resgates</div>
+              </div>
+            </td>
+            <td class="ents"><b>Resgate</b>, associativa entre Cliente e Benefício</td>
+          </tr>
+          <tr>
+            <td class="rf">RF-04<small>Dicas do Bulbinho</small></td>
+            <td class="rf">US-05</td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/ajuda/dicas</div>
+              </div>
+            </td>
+            <td class="ents"><b>Dica</b>, entidade independente</td>
+          </tr>
+          <tr>
+            <td class="rf">RNF-01<small>Acessibilidade</small></td>
+            <td class="rf">US-06</td>
+            <td class="ents" style="font-style:italic;color:var(--texto-fraco)">Sem endpoint próprio</td>
+            <td class="ents">
+              Enabler story. Vive nos campos de rótulo e descrição textual dos payloads.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>O diagrama de classes do Bloco 1</h2>
+    <p class="sub">
+      As doze entidades que os payloads pressupõem, com as cardinalidades que o contrato
+      exige. A cor de cada caixa marca o requisito que a originou.
+    </p>
+
+    <div class="diagrama">
+      <svg viewBox="0 0 940 660" role="img" aria-labelledby="diag-titulo diag-desc">
+        <title id="diag-titulo">Diagrama de classes do domínio do Bloco 1</title>
+        <desc id="diag-desc">
+          Cliente é o agregado central. Possui N Instalações, cada uma com 1 Pedido que possui
+          N Etapas de Pedido, atendendo ao RF-01. Possui N Simulações, cada uma com 1 Memória de
+          Cálculo formada por N Linhas de Cálculo, atendendo ao RF-02. Possui N Resgates, cada um
+          ligado a 1 Benefício, que pertence a 1 Trilha e 1 Parceiro, atendendo ao RF-03. A entidade
+          Dica, do RF-04, não se relaciona com nenhuma outra.
+        </desc>
+
+        <defs>
+          <marker id="pta" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="rgba(255,255,255,0.42)"></path>
+          </marker>
+        </defs>
+
+        <style>
+          .cx { fill: rgba(255,255,255,0.05); stroke-width: 1.4; rx: 9; }
+          .nome { font-family: "Poppins", sans-serif; font-size: 14px; font-weight: 600; fill: #ffffff; }
+          .attr { font-family: "JetBrains Mono", monospace; font-size: 9.5px; fill: rgba(255,255,255,0.5); }
+          .lig { stroke: rgba(255,255,255,0.28); stroke-width: 1.3; fill: none; }
+          .card { font-family: "JetBrains Mono", monospace; font-size: 10px; font-weight: 600; fill: rgba(255,255,255,0.62); }
+          .faixa { font-family: "Poppins", sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1.6px; }
+        </style>
+
+        <!-- ligações, desenhadas antes das caixas -->
+        <path class="lig" d="M212,330 H244 V93 H268" marker-end="url(#pta)"></path>
+        <path class="lig" d="M444,93 H498" marker-end="url(#pta)"></path>
+        <path class="lig" d="M674,93 H728" marker-end="url(#pta)"></path>
+
+        <path class="lig" d="M212,330 H268" marker-end="url(#pta)"></path>
+        <path class="lig" d="M444,330 H498" marker-end="url(#pta)"></path>
+        <path class="lig" d="M674,330 H728" marker-end="url(#pta)"></path>
+
+        <path class="lig" d="M212,330 H244 V560 H268" marker-end="url(#pta)"></path>
+        <path class="lig" d="M498,560 H444" marker-end="url(#pta)"></path>
+        <path class="lig" d="M728,500 H700 V554 H674" marker-end="url(#pta)"></path>
+        <path class="lig" d="M728,612 H700 V566 H674" marker-end="url(#pta)"></path>
+
+        <text class="card" x="222" y="240">1 &mdash; N</text>
+        <text class="card" x="455" y="84">1 &mdash; 1</text>
+        <text class="card" x="685" y="84">1 &mdash; N</text>
+        <text class="card" x="222" y="322">1 &mdash; N</text>
+        <text class="card" x="455" y="321">1 &mdash; 1</text>
+        <text class="card" x="685" y="321">1 &mdash; N</text>
+        <text class="card" x="222" y="470">1 &mdash; N</text>
+        <text class="card" x="455" y="551">1 &mdash; N</text>
+        <text class="card" x="686" y="516">1 &mdash; N</text>
+        <text class="card" x="686" y="598">1 &mdash; N</text>
+
+        <!-- Cliente, agregado central -->
+        <rect class="cx" x="40" y="300" width="172" height="60" stroke="#ffffff"></rect>
+        <text class="nome" x="58" y="326">Cliente</text>
+        <text class="attr" x="58" y="344">nome, email, telefone</text>
+
+        <!-- RF-01 -->
+        <text class="faixa" x="268" y="42" fill="#5ea0ff">RF-01 &middot; HOMOLOGAÇÃO</text>
+        <rect class="cx" x="268" y="63" width="176" height="60" stroke="#5ea0ff"></rect>
+        <text class="nome" x="286" y="89">Instalação</text>
+        <text class="attr" x="286" y="107">numero, distribuidora</text>
+
+        <rect class="cx" x="498" y="63" width="176" height="60" stroke="#5ea0ff"></rect>
+        <text class="nome" x="516" y="89">Pedido</text>
+        <text class="attr" x="516" y="107">situacao, previsao</text>
+
+        <rect class="cx" x="728" y="63" width="176" height="60" stroke="#5ea0ff"></rect>
+        <text class="nome" x="746" y="89">Etapa de Pedido</text>
+        <text class="attr" x="746" y="107">ordem, chave, situacao</text>
+
+        <!-- RF-02 -->
+        <text class="faixa" x="268" y="279" fill="#1fcd68">RF-02 &middot; SIMULADOR</text>
+        <rect class="cx" x="268" y="300" width="176" height="60" stroke="#1fcd68"></rect>
+        <text class="nome" x="286" y="326">Simulação</text>
+        <text class="attr" x="286" y="344">valor_fatura_centavos</text>
+
+        <rect class="cx" x="498" y="300" width="176" height="60" stroke="#1fcd68"></rect>
+        <text class="nome" x="516" y="326">Memória de Cálculo</text>
+        <text class="attr" x="516" y="344">consumo_total_kwh</text>
+
+        <rect class="cx" x="728" y="300" width="176" height="60" stroke="#1fcd68"></rect>
+        <text class="nome" x="746" y="326">Linha de Cálculo</text>
+        <text class="attr" x="746" y="344">fonte, valor_centavos</text>
+
+        <!-- RF-03 -->
+        <text class="faixa" x="268" y="506" fill="#ffd400">RF-03 &middot; CLUBE DE BENEFÍCIOS</text>
+        <rect class="cx" x="268" y="530" width="176" height="60" stroke="#ffd400"></rect>
+        <text class="nome" x="286" y="556">Resgate</text>
+        <text class="attr" x="286" y="574">codigo, situacao, expira_em</text>
+
+        <rect class="cx" x="498" y="530" width="176" height="60" stroke="#ffd400"></rect>
+        <text class="nome" x="516" y="556">Benefício</text>
+        <text class="attr" x="516" y="574">titulo, tipo, validade</text>
+
+        <rect class="cx" x="728" y="470" width="176" height="60" stroke="#ffd400"></rect>
+        <text class="nome" x="746" y="496">Trilha</text>
+        <text class="attr" x="746" y="514">chave, regra_desbloqueio</text>
+
+        <rect class="cx" x="728" y="582" width="176" height="60" stroke="#ffd400"></rect>
+        <text class="nome" x="746" y="608">Parceiro</text>
+        <text class="attr" x="746" y="626">nome, url_logo, cor_marca</text>
+
+        <!-- RF-04 -->
+        <text class="faixa" x="40" y="506" fill="#ff9e1b">RF-04 &middot; BULBINHO</text>
+        <rect class="cx" x="40" y="530" width="172" height="60" stroke="#ff9e1b"
+              stroke-dasharray="5 4"></rect>
+        <text class="nome" x="58" y="556">Dica</text>
+        <text class="attr" x="58" y="574">tela, elemento, blocos</text>
+        <text class="card" x="58" y="612">sem relacionamento</text>
+      </svg>
+    </div>
+
+    <div class="legenda">
+      <span><i class="swatch" style="background:#ffffff"></i>Agregado central</span>
+      <span><i class="swatch" style="background:#5ea0ff"></i>RF-01, homologação</span>
+      <span><i class="swatch" style="background:#1fcd68"></i>RF-02, simulador</span>
+      <span><i class="swatch" style="background:#ffd400"></i>RF-03, benefícios</span>
+      <span><i class="swatch" style="background:#ff9e1b"></i>RF-04, dicas contextuais</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Três cardinalidades que decidem a implementação</h2>
+    <p class="sub">Não são detalhe de modelagem: cada uma corresponde a um critério de aceite que só fecha se a relação for essa.</p>
+
+    <div class="cartoes">
+      <div class="cartao card-cardinalidade">
+        <b>Cliente 1&mdash;N Instalação 1&mdash;1 Pedido 1&mdash;N Etapa</b>
+        <p>
+          A linha do tempo da tela de status é uma <strong>coleção de etapas</strong>, não um campo
+          de enum no pedido. É o que permite anunciar cada etapa com nome e situação ao leitor de
+          tela, como pede o critério 4 da US-01.
+        </p>
+      </div>
+      <div class="cartao card-cardinalidade">
+        <b>Simulação 1&mdash;1 Memória 1&mdash;N Linha</b>
+        <p>
+          A memória de cálculo exigida pelo critério 1 da US-02 é uma <strong>árvore</strong>, não
+          um texto pronto. Cada linha carrega fonte, consumo e valor com e sem desconto, e o
+          frontend renderiza o detalhamento a partir daí.
+        </p>
+      </div>
+      <div class="cartao card-cardinalidade">
+        <b>Resgate = Cliente &times; Benefício</b>
+        <p>
+          Modelar o resgate como <strong>entidade associativa</strong>, e não como flag no
+          benefício, é o que torna possível o controle de uso único da US-04 e a idempotência
+          via cabeçalho <code>Idempotency-Key</code>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Bloco 2, dezoito endpoints sem requisito de origem</h2>
+    <p class="sub">
+      Levantados ao confrontar o contrato do Bloco 1 com as telas que o protótipo de frontend já
+      tem. Cada grupo é uma lacuna nomeada, com prioridade sugerida para a Sprint 2.
+    </p>
+
+    <div class="rolagem">
+      <table>
+        <thead>
+          <tr>
+            <th>Lacuna</th>
+            <th>Endpoints</th>
+            <th>Por que existe</th>
+            <th>Prioridade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rf">2.1<small>Autenticação</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo post">POST</span>/sessoes</div>
+                <div><span class="verbo post">POST</span>/sessoes/renovacao</div>
+                <div><span class="verbo delete">DEL</span>/sessoes</div>
+                <div><span class="verbo get">GET</span>/perfil</div>
+              </div>
+            </td>
+            <td class="ents">
+              Dependência <b>bloqueante da própria Sprint 1</b>: sem emissão de JWT, os endpoints
+              protegidos do RF-01 e do RF-03 não podem ser testados de ponta a ponta.
+            </td>
+            <td class="prio bloq">Bloqueante</td>
+          </tr>
+          <tr>
+            <td class="rf">2.2<small>Adesão</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo post">POST</span>/interessados</div>
+                <div><span class="verbo post">POST</span>/adesoes</div>
+                <div><span class="verbo patch">PATCH</span>/adesoes/{id}</div>
+                <div><span class="verbo post">POST</span>/adesoes/{id}/anexos</div>
+                <div><span class="verbo post">POST</span>/adesoes/{id}/aceites</div>
+                <div><span class="verbo post">POST</span>/adesoes/{id}/submissao</div>
+              </div>
+            </td>
+            <td class="ents">
+              Lacuna já registrada no documento de user stories: o upload, a validação e o
+              armazenamento da fatura não têm RF, embora o RNF-03 já preveja a proteção do arquivo.
+            </td>
+            <td class="prio alta">Alta</td>
+          </tr>
+          <tr>
+            <td class="rf">2.3<small>Indique e ganhe</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/indicacoes</div>
+                <div><span class="verbo post">POST</span>/indicacoes</div>
+              </div>
+            </td>
+            <td class="ents">Tela existe no protótipo, sem requisito correspondente.</td>
+            <td class="prio media">Média</td>
+          </tr>
+          <tr>
+            <td class="rf">2.4<small>Faturas e consumo</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/faturas[/{id}]</div>
+                <div><span class="verbo get">GET</span>/consumo</div>
+              </div>
+            </td>
+            <td class="ents">Idem. Alimenta o gráfico de consumo e a linha digitável da fatura Bulbe.</td>
+            <td class="prio media">Média</td>
+          </tr>
+          <tr>
+            <td class="rf">2.5<small>Notificações</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/notificacoes</div>
+                <div><span class="verbo patch">PATCH</span>/notificacoes/{id}</div>
+              </div>
+            </td>
+            <td class="ents">Idem. O contador de não lidas vem no corpo, porque o badge do sino precisa do total sem paginar.</td>
+            <td class="prio baixa">Baixa</td>
+          </tr>
+          <tr>
+            <td class="rf">2.6<small>Boas-vindas</small></td>
+            <td>
+              <div class="rota">
+                <div><span class="verbo get">GET</span>/conteudos/boas-vindas</div>
+              </div>
+            </td>
+            <td class="ents">
+              O texto do onboarding está hoje <b>rasterizado dentro de PNG</b>, disponível apenas
+              no atributo <code>alt</code>. Conflita com o RNF-01 e exige novo release a cada ajuste de copy.
+            </td>
+            <td class="prio baixa">Baixa</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Três decisões que o diagrama torna visíveis</h2>
+    <p class="sub">Pontos em que o contrato se afastou do caminho óbvio, e a razão registrada.</p>
+
+    <div class="cartoes">
+      <div class="cartao">
+        <span class="marca">DUAS ROTAS</span>
+        <h3>Benefícios e trilhas separados</h3>
+        <p>
+          <code>GET /beneficios</code> e <code>GET /trilhas</code> atacam o mesmo agregado por
+          ângulos diferentes porque as duas telas consomem formatos diferentes: cards de oferta
+          de parceiro contra cards de trilha com estado de bloqueio. Unificar obrigaria uma delas
+          a descartar metade do payload.
+        </p>
+      </div>
+      <div class="cartao">
+        <span class="marca">DOIS DOCUMENTOS</span>
+        <h3>Anexo não é Fatura</h3>
+        <p>
+          A conta da CEMIG que o cliente envia na adesão e a fatura que a Bulbe emite são
+          entidades distintas, de emissores distintos, em momentos distintos da jornada. Daí
+          <code>POST /adesoes/{id}/anexos</code> e não <code>/faturas</code>. Usar o mesmo
+          substantivo seria fonte de erro na implementação.
+        </p>
+      </div>
+      <div class="cartao">
+        <span class="marca">ESCOPO PELO TOKEN</span>
+        <h3>Nenhum id de cliente na URL</h3>
+        <p>
+          As seis listagens do cliente são sempre filtradas pelo JWT. Nenhum identificador de
+          cliente aparece em path ou query, o que elimina por construção a classe de falha em que
+          se troca o id na URL para ler dados de outra pessoa.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Estado atual e próximos passos</h2>
+    <p class="sub">
+      O contrato está completo e validado, com 1188 linhas em
+      <code>docs/api/lista-endpoints.md</code>. O que vem depois é derivar dele.
+    </p>
+
+    <ol class="passos">
+      <li>Validar com a Bulbe Energia a entrada do simulador, a alíquota de desconto e a regra de composição da memória de cálculo, que bloqueiam o RF-02.</li>
+      <li>Confirmar se a integração com a CEMIG é automatizada ou manual, o que define a arquitetura de cache e fallback do RF-01.</li>
+      <li>Elicitar o requisito de autenticação ainda na Sprint 1, e não na Sprint 2, por ser dependência técnica dos endpoints protegidos.</li>
+      <li>Formalizar o contrato em OpenAPI 3.1, promovendo os objetos recorrentes a schemas reutilizáveis.</li>
+      <li>Modelar os casos de uso a partir dos endpoints do Bloco 1, na Modelagem Comportamental prevista na Aula 06.</li>
+      <li>Definir o modelo de dados em <code>docs/banco-de-dados/</code> a partir da tabela de entidades.</li>
+    </ol>
+
+    <div class="nota">
+      <p>
+        <strong>Sobre o diagrama.</strong> Não existe arquivo de diagrama versionado no
+        repositório: <code>docs/diagramas</code> é um placeholder de zero byte. O diagrama acima
+        foi desenhado a partir da tabela &ldquo;Entidades do domínio implícitas neste
+        contrato&rdquo;, que já traz atributos e cardinalidades e funciona como diagrama de
+        classes em forma tabular. Vale promovê-la a artefato próprio antes da modelagem de dados.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Squad Matrix &middot; Augusto Gama, Felipe Lara, Fernanda Dutra, Leandro Dias, Mariana Maia, Rafael Bentes</span>
+    <span>Empresa parceira: Bulbe Energia</span>
+  </footer>
+
+</div>
+</body>
+</html>
