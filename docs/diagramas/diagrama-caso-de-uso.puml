@@ -9,12 +9,12 @@ actor "Usuário com baixa familiaridade digital" as UsuarioBaixaFamiliaridade
 
 rectangle "Bulbe Evolution" {
 
-    usecase "Acompanhar status\nda homologação" as UC01
-    usecase "Simular economia\nantes de aderir" as UC02
-    usecase "Consultar benefícios\ndisponíveis" as UC03
+    usecase "Acompanhar status da homologação" as UC01
+    usecase "Simular economia antes de aderir" as UC02
+    usecase "Consultar benefícios disponíveis" as UC03
     usecase "Resgatar um benefício" as UC04
-    usecase "Receber ajuda contextual\ndo Bulbinho" as UC05
-    usecase "Navegar o app por leitor\nde tela e teclado" as UC06
+    usecase "Receber ajuda contextual do Bulbinho" as UC05
+    usecase "Navegar o app por leitor de tela e teclado" as UC06
 }
 
 Lead --> UC02
