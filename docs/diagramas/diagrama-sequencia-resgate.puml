@@ -1,0 +1,27 @@
+@startuml diagrama_sequencia_resgate
+autonumber
+actor "Cliente" as User
+participant "App Bulbe" as App
+participant "API / Backend" as API
+database "Banco de Dados" as DB
+
+User -> App: Clica em "Resgatar benefício"
+App -> API: POST /api/v1/beneficios/ben_inter_cashback/resgates
+activate API
+
+API -> DB: Consulta validade e disponibilidade
+activate DB
+DB --> API: Benefício válido
+deactivate DB
+
+API -> DB: Salva registro do resgate
+activate DB
+DB --> API: Confirmado
+deactivate DB
+
+API --> App: Retorna código do cupom (ex: BULBE-INTER)
+deactivate API
+
+App -> User: Exibe código e instruções na tela
+
+@enduml
