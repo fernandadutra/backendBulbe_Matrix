@@ -1,0 +1,103 @@
+@startuml diagrama_atividades
+title Diagrama de Atividades - Jornada Completa Bulbe Evolution
+
+|#E8F5E9|Usuário / App|
+|#E3F2FD|Backend (API Bulbe)|
+|#FFF3E0|Banco de Dados (PostgreSQL)|
+
+|Usuário / App|
+start
+:Acessa tela "Como funciona" (Boas-vindas);
+
+if (Já possui cadastro?) then (sim)
+  :Clica em "Já possui conta? Entre aqui";
+  :Realiza autenticação;
+  |Backend (API Bulbe)|
+  :POST /api/v1/sessoes;
+  :Gera Token JWT de acesso;
+else (não)
+  |Usuário / App|
+  :Clica em "Quero economizar";
+  :Informa o valor da última fatura;
+  
+  if (Tem dúvida sobre as taxas?) then (sim)
+    :Clica no ícone do Bulbinho (Tooltip);
+    |Backend (API Bulbe)|
+    :GET /api/v1/ajuda/dicas?tela=simular-desconto;
+    |Usuário / App|
+    :Lê explicação de PIS/COFINS e taxas da Cemig;
+  endif
+
+  |Usuário / App|
+  :Clica em "Simular";
+  |Backend (API Bulbe)|
+  :POST /api/v1/simulacoes;
+  :Calcula economia mensal, anual e subtotal;
+  |Banco de Dados (PostgreSQL)|
+  :Salva registro da simulação;
+  |Usuário / App|
+  :Visualiza tela "Sua simulação" com comparativo;
+  :Clica em "Comece agora" e conclui adesão;
+  |Backend (API Bulbe)|
+  :POST /api/v1/adesoes/{id}/submissao;
+  :Gera pedido de homologação de 90 a 120 dias;
+endif
+
+|Usuário / App|
+:Acessa o aplicativo logado;
+
+fork
+  |Usuário / App|
+  :Acessa "Status do seu pedido";
+  |Backend (API Bulbe)|
+  :GET /api/v1/pedidos/{id}/status;
+  |Banco de Dados (PostgreSQL)|
+  :Consulta etapa atual (Bulbe ou Cemig);
+  |Usuário / App|
+  :Visualiza as 4 etapas da homologação;
+  
+  if (Clica em "Impulsione sua primeira fatura") then (sim)
+    |Usuário / App|
+    :Abre tela "Impulsione sua 1ª fatura";
+    |Backend (API Bulbe)|
+    :GET /api/v1/beneficios;
+    |Usuário / App|
+    :Visualiza parceiros (Inter, Livelo, Frossard, Araújo);
+    :Clica em "Acessar" no parceiro desejado;
+    |Backend (API Bulbe)|
+    :POST /api/v1/beneficios/{id}/resgates;
+    |Banco de Dados (PostgreSQL)|
+    :Registra utilização do benefício;
+    |Usuário / App|
+    :Recebe código/link de redirecionamento;
+  endif
+
+fork again
+  |Usuário / App|
+  :Acessa aba "Faturas";
+  |Backend (API Bulbe)|
+  :GET /api/v1/faturas;
+  |Usuário / App|
+  if (Pedido ainda em homologação?) then (sim)
+    :Exibe tela "Oops... Não encontrei nenhuma fatura";
+    :Clica em "Ver status do pedido";
+  else (não)
+    :Visualiza faturas emitidas com desconto;
+  endif
+
+fork again
+  |Usuário / App|
+  :Acessa aba "Consumo";
+  |Backend (API Bulbe)|
+  :GET /api/v1/consumo;
+  |Usuário / App|
+  if (Sem histórico de faturas?) then (sim)
+    :Exibe tela "Seus gráficos aparecerão em breve...";
+    :Clica em "Simular sua economia" ou "Voltar";
+  else (não)
+    :Visualiza gráficos de consumo e economia;
+  endif
+end fork
+
+stop
+@enduml
