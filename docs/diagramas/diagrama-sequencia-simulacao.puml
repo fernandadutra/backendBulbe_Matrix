@@ -1,0 +1,38 @@
+@startuml diagrama_sequencia_simulacao
+title Diagrama de Sequência - Simular economia (RF-02 / US-02)
+autonumber
+actor "Interessado" as User
+participant "App Bulbe" as App
+participant "API / Backend" as API
+database "Banco de Dados" as DB
+
+User -> App: Informa o valor da fatura e clica em "Simular"
+App -> API: POST /api/v1/simulacoes\nvalor_fatura_centavos: 35000
+activate API
+
+alt Limite de requisições por IP excedido
+    API --> App: 429 Too Many Requests
+    App -> User: Pede para tentar novamente mais tarde
+else Valor fora da faixa (R$ 50,00 a R$ 5.000,00)
+    API --> App: 422 Unprocessable Entity (CONSUMO_FORA_DA_FAIXA)
+    App -> User: Exibe mensagem de erro no campo da fatura
+else Valor válido
+    API -> API: Calcula economia (15% de desconto)\ne monta a memória de cálculo
+
+    API -> DB: Salva registro da simulação
+    activate DB
+    DB --> API: Confirmado (sim_2c81b40e)
+    deactivate DB
+    note right of API
+      Simulação anônima também é salva,
+      sem vínculo com cliente
+    end note
+
+    API --> App: 201 Created (economia mensal, economia anual\ne memória de cálculo)
+
+    App -> User: Exibe tela "Sua simulação" com o comparativo
+end
+deactivate API
+
+@enduml
+
