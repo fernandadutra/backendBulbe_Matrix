@@ -1,0 +1,87 @@
+@startuml
+
+class Usuario {
+    -id: int
+    -nome: string
+    -email: string
+    -senha: string
+    +autenticar()
+    +visualizarStatus()
+}
+
+class Assinatura {
+    -id: int
+    -dataAdesao: date
+    -status: string
+    -dataTransferencia: date
+    +consultarStatus()
+    +atualizarStatus()
+}
+
+class Fatura {
+    -id: int
+    -valorOriginal: float
+    -valorComBulbe: float
+    -dataVencimento: date
+    +consultarFatura()
+}
+
+class ConsumoEnergia {
+    -id: int
+    -mes: string
+    -consumoKwh: float
+    -valorFatura: float
+    +consultarConsumo()
+}
+
+class CalculadoraEconomia {
+    -consumoMedioKwh: float
+    -tarifaAtual: float
+    -tarifaBulbe: float
+    +calcularEconomiaMensal()
+    +calcularEconomiaAnual()
+}
+
+class HistoricoEconomia {
+    -id: int
+    -periodo: string
+    -economia: float
+    -percentualEconomia: float
+    +consultarHistorico()
+}
+
+class Parceria {
+    -id: int
+    -nome: string
+    -descricao: string
+    -beneficio: string
+    +consultarBeneficio()
+}
+
+class RecomendacaoParceria {
+    -id: int
+    -desconto: float
+    +gerarRecomendacao()
+    +aplicarBeneficio()
+}
+
+class StatusAssinatura {
+    -status: string
+    -dataAtualizacao: date
+    +consultarStatus()
+}
+
+Usuario "1" -- "1" Assinatura : possui
+Assinatura "1" -- "1" StatusAssinatura : possui
+Assinatura "1" -- "1" Fatura : gera
+
+Usuario "1" -- "0..*" ConsumoEnergia : possui
+Usuario "1" -- "0..*" HistoricoEconomia : possui
+
+ConsumoEnergia "1" -- "1" CalculadoraEconomia : alimenta
+CalculadoraEconomia "1" -- "0..*" HistoricoEconomia : gera
+
+Usuario "1" -- "0..*" RecomendacaoParceria : recebe
+RecomendacaoParceria "0..*" -- "1" Parceria : recomenda
+
+@enduml
