@@ -1,0 +1,19 @@
+@startuml
+
+actor "Usuário com baixa familiaridade digital" as Usuario
+
+participant "Bulbinho" as Bulbinho
+participant "Controller" as Controller
+participant "Service" as Service
+participant "Repository" as Repository
+
+Usuario -> Bulbinho: Aciona ajuda contextual
+Bulbinho -> Controller: Solicita dica da tela
+Controller -> Service: Busca dica contextual
+Service -> Repository: Consulta dica
+Repository --> Service: Retorna dica
+Service --> Controller: Retorna dica
+Controller --> Bulbinho: Retorna dica
+Bulbinho --> Usuario: Exibe dica contextual
+
+@enduml
