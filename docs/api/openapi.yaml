@@ -1,0 +1,228 @@
+openapi: 3.1.0
+info:
+  title: Bulbe Energia - API da Jornada do Cliente
+  description: "\n    Backend RESTful para gestão da retenção de clientes, simulação\
+    \ de economia \n    e acompanhamento da jornada de homologação CEMIG (90 a 120\
+    \ dias).\n    "
+  version: 1.0.0
+paths:
+  /:
+    get:
+      tags:
+      - Healthcheck
+      summary: Inicio
+      operationId: inicio__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /v1/simulacoes:
+    post:
+      tags:
+      - Simulações
+      summary: Calcular economia estimada
+      operationId: criar_simulacao_v1_simulacoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulacaoRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulacaoResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/pedidos/{pedido_id}/status:
+    get:
+      tags:
+      - Jornada do Cliente
+      summary: Acompanhar status da homologação
+      operationId: obter_status_pedido_v1_pedidos__pedido_id__status_get
+      parameters:
+      - name: pedido_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Pedido Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PedidoStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v1/usinas:
+    get:
+      tags:
+      - Usinas
+      summary: Listar usinas solares
+      operationId: listar_usinas_v1_usinas_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UsinaResponse'
+                type: array
+                title: Response Listar Usinas V1 Usinas Get
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PedidoStatusResponse:
+      properties:
+        pedido_id:
+          type: integer
+          title: Pedido Id
+          example: 101
+        cliente_id:
+          type: integer
+          title: Cliente Id
+          example: 42
+        etapa_atual:
+          type: string
+          title: Etapa Atual
+          example: Em análise técnica pela CEMIG
+        dias_restantes_estimados:
+          type: integer
+          title: Dias Restantes Estimados
+          example: 45
+        concluido:
+          type: boolean
+          title: Concluido
+          example: false
+      type: object
+      required:
+      - pedido_id
+      - cliente_id
+      - etapa_atual
+      - dias_restantes_estimados
+      - concluido
+      title: PedidoStatusResponse
+    SimulacaoRequest:
+      properties:
+        valor_conta_luz:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Valor Conta Luz
+          description: Valor médio da fatura em R$
+          example: 350.0
+        distribuidora:
+          type: string
+          title: Distribuidora
+          default: CEMIG
+          example: CEMIG
+      type: object
+      required:
+      - valor_conta_luz
+      title: SimulacaoRequest
+    SimulacaoResponse:
+      properties:
+        valor_original:
+          type: number
+          title: Valor Original
+          example: 350.0
+        percentual_desconto:
+          type: number
+          title: Percentual Desconto
+          example: 0.15
+        valor_com_desconto:
+          type: number
+          title: Valor Com Desconto
+          example: 297.5
+        economia_anual_estimada:
+          type: number
+          title: Economia Anual Estimada
+          example: 630.0
+      type: object
+      required:
+      - valor_original
+      - percentual_desconto
+      - valor_com_desconto
+      - economia_anual_estimada
+      title: SimulacaoResponse
+    UsinaResponse:
+      properties:
+        id:
+          type: integer
+          title: Id
+          example: 1
+        nome:
+          type: string
+          title: Nome
+          example: Usina Solar Montes Claros
+        capacidade_kwh:
+          type: number
+          title: Capacidade Kwh
+          example: 15000.0
+        status:
+          type: string
+          title: Status
+          example: ativa
+      type: object
+      required:
+      - id
+      - nome
+      - capacidade_kwh
+      - status
+      title: UsinaResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+tags:
+- name: Simulações
+  description: Cálculo de estimativa de desconto na conta de luz
+- name: Jornada do Cliente
+  description: Status do pedido e timeline da homologação CEMIG
+- name: Usinas
+  description: Gestão e consulta do parque de geração solar
