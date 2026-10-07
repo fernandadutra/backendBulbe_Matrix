@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Apresentação executiva da Review Sprint 1 - Squad Matrix - Bulbe Energia."
+    />
+    <title>Bulbe Evolution — Review Sprint 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
+
+    <style>
+      :root {
+        --noite: #04063f;
+        --noite-2: #070a52;
+        --azul: #0a1080;
+        --azul-claro: #5ea0ff;
+        --verde: #1fcd68;
+        --verde-forte: #16a356;
+        --amarelo: #ffd400;
+        --laranja: #ff9e1b;
+        --vermelho: #ff5a5a;
+        --branco: #ffffff;
+        --texto: rgba(255, 255, 255, 0.78);
+        --texto-fraco: rgba(255, 255, 255, 0.48);
+        --vidro: rgba(255, 255, 255, 0.045);
+        --borda: rgba(255, 255, 255, 0.11);
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+        --sans: "Poppins", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--noite);
+        background-image:
+          radial-gradient(
+            900px 620px at 88% -8%,
+            rgba(31, 205, 104, 0.16),
+            transparent 62%
+          ),
+          radial-gradient(
+            760px 560px at 4% 2%,
+            rgba(10, 16, 128, 0.85),
+            transparent 66%
+          );
+        background-attachment: fixed;
+        color: var(--texto);
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .wrap {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 0 24px 72px;
+      }
+
+      /* ---------- Capa ---------- */
+      .capa {
+        padding: 60px 0 36px;
+        border-bottom: 1px solid var(--borda);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .eyebrow::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(31, 205, 104, 0.5),
+          transparent
+        );
+      }
+
+      h1 {
+        font-size: clamp(2.3rem, 5vw, 3.4rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        color: var(--branco);
+      }
+
+      h1 em {
+        font-style: normal;
+        background: linear-gradient(
+          96deg,
+          var(--verde) 10%,
+          var(--amarelo) 92%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .lead {
+        max-width: 68ch;
+        font-size: 1rem;
+        color: var(--texto);
+      }
+
+      .integrantes-box {
+        margin-top: 6px;
+        padding: 12px 18px;
+        background: var(--vidro);
+        border: 1px solid var(--borda);
+        border-left: 3px solid var(--verde);
+        border-radius: 8px;
+        font-size: 0.88rem;
+        color: var(--texto);
+      }
+      .integrantes-box strong {
+        color: var(--branco);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .chip {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid var(--borda);
+        border-radius: 999px;
+        background: var(--vidro);
+        font-size: 0.8rem;
+        color: var(--texto-fraco);
+      }
+
+      .chip b {
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--branco);
+      }
+
+      /* ---------- Seções ---------- */
+      section {
+        padding-top: 50px;
+      }
+
+      h2 {
+        font-size: 1.55rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--branco);
+        margin-bottom: 6px;
+      }
+
+      .sub {
+        margin-bottom: 20px;
+        color: var(--texto-fraco);
+        font-size: 0.92rem;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.86em;
+        color: var(--azul-claro);
+        background: rgba(94, 160, 255, 0.1);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+
+      /* ---------- Tabelas ---------- */
+      .rolagem {
+        overflow-x: auto;
+        border: 1px solid var(--borda);
+        border-radius: 10px;
+        background: rgba(4, 6, 63, 0.5);
+        margin-bottom: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
+        min-width: 680px;
+      }
+
+      th {
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--texto-fraco);
+        border-bottom: 1px solid var(--borda);
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        vertical-align: middle;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .status-tag {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--verde);
+        font-weight: 600;
+      }
+
+      .verbo {
+        display: inline-block;
+        min-width: 48px;
+        text-align: center;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        margin-right: 6px;
+      }
+      .get {
+        background: rgba(31, 205, 104, 0.18);
+        color: var(--verde);
+      }
+      .post {
+        background: rgba(94, 160, 255, 0.18);
+        color: var(--azul-claro);
+      }
+
+      .prio {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .prio.alta {
+        color: var(--laranja);
+      }
+      .prio.media {
+        color: var(--amarelo);
+      }
+
+      /* ---------- Grid Cards ---------- */
+      .cartoes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 12px;
+      }
+
+      .cartao {
+        padding: 16px;
+        border: 1px solid var(--borda);
+        border-radius: 10px;
+        background: var(--vidro);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .cartao .marca {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--verde);
+      }
+
+      .cartao h3 {
+        font-size: 0.98rem;
+        font-weight: 600;
+        color: var(--branco);
+      }
+
+      .cartao p {
+        font-size: 0.84rem;
+        color: var(--texto-fraco);
+        line-height: 1.45;
+      }
+
+      .code-box {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--borda);
+        border-radius: 8px;
+        padding: 12px;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--azul-claro);
+      }
+
+      footer {
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--borda);
+        font-size: 0.78rem;
+        color: var(--texto-fraco);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- CAPA -->
+      <header class="capa">
+        <div class="eyebrow">
+          Squad Matrix &middot; Bulbe Evolution &middot; Review Sprint 1 (Aula
+          13)
+        </div>
+        <h1>Backend <em>Bulbe Matrix</em></h1>
+        <p class="lead">
+          Sustentação de arquitetura RESTful em Python FastAPI, engenharia de
+          requisitos, contrato de endpoints e modelagem comportamental e
+          estrutural UML para retenção de clientes durante os 90 a 120 dias de
+          homologação CEMIG.
+        </p>
+
+        <div class="integrantes-box">
+          <strong>Integrantes do Squad Matrix:</strong> Augusto Gama, Felipe
+          Lara, Fernanda Dutra, Leandro Dias, Mariana Maia e Rafael Bentes
+        </div>
+
+        <div class="chips">
+          <span class="chip"><b>6</b> integrantes</span>
+          <span class="chip"><b>7</b> requisitos formais</span>
+          <span class="chip"><b>11</b> endpoints (Bloco 1)</span>
+          <span class="chip"><b>7</b> diagramas UML</span>
+          <span class="chip"><b>4</b> camadas FastAPI</span>
+          <span class="chip"><b>1</b> contrato OpenAPI</span>
+        </div>
+      </header>
+
+      <!-- 1. CHECKLIST AULA 13 -->
+      <section>
+        <h2>Checklist dos Entregáveis da Sprint 1</h2>
+        <p class="sub">
+          Auditoria completa dos artefatos entregues no repositório
+          <code>backendBulbe_Matrix</code> para a Aula 13.
+        </p>
+
+        <div class="rolagem">
+          <table>
+            <thead>
+              <tr>
+                <th>Entregável</th>
+                <th>Local no Repositório</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identificação, integrantes e repositório compartilhado</td>
+                <td><code>README.md</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Requisitos técnicos, funcionais e não funcionais</td>
+                <td><code>docs/requisitos.md</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Lista de endpoints da API (contrato e rastreabilidade)</td>
+                <td><code>docs/lista-endpoints.md</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Backlog da Sprint 1 com User Stories estimadas</td>
+                <td><code>docs/sprints/</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Board do projeto ativo</td>
+                <td>GitHub Projects (link no <code>README.md</code>)</td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Diagrama de casos de uso em PlantUML</td>
+                <td><code>docs/diagramas/diagrama-caso-de-uso.puml</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Diagramas de sequência e de atividades em PlantUML</td>
+                <td><code>docs/diagramas/</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Diagrama de classes do domínio em PlantUML</td>
+                <td><code>docs/diagramas/diagrama_classes.puml</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Estrutura de pastas em Python com FastAPI instalado</td>
+                <td>
+                  <code>app/</code> (Controllers, Services, Models,
+                  Repositories)
+                </td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+              <tr>
+                <td>Documentação da API pronta (Contrato OpenAPI 3.1)</td>
+                <td><code>docs/api/openapi.yaml</code></td>
+                <td class="status-tag">✅ Entregue</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. REQUISITOS TÉCNICOS (RF E RNF) -->
+      <section>
+        <h2>Documento de Requisitos Técnicos</h2>
+        <p class="sub">
+          Requisitos elicitados a partir da análise das telas do frontend do
+          Projeto I (arquivo <code>docs/requisitos.md</code>).
+        </p>
+
+        <div class="rolagem">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Funcionalidade Frontend</th>
+                <th>Requisito Técnico Derivado (Backend)</th>
+                <th>Tipo</th>
+                <th>Prioridade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RF-01</strong></td>
+                <td>Acompanhamento de status / homologação</td>
+                <td>
+                  Endpoint
+                  <code>GET /api/v1/pedidos/{id}/status</code> retornando status
+                  atual, etapas concluídas, etapa em andamento e previsão.
+                </td>
+                <td>RF</td>
+                <td><span class="prio alta">Alta</span></td>
+              </tr>
+              <tr>
+                <td><strong>RF-02</strong></td>
+                <td>Simulador de economia mensal e anual</td>
+                <td>
+                  Endpoint <code>POST /api/v1/simulacoes</code> recebendo valor
+                  da fatura e retornando estimativa e memória de cálculo.
+                </td>
+                <td>RF</td>
+                <td><span class="prio alta">Alta</span></td>
+              </tr>
+              <tr>
+                <td><strong>RF-03</strong></td>
+                <td>Área de Benefícios com parceiros</td>
+                <td>
+                  Endpoints <code>GET /api/v1/beneficios</code> e
+                  <code>POST /resgates</code> para consulta e resgate de cupons
+                  parceiros.
+                </td>
+                <td>RF</td>
+                <td><span class="prio media">Média</span></td>
+              </tr>
+              <tr>
+                <td><strong>RF-04</strong></td>
+                <td>Dicas contextuais do mascote Bulbinho</td>
+                <td>
+                  Endpoint <code>GET /api/v1/ajuda/dicas</code> servindo textos
+                  contextuais tipados sem necessidade de nova versão do app.
+                </td>
+                <td>RF</td>
+                <td><span class="prio media">Média</span></td>
+              </tr>
+              <tr>
+                <td><strong>RNF-01</strong></td>
+                <td>Acessibilidade por Design (WCAG)</td>
+                <td>
+                  Interface compatível com leitores de tela e teclado; payloads
+                  carregam rótulos textuais acessíveis para cada valor.
+                </td>
+                <td>RNF</td>
+                <td><span class="prio alta">Alta</span></td>
+              </tr>
+              <tr>
+                <td><strong>RNF-02</strong></td>
+                <td>Desempenho e resposta rápida</td>
+                <td>
+                  Tempo de resposta da API abaixo de 400ms em consultas de
+                  status e simulação para conter ansiedade do usuário.
+                </td>
+                <td>RNF</td>
+                <td><span class="prio alta">Alta</span></td>
+              </tr>
+              <tr>
+                <td><strong>RNF-03</strong></td>
+                <td>Segurança e Conformidade LGPD</td>
+                <td>
+                  Tráfego criptografado via HTTPS/TLS, autenticação JWT e
+                  armazenamento seguro de dados de faturas conforme a LGPD.
+                </td>
+                <td>RNF</td>
+                <td><span class="prio alta">Alta</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. ENDPOINTS RELEVANTES (BLOCO 1 - SPRINT 1) -->
+      <section>
+        <h2>Endpoints Relevantes da API (Bloco 1)</h2>
+        <p class="sub">
+          Contrato formal padronizado em português, sem verbos na URL e com
+          valores em centavos (arquivo <code>docs/lista-endpoints.md</code>).
+        </p>
+
+        <div class="rolagem">
+          <table>
+            <thead>
+              <tr>
+                <th>Método</th>
+                <th>Recurso (URI)</th>
+                <th>Descrição e Função de Negócio</th>
+                <th>Origem</th>
+                <th>Auth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/pedidos</code></td>
+                <td>Lista os pedidos de homologação do cliente autenticado</td>
+                <td>RF-01 / US-01</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/pedidos/{id}/status</code></td>
+                <td>
+                  Retorna linha do tempo das 4 etapas de homologação CEMIG
+                  (90-120 dias)
+                </td>
+                <td>RF-01 / US-01</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo post">POST</span></td>
+                <td><code>/api/v1/simulacoes</code></td>
+                <td>
+                  Cria simulação e calcula 15% de economia com memória de
+                  cálculo
+                </td>
+                <td>RF-02 / US-02</td>
+                <td>Público</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/simulacoes</code></td>
+                <td>
+                  Lista o histórico de simulações do cliente autenticado
+                  (accordion)
+                </td>
+                <td>RF-02 / US-02</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/simulacoes/{id}</code></td>
+                <td>
+                  Retorna memória de cálculo detalhada de uma simulação
+                  específica
+                </td>
+                <td>RF-02 / US-02</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/beneficios</code></td>
+                <td>
+                  Lista benefícios ativos de empresas parceiras (Inter, Livelo,
+                  Araújo)
+                </td>
+                <td>RF-03 / US-03</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/trilhas</code></td>
+                <td>
+                  Lista as trilhas do clube (Connect, Movement, Experience) e
+                  cadeados
+                </td>
+                <td>RF-03 / US-03</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo post">POST</span></td>
+                <td><code>/api/v1/beneficios/{id}/resgates</code></td>
+                <td>
+                  Registra uso do benefício com Idempotency-Key e gera código do
+                  cupom
+                </td>
+                <td>RF-03 / US-04</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/resgates</code></td>
+                <td>
+                  Lista cupons resgatados para impedir duplicidade (evita erro
+                  409)
+                </td>
+                <td>RF-03 / US-04</td>
+                <td>Sim (JWT)</td>
+              </tr>
+              <tr>
+                <td><span class="verbo get">GET</span></td>
+                <td><code>/api/v1/ajuda/dicas</code></td>
+                <td>
+                  Retorna textos e listas contextuais do mascote Bulbinho por
+                  tela
+                </td>
+                <td>RF-04 / US-05</td>
+                <td>Público</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4. TODOS OS DIAGRAMAS UML -->
+      <section>
+        <h2>Modelagem Comportamental e Estrutural (UML)</h2>
+        <p class="sub">
+          Todos os 7 diagramas modelados e versionados em PlantUML na pasta
+          <code>docs/diagramas/</code>.
+        </p>
+
+        <div class="cartoes">
+          <div class="cartao">
+            <span class="marca">CASOS DE USO &middot; AULA 06</span>
+            <h3>diagrama-caso-de-uso.puml</h3>
+            <p>
+              4 atores (Lead, Cliente, Deficiente Visual, Baixa Familiaridade) e
+              6 use cases (UC01 a UC06), mapeando a navegação acessível e
+              simulação sem login.
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">ATIVIDADES &middot; AULA 07</span>
+            <h3>diagrama-atividades.puml</h3>
+            <p>
+              Jornada completa com Nó de Decisão (Losango) para adesão e
+              Fork/Join (Barra) para consulta paralela de status CEMIG, faturas
+              e aba consumo.
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">CLASSES DE DOMÍNIO &middot; AULA 08</span>
+            <h3>diagrama_classes.puml</h3>
+            <p>
+              12 entidades estruturadas (<code>Usuario</code>,
+              <code>Assinatura</code>, <code>Fatura</code>,
+              <code>CalculadoraEconomia</code>) com composição e dependência
+              existencial estrita.
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">SEQUÊNCIA 01 &middot; BULBINHO</span>
+            <h3>diagrama-sequencia-bulbinho.puml</h3>
+            <p>
+              Usuário solicita dica &rarr; Bulbinho aciona Controller &rarr;
+              Service &rarr; Repository para dicas em tempo real sem travar a
+              interface.
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">SEQUÊNCIA 02 &middot; RESGATE</span>
+            <h3>diagrama-sequencia-resgate.puml</h3>
+            <p>
+              Cliente resgata benefício &rarr; Validação de disponibilidade
+              &rarr; Gravação idempotente &rarr; Retorno do cupom (ex:
+              BULBE-INTER).
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">SEQUÊNCIA 03 &middot; SIMULAÇÃO</span>
+            <h3>diagrama-sequencia-simulacao.puml</h3>
+            <p>
+              Lead insere fatura &rarr; Rate limit (429) &rarr; Validação de
+              faixa R$50 a R$5000 (422) &rarr; Cálculo de 15% de economia &rarr;
+              201 Created.
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">SEQUÊNCIA 04 &middot; CONSUMO</span>
+            <h3>diagrama-sequencia-consumo.puml</h3>
+            <p>
+              Consulta periódica de medições em kWh, gerando histórico de
+              faturas e gráficos sem bloqueio de thread.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. IMPLEMENTAÇÃO FASTAPI & OPENAPI -->
+      <section>
+        <h2>Implementação FastAPI & Contrato OpenAPI</h2>
+        <p class="sub">
+          Separação rigorosa de responsabilidades em 4 camadas e documentação
+          interativa corporativa.
+        </p>
+
+        <div class="cartoes">
+          <div class="cartao">
+            <span class="marca">ARQUITETURA DE SOFTWARE (app/)</span>
+            <h3>4 Camadas Desacopladas</h3>
+            <p>
+              <strong>1. Controller:</strong> Mapeia rotas HTTP, parâmetros e
+              status codes (200, 201, 204).
+            </p>
+            <p>
+              <strong>2. Service:</strong> Lógica de negócio, desconto de 15% e
+              lançamento de <code>ErroDeNegocio</code>.
+            </p>
+            <p>
+              <strong>3. Models:</strong> Schemas Pydantic com validação
+              rigorosa de contratos.
+            </p>
+            <p>
+              <strong>4. Repository:</strong> Acesso à persistência (retorna
+              <code>None</code>, desacoplado de HTTP).
+            </p>
+          </div>
+
+          <div class="cartao">
+            <span class="marca">DOCUMENTAÇÃO AUTOMATIZADA</span>
+            <h3>Swagger UI & openapi.yaml</h3>
+            <div class="code-box">
+              py gerar_openapi.py<br />
+              &rarr; docs/api/openapi.yaml gerado com sucesso!<br />
+              &rarr; Testável ao vivo em: /docs
+            </div>
+            <p style="margin-top: 6px">
+              Envelope corporativo de erro padronizado: <code>codigo</code>,
+              <code>mensagem</code> e <code>detalhes</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RODAPÉ -->
+      <footer>
+        <span
+          >Squad Matrix &middot; Augusto Gama, Felipe Lara, Fernanda Dutra,
+          Leandro Dias, Mariana Maia, Rafael Bentes</span
+        >
+        <span>Bulbe Energia &middot; IBMEC BH 2026.2</span>
+      </footer>
+    </div>
+  </body>
+</html>
