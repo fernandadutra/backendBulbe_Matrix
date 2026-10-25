@@ -6,6 +6,503 @@ info:
     \ dias).\n    "
   version: 1.0.0
 paths:
+  /api/v1/pedidos:
+    get:
+      tags:
+      - Jornada do Cliente
+      summary: Listar pedidos do cliente
+      operationId: listar_pedidos_api_v1_pedidos_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: situacao
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filtra por situação do pedido.
+          enum:
+          - em_andamento
+          - aprovado
+          - reprovado
+          title: Situacao
+        description: Filtra por situação do pedido.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paginacao_PedidoResumo_'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/pedidos/{id}/status:
+    get:
+      tags:
+      - Jornada do Cliente
+      summary: Acompanhar status da homologação
+      operationId: obter_status_pedido_api_v1_pedidos__id__status_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusPedido'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '503':
+          description: Dependência externa indisponível sem dado em cache.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/simulacoes:
+    post:
+      tags:
+      - Simulações
+      summary: Calcular economia estimada
+      description: Público. Com token válido, a simulação é vinculada ao cliente e
+        aparece no histórico.
+      operationId: criar_simulacao_api_v1_simulacoes_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulacaoRequisicao'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulacaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '429':
+          description: Limite de requisições excedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+    get:
+      tags:
+      - Simulações
+      summary: Listar histórico de simulações do cliente
+      operationId: listar_simulacoes_api_v1_simulacoes_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paginacao_SimulacaoResumo_'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/simulacoes/{id}:
+    get:
+      tags:
+      - Simulações
+      summary: Obter simulação com memória de cálculo
+      operationId: obter_simulacao_api_v1_simulacoes__id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulacaoResposta'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/beneficios:
+    get:
+      tags:
+      - Clube de Benefícios
+      summary: Listar benefícios ativos
+      operationId: listar_beneficios_api_v1_beneficios_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: trilha
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filtra por trilha do clube.
+          enum:
+          - connect
+          - movement
+          - experience
+          title: Trilha
+        description: Filtra por trilha do clube.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginaBeneficios'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/beneficios/{id}:
+    get:
+      tags:
+      - Clube de Benefícios
+      summary: Obter um benefício
+      operationId: obter_beneficio_api_v1_beneficios__id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beneficio'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/trilhas:
+    get:
+      tags:
+      - Clube de Benefícios
+      summary: Listar trilhas do clube
+      operationId: listar_trilhas_api_v1_trilhas_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaTrilhas'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/beneficios/{id}/resgates:
+    post:
+      tags:
+      - Clube de Benefícios
+      summary: Resgatar um benefício
+      operationId: resgatar_beneficio_api_v1_beneficios__id__resgates_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Obrigatório. UUID gerado pelo cliente a cada tentativa de resgate.
+          title: Idempotency-Key
+        description: Obrigatório. UUID gerado pelo cliente a cada tentativa de resgate.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/ResgateRequisicao'
+              - type: 'null'
+              title: Corpo
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResgateCriado'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '410':
+          description: Recurso que deixou de estar disponível.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/resgates:
+    get:
+      tags:
+      - Clube de Benefícios
+      summary: Listar resgates do cliente
+      operationId: listar_resgates_api_v1_resgates_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paginacao_ResgateResumo_'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/ajuda/dicas:
+    get:
+      tags:
+      - Ajuda
+      summary: Obter dicas de ajuda de uma tela
+      description: Público. Lista vazia significa que a tela não tem ajuda e o botão
+        deve ficar escondido.
+      operationId: listar_dicas_api_v1_ajuda_dicas_get
+      parameters:
+      - name: tela
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Obrigatório. Chave da tela.
+          enum:
+          - simular-desconto
+          - status-pedido
+          - beneficios
+          - impulsione-fatura
+          - faturas
+          - adesao
+          - indique-ganhe
+          title: Tela
+        description: Obrigatório. Chave da tela.
+      - name: elemento
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filtra pelo campo ou componente da tela.
+          title: Elemento
+        description: Filtra pelo campo ou componente da tela.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaDicas'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
   /:
     get:
       tags:
@@ -18,211 +515,1090 @@ paths:
           content:
             application/json:
               schema: {}
-  /v1/simulacoes:
-    post:
-      tags:
-      - Simulações
-      summary: Calcular economia estimada
-      operationId: criar_simulacao_v1_simulacoes_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SimulacaoRequest'
-        required: true
-      responses:
-        '201':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SimulacaoResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/pedidos/{pedido_id}/status:
-    get:
-      tags:
-      - Jornada do Cliente
-      summary: Acompanhar status da homologação
-      operationId: obter_status_pedido_v1_pedidos__pedido_id__status_get
-      parameters:
-      - name: pedido_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Pedido Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PedidoStatusResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/usinas:
-    get:
-      tags:
-      - Usinas
-      summary: Listar usinas solares
-      operationId: listar_usinas_v1_usinas_get
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/UsinaResponse'
-                type: array
-                title: Response Listar Usinas V1 Usinas Get
 components:
   schemas:
-    HTTPValidationError:
+    AcaoBeneficio:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PedidoStatusResponse:
-      properties:
-        pedido_id:
-          type: integer
-          title: Pedido Id
-          example: 101
-        cliente_id:
-          type: integer
-          title: Cliente Id
-          example: 42
-        etapa_atual:
+        rotulo:
           type: string
-          title: Etapa Atual
-          example: Em análise técnica pela CEMIG
-        dias_restantes_estimados:
-          type: integer
-          title: Dias Restantes Estimados
-          example: 45
-        concluido:
+          title: Rotulo
+          examples:
+          - Acessar
+        exige_resgate:
           type: boolean
-          title: Concluido
-          example: false
+          title: Exige Resgate
       type: object
       required:
-      - pedido_id
-      - cliente_id
-      - etapa_atual
-      - dias_restantes_estimados
-      - concluido
-      title: PedidoStatusResponse
-    SimulacaoRequest:
-      properties:
-        valor_conta_luz:
-          type: number
-          exclusiveMinimum: 0.0
-          title: Valor Conta Luz
-          description: Valor médio da fatura em R$
-          example: 350.0
-        distribuidora:
-          type: string
-          title: Distribuidora
-          default: CEMIG
-          example: CEMIG
-      type: object
-      required:
-      - valor_conta_luz
-      title: SimulacaoRequest
-    SimulacaoResponse:
-      properties:
-        valor_original:
-          type: number
-          title: Valor Original
-          example: 350.0
-        percentual_desconto:
-          type: number
-          title: Percentual Desconto
-          example: 0.15
-        valor_com_desconto:
-          type: number
-          title: Valor Com Desconto
-          example: 297.5
-        economia_anual_estimada:
-          type: number
-          title: Economia Anual Estimada
-          example: 630.0
-      type: object
-      required:
-      - valor_original
-      - percentual_desconto
-      - valor_com_desconto
-      - economia_anual_estimada
-      title: SimulacaoResponse
-    UsinaResponse:
+      - rotulo
+      - exige_resgate
+      title: AcaoBeneficio
+    Beneficio:
       properties:
         id:
-          type: integer
+          type: string
           title: Id
-          example: 1
+          examples:
+          - ben_inter_cashback
+        trilha:
+          type: string
+          title: Trilha
+          description: connect, movement ou experience
+          examples:
+          - connect
+        parceiro:
+          $ref: '#/components/schemas/ParceiroBeneficio'
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Até 77% de cashback!
+        descricao:
+          type: string
+          title: Descricao
+        regras_de_uso:
+          type: string
+          title: Regras De Uso
+        condicoes_resgate:
+          $ref: '#/components/schemas/CondicoesResgate'
+        validade:
+          $ref: '#/components/schemas/ValidadeBeneficio'
+        acao:
+          $ref: '#/components/schemas/AcaoBeneficio'
+      type: object
+      required:
+      - id
+      - trilha
+      - parceiro
+      - titulo
+      - descricao
+      - regras_de_uso
+      - condicoes_resgate
+      - validade
+      - acao
+      title: Beneficio
+    BlocoLista:
+      properties:
+        tipo:
+          type: string
+          const: lista
+          title: Tipo
+          default: lista
+        ordenada:
+          type: boolean
+          title: Ordenada
+        itens:
+          items:
+            $ref: '#/components/schemas/ItemLista'
+          type: array
+          title: Itens
+      type: object
+      required:
+      - ordenada
+      - itens
+      title: BlocoLista
+    BlocoParagrafo:
+      properties:
+        tipo:
+          type: string
+          const: paragrafo
+          title: Tipo
+          default: paragrafo
+        titulo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Titulo
+        texto:
+          type: string
+          title: Texto
+      type: object
+      required:
+      - texto
+      title: BlocoParagrafo
+    CondicoesResgate:
+      properties:
+        tipo:
+          type: string
+          title: Tipo
+          description: uso_unico ou recorrente
+          examples:
+          - uso_unico
+        exige_pedido_aprovado:
+          type: boolean
+          title: Exige Pedido Aprovado
+        elegivel:
+          type: boolean
+          title: Elegivel
+        motivo_inelegibilidade:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Motivo Inelegibilidade
+          examples:
+          - Disponível após a aprovação do seu pedido pela Cemig.
+      type: object
+      required:
+      - tipo
+      - exige_pedido_aprovado
+      - elegivel
+      - motivo_inelegibilidade
+      title: CondicoesResgate
+    CorpoErro:
+      properties:
+        codigo:
+          type: string
+          title: Codigo
+          examples:
+          - CONSUMO_FORA_DA_FAIXA
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - O valor da fatura deve estar entre R$ 50,00 e R$ 5.000,00.
+        detalhes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/DetalheErro'
+            type: array
+          - type: 'null'
+          title: Detalhes
+          description: Só vem preenchido em erro de validação.
+      type: object
+      required:
+      - codigo
+      - mensagem
+      title: CorpoErro
+    DetalheErro:
+      properties:
+        campo:
+          type: string
+          title: Campo
+          examples:
+          - valor_fatura_centavos
+        problema:
+          type: string
+          title: Problema
+          examples:
+          - abaixo do mínimo aceito
+      type: object
+      required:
+      - campo
+      - problema
+      title: DetalheErro
+    Dica:
+      properties:
+        elemento:
+          type: string
+          title: Elemento
+          examples:
+          - titulo-status
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Como funciona o acompanhamento
+        rotulo_acessivel:
+          type: string
+          title: Rotulo Acessivel
+          examples:
+          - Entender as etapas do pedido
+        blocos:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/BlocoParagrafo'
+            - $ref: '#/components/schemas/BlocoLista'
+            discriminator:
+              propertyName: tipo
+              mapping:
+                lista: '#/components/schemas/BlocoLista'
+                paragrafo: '#/components/schemas/BlocoParagrafo'
+          type: array
+          title: Blocos
+      type: object
+      required:
+      - elemento
+      - titulo
+      - rotulo_acessivel
+      - blocos
+      title: Dica
+    Erro:
+      properties:
+        erro:
+          $ref: '#/components/schemas/CorpoErro'
+      type: object
+      required:
+      - erro
+      title: Erro
+    EstadoVazio:
+      properties:
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Nenhum benefício disponível agora
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - Novos benefícios dos parceiros Bulbe aparecem aqui assim que forem liberados.
+      type: object
+      required:
+      - titulo
+      - mensagem
+      title: EstadoVazio
+    EtapaAtualPedido:
+      properties:
+        ordem:
+          type: integer
+          title: Ordem
+          examples:
+          - 1
+        chave:
+          type: string
+          title: Chave
+          examples:
+          - analise_bulbe
         nome:
           type: string
           title: Nome
-          example: Usina Solar Montes Claros
-        capacidade_kwh:
-          type: number
-          title: Capacidade Kwh
-          example: 15000.0
-        status:
+          examples:
+          - Em análise pela Bulbe
+        descricao:
           type: string
-          title: Status
-          example: ativa
+          title: Descricao
+          examples:
+          - Sua solicitação está sendo analisada pela equipe Bulbe.
+        situacao:
+          type: string
+          title: Situacao
+          description: pendente, em_andamento ou concluida
+          examples:
+          - em_andamento
+        iniciada_em:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Iniciada Em
+          examples:
+          - '2026-06-02T09:14:00-03:00'
+      type: object
+      required:
+      - ordem
+      - chave
+      - nome
+      - descricao
+      - situacao
+      title: EtapaAtualPedido
+    EtapaPedido:
+      properties:
+        ordem:
+          type: integer
+          title: Ordem
+          examples:
+          - 1
+        chave:
+          type: string
+          title: Chave
+          examples:
+          - analise_bulbe
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Em análise pela Bulbe
+        descricao:
+          type: string
+          title: Descricao
+          examples:
+          - Sua solicitação está sendo analisada pela equipe Bulbe.
+        situacao:
+          type: string
+          title: Situacao
+          description: pendente, em_andamento ou concluida
+          examples:
+          - em_andamento
+        concluida_em:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Concluida Em
+      type: object
+      required:
+      - ordem
+      - chave
+      - nome
+      - descricao
+      - situacao
+      title: EtapaPedido
+    ItemLista:
+      properties:
+        titulo:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Titulo
+        texto:
+          type: string
+          title: Texto
+      type: object
+      required:
+      - texto
+      title: ItemLista
+    LinhaMemoriaCalculo:
+      properties:
+        fonte:
+          type: string
+          title: Fonte
+          examples:
+          - Bulbe Energia
+        consumo_kwh:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Consumo Kwh
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+        valor_com_desconto_centavos:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Valor Com Desconto Centavos
+        possui_desconto:
+          type: boolean
+          title: Possui Desconto
+      type: object
+      required:
+      - fonte
+      - consumo_kwh
+      - valor_centavos
+      - valor_com_desconto_centavos
+      - possui_desconto
+      title: LinhaMemoriaCalculo
+    ListaTrilhas:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/Trilha'
+          type: array
+          title: Dados
+      type: object
+      required:
+      - dados
+      title: ListaTrilhas
+    MemoriaCalculo:
+      properties:
+        consumo_total_kwh:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Consumo Total Kwh
+        linhas:
+          items:
+            $ref: '#/components/schemas/LinhaMemoriaCalculo'
+          type: array
+          title: Linhas
+        subtotal:
+          $ref: '#/components/schemas/SubtotalMemoriaCalculo'
+        observacao:
+          type: string
+          title: Observacao
+      type: object
+      required:
+      - consumo_total_kwh
+      - linhas
+      - subtotal
+      - observacao
+      title: MemoriaCalculo
+    PaginaBeneficios:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/Beneficio'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+        estado_vazio:
+          anyOf:
+          - $ref: '#/components/schemas/EstadoVazio'
+          - type: 'null'
+          description: Só vem preenchido quando dados está vazio.
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: PaginaBeneficios
+    Paginacao_PedidoResumo_:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/PedidoResumo'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: Paginacao[PedidoResumo]
+    Paginacao_ResgateResumo_:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/ResgateResumo'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: Paginacao[ResgateResumo]
+    Paginacao_SimulacaoResumo_:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/SimulacaoResumo'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: Paginacao[SimulacaoResumo]
+    ParceiroBeneficio:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - par_inter
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Inter
+        url_logo:
+          type: string
+          title: Url Logo
+          examples:
+          - https://cdn.bulbe.com.br/parceiros/inter.png
+        cor_marca:
+          type: string
+          title: Cor Marca
+          examples:
+          - '#ff7200'
       type: object
       required:
       - id
       - nome
-      - capacidade_kwh
-      - status
-      title: UsinaResponse
-    ValidationError:
+      - url_logo
+      - cor_marca
+      title: ParceiroBeneficio
+    ParceiroDestaque:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
-        type:
+          title: Id
+          examples:
+          - par_araujo
+        nome:
           type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Nome
+          examples:
+          - Araújo
+        url_logo:
+          type: string
+          title: Url Logo
+          examples:
+          - https://cdn.bulbe.com.br/parceiros/araujo.png
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - id
+      - nome
+      - url_logo
+      title: ParceiroDestaque
+    PedidoResumo:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - ped_7f3a9c21
+        numero_instalacao:
+          type: string
+          title: Numero Instalacao
+          examples:
+          - '3013588579'
+        distribuidora:
+          type: string
+          title: Distribuidora
+          examples:
+          - CEMIG
+        situacao:
+          type: string
+          title: Situacao
+          description: em_andamento, aprovado ou reprovado
+          examples:
+          - em_andamento
+        etapa_atual_ordem:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Etapa Atual Ordem
+          examples:
+          - 1
+        etapa_atual_nome:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Etapa Atual Nome
+          examples:
+          - Em análise pela Bulbe
+        criado_em:
+          type: string
+          format: date-time
+          title: Criado Em
+          examples:
+          - '2026-06-02T09:14:00-03:00'
+      type: object
+      required:
+      - id
+      - numero_instalacao
+      - distribuidora
+      - situacao
+      - etapa_atual_ordem
+      - etapa_atual_nome
+      - criado_em
+      title: PedidoResumo
+    PrazoEstimado:
+      properties:
+        minimo:
+          type: integer
+          title: Minimo
+          examples:
+          - 90
+        maximo:
+          type: integer
+          title: Maximo
+          examples:
+          - 120
+      type: object
+      required:
+      - minimo
+      - maximo
+      title: PrazoEstimado
+    ResgateCriado:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - rsg_5e02a7cc
+        beneficio_id:
+          type: string
+          title: Beneficio Id
+          examples:
+          - ben_inter_cashback
+        resgatado_em:
+          type: string
+          format: date-time
+          title: Resgatado Em
+          examples:
+          - '2026-08-23T14:31:12-03:00'
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - confirmado
+        instrucoes:
+          type: string
+          title: Instrucoes
+        codigo:
+          type: string
+          title: Codigo
+          examples:
+          - BULBE-INTER-8F2K
+        url_acesso:
+          type: string
+          title: Url Acesso
+        expira_em:
+          type: string
+          format: date-time
+          title: Expira Em
+          examples:
+          - '2026-08-30T23:59:59-03:00'
+      type: object
+      required:
+      - id
+      - beneficio_id
+      - resgatado_em
+      - situacao
+      - instrucoes
+      - codigo
+      - url_acesso
+      - expira_em
+      title: ResgateCriado
+    ResgateRequisicao:
+      properties:
+        pedido_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+      type: object
+      title: ResgateRequisicao
+    ResgateResumo:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - rsg_5e02a7cc
+        beneficio_id:
+          type: string
+          title: Beneficio Id
+          examples:
+          - ben_inter_cashback
+        beneficio_titulo:
+          type: string
+          title: Beneficio Titulo
+          examples:
+          - Até 77% de cashback!
+        parceiro_nome:
+          type: string
+          title: Parceiro Nome
+          examples:
+          - Inter
+        resgatado_em:
+          type: string
+          format: date-time
+          title: Resgatado Em
+        situacao:
+          type: string
+          title: Situacao
+        codigo:
+          type: string
+          title: Codigo
+        expira_em:
+          type: string
+          format: date-time
+          title: Expira Em
+      type: object
+      required:
+      - id
+      - beneficio_id
+      - beneficio_titulo
+      - parceiro_nome
+      - resgatado_em
+      - situacao
+      - codigo
+      - expira_em
+      title: ResgateResumo
+    RespostaDicas:
+      properties:
+        tela:
+          type: string
+          title: Tela
+          examples:
+          - status-pedido
+        atualizado_em:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Atualizado Em
+          examples:
+          - '2026-08-20T11:00:00-03:00'
+        dicas:
+          items:
+            $ref: '#/components/schemas/Dica'
+          type: array
+          title: Dicas
+      type: object
+      required:
+      - tela
+      - atualizado_em
+      - dicas
+      title: RespostaDicas
+    RotulosSimulacao:
+      properties:
+        economia_mensal:
+          type: string
+          title: Economia Mensal
+          examples:
+          - Você vai economizar por mês
+        economia_anual:
+          type: string
+          title: Economia Anual
+          examples:
+          - Sua economia anual estimada
+        valor_sem_desconto:
+          type: string
+          title: Valor Sem Desconto
+          examples:
+          - Sem desconto, tarifa cheia
+        valor_com_bulbe:
+          type: string
+          title: Valor Com Bulbe
+          examples:
+          - Com Bulbe, até 15% desconto
+      type: object
+      required:
+      - economia_mensal
+      - economia_anual
+      - valor_sem_desconto
+      - valor_com_bulbe
+      title: RotulosSimulacao
+    SimulacaoRequisicao:
+      properties:
+        valor_fatura_centavos:
+          type: integer
+          title: Valor Fatura Centavos
+          description: Valor da fatura em centavos.
+          examples:
+          - 35000
+        consumo_kwh:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Consumo Kwh
+          examples:
+          - 249
+        distribuidora:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Distribuidora
+          default: CEMIG
+          examples:
+          - CEMIG
+      type: object
+      required:
+      - valor_fatura_centavos
+      title: SimulacaoRequisicao
+    SimulacaoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - sim_2c81b40e
+        calculado_em:
+          type: string
+          format: date-time
+          title: Calculado Em
+          examples:
+          - '2026-08-23T14:30:00-03:00'
+        percentual_desconto:
+          type: number
+          title: Percentual Desconto
+          examples:
+          - 0.15
+        valor_sem_desconto_centavos:
+          type: integer
+          title: Valor Sem Desconto Centavos
+          examples:
+          - 35000
+        valor_com_bulbe_centavos:
+          type: integer
+          title: Valor Com Bulbe Centavos
+          examples:
+          - 29750
+        economia_mensal_centavos:
+          type: integer
+          title: Economia Mensal Centavos
+          examples:
+          - 5250
+        economia_anual_centavos:
+          type: integer
+          title: Economia Anual Centavos
+          examples:
+          - 63000
+        rotulos:
+          $ref: '#/components/schemas/RotulosSimulacao'
+        memoria_calculo:
+          $ref: '#/components/schemas/MemoriaCalculo'
+      type: object
+      required:
+      - id
+      - calculado_em
+      - percentual_desconto
+      - valor_sem_desconto_centavos
+      - valor_com_bulbe_centavos
+      - economia_mensal_centavos
+      - economia_anual_centavos
+      - rotulos
+      - memoria_calculo
+      title: SimulacaoResposta
+    SimulacaoResumo:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - sim_2c81b40e
+        calculado_em:
+          type: string
+          format: date-time
+          title: Calculado Em
+        valor_sem_desconto_centavos:
+          type: integer
+          title: Valor Sem Desconto Centavos
+        economia_mensal_centavos:
+          type: integer
+          title: Economia Mensal Centavos
+      type: object
+      required:
+      - id
+      - calculado_em
+      - valor_sem_desconto_centavos
+      - economia_mensal_centavos
+      title: SimulacaoResumo
+    StatusPedido:
+      properties:
+        pedido_id:
+          type: string
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+        numero_instalacao:
+          type: string
+          title: Numero Instalacao
+          examples:
+          - '3013588579'
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - em_andamento
+        etapa_atual:
+          anyOf:
+          - $ref: '#/components/schemas/EtapaAtualPedido'
+          - type: 'null'
+        etapas:
+          items:
+            $ref: '#/components/schemas/EtapaPedido'
+          type: array
+          title: Etapas
+        previsao_proxima_atualizacao:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Previsao Proxima Atualizacao
+          examples:
+          - '2026-09-15'
+        prazo_estimado_dias:
+          $ref: '#/components/schemas/PrazoEstimado'
+        consultado_em:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Consultado Em
+          examples:
+          - '2026-08-23T14:30:00-03:00'
+        dado_desatualizado:
+          type: boolean
+          title: Dado Desatualizado
+      type: object
+      required:
+      - pedido_id
+      - numero_instalacao
+      - situacao
+      - etapa_atual
+      - etapas
+      - previsao_proxima_atualizacao
+      - prazo_estimado_dias
+      - consultado_em
+      - dado_desatualizado
+      title: StatusPedido
+    SubtotalMemoriaCalculo:
+      properties:
+        rotulo:
+          type: string
+          title: Rotulo
+          examples:
+          - Subtotal
+        consumo_kwh:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Consumo Kwh
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+      type: object
+      required:
+      - rotulo
+      - consumo_kwh
+      - valor_centavos
+      title: SubtotalMemoriaCalculo
+    Trilha:
+      properties:
+        chave:
+          type: string
+          title: Chave
+          examples:
+          - connect
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Bulbe Connect
+        descricao:
+          type: string
+          title: Descricao
+        desbloqueada:
+          type: boolean
+          title: Desbloqueada
+        motivo_bloqueio:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Motivo Bloqueio
+          examples:
+          - Disponível após a aprovação do seu pedido pela Cemig.
+        cor_tema:
+          type: string
+          title: Cor Tema
+          examples:
+          - verde
+        url_icone:
+          type: string
+          title: Url Icone
+          examples:
+          - https://cdn.bulbe.com.br/trilhas/connect.svg
+        quantidade_beneficios_ativos:
+          type: integer
+          title: Quantidade Beneficios Ativos
+          examples:
+          - 4
+        parceiros_destaque:
+          items:
+            $ref: '#/components/schemas/ParceiroDestaque'
+          type: array
+          title: Parceiros Destaque
+      type: object
+      required:
+      - chave
+      - nome
+      - descricao
+      - desbloqueada
+      - motivo_bloqueio
+      - cor_tema
+      - url_icone
+      - quantidade_beneficios_ativos
+      - parceiros_destaque
+      title: Trilha
+    ValidadeBeneficio:
+      properties:
+        inicio:
+          type: string
+          format: date
+          title: Inicio
+          examples:
+          - '2026-08-01'
+        fim:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Fim
+          examples:
+          - '2026-12-31'
+        rotulo:
+          type: string
+          title: Rotulo
+          examples:
+          - Válido até 31/12/2026
+      type: object
+      required:
+      - inicio
+      - fim
+      - rotulo
+      title: ValidadeBeneficio
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: Token JWT no formato `Bearer <token>`.
+      scheme: bearer
 tags:
 - name: Simulações
   description: Cálculo de estimativa de desconto na conta de luz
 - name: Jornada do Cliente
   description: Status do pedido e timeline da homologação CEMIG
-- name: Usinas
-  description: Gestão e consulta do parque de geração solar
+- name: Clube de Benefícios
+  description: Trilhas, benefícios dos parceiros e resgates
+- name: Ajuda
+  description: Textos de ajuda contextual por tela
