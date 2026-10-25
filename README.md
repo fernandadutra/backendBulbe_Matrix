@@ -10,7 +10,7 @@
 ![Contrato](https://img.shields.io/badge/OpenAPI-3-6BA539?logo=openapiinitiative&logoColor=white)
 ![Squad](https://img.shields.io/badge/squad-Matrix-1F3FBF)
 
-[Rodar o projeto](#-rodar-o-projeto) · [Testar a API](#-testar-a-api) · [Endpoints](#-endpoints) · [Estrutura](#-estrutura-de-pastas)
+[Rodar o projeto](#-rodar-o-projeto) · [Testar a API](#-testar-a-api) · [Endpoints](#-endpoints) · [Regra do desconto](#-regra-do-desconto-e-validação-com-a-bulbe) · [Estrutura](#-estrutura-de-pastas)
 
 </div>
 
@@ -238,6 +238,63 @@ Todo erro vem no mesmo formato, para o frontend tratar em um lugar só:
   }
 }
 ```
+
+---
+
+## 💡 Regra do desconto e validação com a Bulbe
+
+A simulação é a primeira tela que o cliente vê. Se a conta estiver errada, o cliente é induzido ao erro. Por isso esta regra precisa ser confirmada com a Bulbe.
+
+### O que o sistema faz hoje
+
+Definido em `app/services/simulacao_service.py`:
+
+| Regra | Valor no código |
+|---|---|
+| Percentual de desconto | **15%** fixo (`PERCENTUAL_DESCONTO = 0.15`) |
+| Sobre o que o desconto incide | **O valor total da fatura** que o cliente informa |
+| Arredondamento | Meio para cima, em centavos, só com números inteiros |
+| Economia anual | Economia mensal × 12 |
+| Faixa aceita | De R$ 50,00 a R$ 5.000,00 |
+| Distribuidora atendida | Somente CEMIG |
+
+**Exemplos que o sistema calcula hoje** (conferidos rodando o código):
+
+| Fatura | Economia mensal | Valor com Bulbe | Economia anual |
+|---:|---:|---:|---:|
+| R$ 50,00 | R$ 7,50 | R$ 42,50 | R$ 90,00 |
+| R$ 123,45 | R$ 18,52 | R$ 104,93 | R$ 222,24 |
+| R$ 350,00 | R$ 52,50 | R$ 297,50 | R$ 630,00 |
+| R$ 500,01 | R$ 75,00 | R$ 425,01 | R$ 900,00 |
+| R$ 5.000,00 | R$ 750,00 | R$ 4.250,00 | R$ 9.000,00 |
+
+### ⚠️ A divergência que precisa de resposta
+
+O texto de ajuda da tela de simulação (`dados_iniciais.py`) diz uma coisa diferente do código:
+
+> *"O desconto é aplicado só sobre o valor da energia que você consumiu na conta da Cemig. Outras cobranças, como taxa de iluminação pública, custo mínimo da conta e impostos (PIS e COFINS), **não entram no desconto**."*
+> *"Tiramos os impostos e a taxa de iluminação do valor da energia. Depois disso, aplicamos até 15% de desconto."*
+
+Já o código aplica os 15% sobre **a fatura inteira**. Se a regra real for a do texto, a economia mostrada ao cliente está **maior que a verdadeira**.
+
+### Perguntas para a Bulbe
+
+- [ ] **Base do cálculo:** o desconto incide só sobre a energia consumida, ou sobre a fatura inteira?
+- [ ] Se for só sobre a energia: como estimar essa parte se o cliente informa apenas o **total** da fatura? Existe uma proporção média?
+- [ ] **15% é fixo ou "até 15%"?** O que faz variar (distribuidora, faixa de consumo, tipo de cliente)? A observação da tela diz que a taxa "varia conforme o frete da distribuidora".
+- [ ] Quais itens ficam fora do desconto: iluminação pública, custo mínimo, PIS e COFINS, mais algum?
+- [ ] A faixa de **R$ 50,00 a R$ 5.000,00** está correta? Quem está fora dela precisa de outro caminho?
+- [ ] **Economia anual = mensal × 12** é aceitável, ou deve considerar reajuste de tarifa e variação de consumo?
+- [ ] O arredondamento **meio para cima** em centavos está de acordo com a regra de faturamento da Bulbe?
+- [ ] Por enquanto só **CEMIG**. Há previsão de outras distribuidoras?
+
+### Registro da validação
+
+| Data | Com quem | Decisão | O que muda no código |
+|---|---|---|---|
+| | | | |
+
+> Depois da resposta, só `PERCENTUAL_DESCONTO` e `calcular_economia` em `simulacao_service.py` precisam mudar. Os testes de `tests/test_simulacoes.py` mostram na hora o que mudou.
 
 ---
 
