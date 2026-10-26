@@ -964,6 +964,164 @@ paths:
                 $ref: '#/components/schemas/Erro'
       security:
       - HTTPBearer: []
+  /api/v1/faturas:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Listar faturas do cliente
+      operationId: listar_faturas_api_v1_faturas_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: situacao
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filtra por situação da fatura.
+          enum:
+          - aberta
+          - paga
+          - vencida
+          title: Situacao
+        description: Filtra por situação da fatura.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginaFaturas'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/faturas/{id}:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Obter uma fatura
+      operationId: obter_fatura_api_v1_faturas__id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaturaResposta'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/consumo:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Consultar série de consumo e economia
+      operationId: consultar_consumo_api_v1_consumo_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: instalacao
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 'Número da instalação. Padrão: a principal.'
+          title: Instalacao
+        description: 'Número da instalação. Padrão: a principal.'
+      - name: de
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Primeira competência, no formato AAAA-MM.
+          title: De
+        description: Primeira competência, no formato AAAA-MM.
+      - name: ate
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Última competência, no formato AAAA-MM.
+          title: Ate
+        description: Última competência, no formato AAAA-MM.
+      - name: granularidade
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - mensal
+          - anual
+          default: mensal
+          title: Granularidade
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsumoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
   /api/v1/ajuda/dicas:
     get:
       tags:
@@ -1043,6 +1201,23 @@ components:
       - rotulo
       - exige_resgate
       title: AcaoBeneficio
+    AcaoSugerida:
+      properties:
+        rotulo:
+          type: string
+          title: Rotulo
+          examples:
+          - Ver status do pedido
+        destino:
+          type: string
+          title: Destino
+          examples:
+          - status-pedido
+      type: object
+      required:
+      - rotulo
+      - destino
+      title: AcaoSugerida
     AceiteRequisicao:
       properties:
         aceite_termo_adesao:
@@ -1325,6 +1500,40 @@ components:
       - elegivel
       - motivo_inelegibilidade
       title: CondicoesResgate
+    ConsumoResposta:
+      properties:
+        instalacao:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instalacao
+          examples:
+          - '3013588579'
+        granularidade:
+          type: string
+          title: Granularidade
+          description: mensal ou anual
+          examples:
+          - mensal
+        serie:
+          items:
+            $ref: '#/components/schemas/PontoConsumo'
+          type: array
+          title: Serie
+        totais:
+          $ref: '#/components/schemas/TotaisConsumo'
+        estado_vazio:
+          anyOf:
+          - $ref: '#/components/schemas/EstadoVazioComAcao'
+          - type: 'null'
+          description: Só vem preenchido quando o cliente não tem nenhuma fatura.
+      type: object
+      required:
+      - instalacao
+      - granularidade
+      - serie
+      - totais
+      title: ConsumoResposta
     CorpoErro:
       properties:
         codigo:
@@ -1457,6 +1666,35 @@ components:
       - titulo
       - mensagem
       title: EstadoVazio
+    EstadoVazioComAcao:
+      properties:
+        chave:
+          type: string
+          title: Chave
+          description: sem_instalacao, aguardando_homologacao ou homologado_sem_fatura
+          examples:
+          - aguardando_homologacao
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Oops... Não encontrei nenhuma fatura.
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - Seu pedido ainda está em análise pela Cemig. A primeira fatura chega depois
+            da aprovação.
+        acao_sugerida:
+          anyOf:
+          - $ref: '#/components/schemas/AcaoSugerida'
+          - type: 'null'
+      type: object
+      required:
+      - chave
+      - titulo
+      - mensagem
+      title: EstadoVazioComAcao
     EtapaAtualPedido:
       properties:
         ordem:
@@ -1598,6 +1836,61 @@ components:
       - nome
       - indicacoes_para_proxima_faixa
       title: FaixaIndicacao
+    FaturaResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - fat_08a2ce31
+        competencia:
+          type: string
+          title: Competencia
+          examples:
+          - 2026-08
+        vencimento:
+          type: string
+          format: date
+          title: Vencimento
+          examples:
+          - '2026-09-10'
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+          examples:
+          - 29750
+        economia_centavos:
+          type: integer
+          title: Economia Centavos
+          examples:
+          - 5250
+        situacao:
+          type: string
+          title: Situacao
+          description: aberta, paga ou vencida
+          examples:
+          - aberta
+        linha_digitavel:
+          type: string
+          title: Linha Digitavel
+          examples:
+          - 00190000090123456789012345678901234567890123
+        url_pdf:
+          type: string
+          title: Url Pdf
+          examples:
+          - https://cdn.bulbe.com.br/faturas/fat_08a2ce31.pdf
+      type: object
+      required:
+      - id
+      - competencia
+      - vencimento
+      - valor_centavos
+      - economia_centavos
+      - situacao
+      - linha_digitavel
+      - url_pdf
+      title: FaturaResposta
     IndicacaoItem:
       properties:
         id:
@@ -1858,6 +2151,40 @@ components:
       - limite
       - total
       title: PaginaBeneficios
+    PaginaFaturas:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/FaturaResposta'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+        estado_vazio:
+          anyOf:
+          - $ref: '#/components/schemas/EstadoVazioComAcao'
+          - type: 'null'
+          description: Só vem preenchido quando o cliente não tem nenhuma fatura.
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: PaginaFaturas
     Paginacao_PedidoResumo_:
       properties:
         dados:
@@ -2135,6 +2462,36 @@ components:
       - telefone
       - instalacoes
       title: Perfil
+    PontoConsumo:
+      properties:
+        competencia:
+          type: string
+          title: Competencia
+          description: AAAA-MM na série mensal, AAAA na anual
+          examples:
+          - 2026-08
+        consumo_kwh:
+          type: integer
+          title: Consumo Kwh
+          examples:
+          - 249
+        valor_pago_centavos:
+          type: integer
+          title: Valor Pago Centavos
+          examples:
+          - 29750
+        economia_centavos:
+          type: integer
+          title: Economia Centavos
+          examples:
+          - 5250
+      type: object
+      required:
+      - competencia
+      - consumo_kwh
+      - valor_pago_centavos
+      - economia_centavos
+      title: PontoConsumo
     PrazoEstimado:
       properties:
         minimo:
@@ -2618,6 +2975,23 @@ components:
       required:
       - token_renovacao
       title: TokenRenovacaoRequisicao
+    TotaisConsumo:
+      properties:
+        economia_acumulada_centavos:
+          type: integer
+          title: Economia Acumulada Centavos
+          examples:
+          - 10330
+        consumo_medio_kwh:
+          type: integer
+          title: Consumo Medio Kwh
+          examples:
+          - 245
+      type: object
+      required:
+      - economia_acumulada_centavos
+      - consumo_medio_kwh
+      title: TotaisConsumo
     Trilha:
       properties:
         chave:
@@ -2720,5 +3094,7 @@ tags:
   description: Trilhas, benefícios dos parceiros e resgates
 - name: Indique e ganhe
   description: Código de indicação, faixas, crédito e indicados
+- name: Faturas e Consumo
+  description: Faturas Bulbe, série de consumo e economia
 - name: Ajuda
   description: Textos de ajuda contextual por tela
