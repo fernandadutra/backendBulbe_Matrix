@@ -5,6 +5,7 @@ from app.core import senhas
 from app.models.beneficio import Beneficio, Parceiro, Trilha
 from app.models.cliente import Cliente
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
+from app.models.fatura import Fatura
 from app.models.indicacao import Indicacao
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 
@@ -70,6 +71,23 @@ def pedidos() -> List[Pedido]:
         consultado_em=_dt(2026, 8, 23, 14, 30),
     )
     return [pedido_a, pedido_b]
+
+
+def faturas() -> List[Fatura]:
+    def fatura(sufixo, competencia, vencimento, consumo, valor, economia, situacao):
+        id_ = f"fat_{sufixo}"
+        return Fatura(
+            id=id_, cliente_id="cli_8d21c7a0", pedido_id="ped_c41e88d2", competencia=competencia,
+            vencimento=vencimento, valor_centavos=valor, economia_centavos=economia, consumo_kwh=consumo,
+            situacao=situacao, linha_digitavel=f"001900000901234567890123456789012345678901{competencia[-2:]}",
+            url_pdf=f"https://cdn.bulbe.com.br/faturas/{id_}.pdf",
+        )
+
+    return [
+        fatura("08a2ce31", "2026-08", date(2026, 9, 10), 241, 28800, 5080, "paga"),
+        fatura("1b7d4e92", "2026-09", date(2026, 10, 10), 249, 29750, 5250, "paga"),
+        fatura("2c9f5a03", "2026-10", date(2026, 11, 10), 255, 30600, 5400, "aberta"),
+    ]
 
 
 def parceiros() -> List[Parceiro]:

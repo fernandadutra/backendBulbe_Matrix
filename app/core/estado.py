@@ -33,7 +33,7 @@ repositorios = Repositorios()
 
 def reiniciar_estado() -> None:
     repositorios.clientes = AutenticacaoRepository(dados_iniciais.clientes())
-    repositorios.pedidos = PedidoRepository(dados_iniciais.pedidos())
+    repositorios.pedidos = PedidoRepository(dados_iniciais.pedidos(), dados_iniciais.faturas())
     repositorios.simulacoes = SimulacaoRepository()
     repositorios.beneficios = BeneficioRepository(
         dados_iniciais.parceiros(), dados_iniciais.trilhas(), dados_iniciais.beneficios()
