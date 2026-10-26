@@ -47,6 +47,7 @@ class SessaoEmitida:
     cliente: Cliente
     token_renovacao: str
     possui_pedido_em_andamento: bool
+    possui_fatura_emitida: bool
 
 
 @dataclass
@@ -89,7 +90,8 @@ def _buscar_cliente(identificador: str, repositorio: AutenticacaoRepository) -> 
 
 def _emitir(cliente: Cliente, token_renovacao: str, pedidos: PedidoRepository) -> SessaoEmitida:
     em_andamento = any(p.situacao == "em_andamento" for p in pedidos.listar_por_cliente(cliente.id))
-    return SessaoEmitida(cliente, token_renovacao, em_andamento)
+    com_fatura = bool(pedidos.listar_faturas_por_cliente(cliente.id))
+    return SessaoEmitida(cliente, token_renovacao, em_andamento, com_fatura)
 
 
 def autenticar(

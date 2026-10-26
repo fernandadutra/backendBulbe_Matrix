@@ -31,8 +31,7 @@ def _para_resposta(sessao: SessaoEmitida) -> SessaoResposta:
             id=cliente.id,
             nome=cliente.nome,
             possui_pedido_em_andamento=sessao.possui_pedido_em_andamento,
-            # Faturas só existem no Bloco 2: até lá, nenhum cliente tem fatura emitida.
-            possui_fatura_emitida=False,
+            possui_fatura_emitida=sessao.possui_fatura_emitida,
         ),
     )
 
