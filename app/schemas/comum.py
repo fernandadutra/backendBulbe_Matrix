@@ -33,6 +33,8 @@ _DESCRICOES = {
     404: "Recurso inexistente ou não pertencente ao cliente autenticado.",
     409: "Conflito com o estado atual do recurso.",
     410: "Recurso que deixou de estar disponível.",
+    413: "Arquivo acima do tamanho máximo permitido.",
+    415: "Formato de arquivo não suportado.",
     422: "Regra de negócio violada.",
     429: "Limite de requisições excedido.",
     503: "Dependência externa indisponível sem dado em cache.",
