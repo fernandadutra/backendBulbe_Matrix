@@ -46,4 +46,7 @@ def test_openapi_sem_validacao_automatica_do_fastapi(cliente_http):
     for caminho in ("/api/v1/interessados", "/api/v1/adesoes/{id}/submissao"):
         assert caminho in r.json()["paths"]
     assert "/api/v1/indicacoes" in r.json()["paths"]
+    for caminho in ("/api/v1/faturas", "/api/v1/faturas/{id}", "/api/v1/consumo"):
+        assert caminho in r.json()["paths"]
+    assert "EstadoVazioComAcao" in esquemas and "EstadoVazio" in esquemas
     assert "/v1/usinas" not in r.json()["paths"]
