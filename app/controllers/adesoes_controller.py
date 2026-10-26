@@ -158,6 +158,7 @@ def submeter_adesao(id: str, dados: SubmissaoRequisicao, interessado: Interessad
         repositorios.clientes,
         repositorios.pedidos,
         repositorios.indicacoes,
+        repositorios.notificacoes,
     )
     prazo = pedido_service.PRAZO_ESTIMADO_DIAS
     return SubmissaoResposta(

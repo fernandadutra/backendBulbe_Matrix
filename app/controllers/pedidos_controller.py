@@ -59,7 +59,7 @@ def obter_status_pedido(
     cliente: Cliente = Depends(obter_cliente_atual),
     integracao: IntegracaoCemig = Depends(obter_integracao_cemig),
 ):
-    status = pedido_service.obter_status(id, cliente, repositorios.pedidos, integracao)
+    status = pedido_service.obter_status(id, cliente, repositorios.pedidos, integracao, repositorios.notificacoes)
     pedido = status.pedido
     atual = pedido.etapa_atual
     return StatusPedido(

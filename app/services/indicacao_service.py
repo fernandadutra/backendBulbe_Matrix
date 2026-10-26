@@ -13,6 +13,8 @@ from app.models.cliente import Cliente
 from app.models.indicacao import CATALOGO_FAIXAS, Indicacao
 from app.repositories.autenticacao_repository import AutenticacaoRepository
 from app.repositories.indicacao_repository import IndicacaoRepository
+from app.repositories.notificacao_repository import NotificacaoRepository
+from app.services import notificacao_service
 from app.services.interessado_service import normalizar_whatsapp
 
 RECOMPENSA_POR_INDICACAO_CENTAVOS = 5000
@@ -107,9 +109,12 @@ def indicar(
     )
 
 
-def converter_indicacao(whatsapp: str, quando: datetime, repositorio: IndicacaoRepository) -> None:
+def converter_indicacao(
+    whatsapp: str, quando: datetime, repositorio: IndicacaoRepository, notificacoes: NotificacaoRepository
+) -> None:
     # Só os dígitos contam: o interessado pode ter digitado o número com outra máscara.
     contato = normalizar_whatsapp(whatsapp)
     indicacao = repositorio.por_whatsapp(contato) if contato else None
     if indicacao is not None and indicacao.situacao == "pendente":
         indicacao.situacao, indicacao.convertida_em = "convertida", quando
+        notificacao_service.notificar(indicacao.cliente_id, "indicacao_convertida", "indicacao", indicacao.id, notificacoes)
