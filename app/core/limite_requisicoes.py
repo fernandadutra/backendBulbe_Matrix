@@ -49,6 +49,8 @@ def limitar_login_por_ip(request: Request) -> None:
     ip = request.client.host if request.client else "desconhecido"
     with _trava:
         agora = relogio.agora().timestamp()
+        for outro in [chave for chave, f in _acessos_login.items() if not f or agora - f[-1] >= JANELA_SEGUNDOS]:
+            del _acessos_login[outro]
         fila = _acessos_login[ip]
         while fila and agora - fila[0] >= JANELA_SEGUNDOS:
             fila.popleft()
@@ -67,12 +69,15 @@ def falhas_de_login_excedidas(identificador: str) -> Optional[int]:
     """Segundos até a falha mais antiga sair da janela, ou None se o identificador ainda pode tentar."""
     with _trava:
         agora = relogio.agora().timestamp()
+        janela = config.JANELA_FALHAS_LOGIN_SEGUNDOS
+        for outro in [chave for chave, f in _falhas_login.items() if not f or agora - f[-1] >= janela]:
+            del _falhas_login[outro]
         fila = _falhas_login[identificador]
-        while fila and agora - fila[0] >= config.JANELA_FALHAS_LOGIN_SEGUNDOS:
+        while fila and agora - fila[0] >= janela:
             fila.popleft()
         if len(fila) < config.LIMITE_FALHAS_LOGIN:
             return None
-        return max(1, int(config.JANELA_FALHAS_LOGIN_SEGUNDOS - (agora - fila[0])) + 1)
+        return max(1, int(janela - (agora - fila[0])) + 1)
 
 
 def registrar_falha_de_login(identificador: str) -> None:

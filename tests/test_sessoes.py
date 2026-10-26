@@ -102,6 +102,16 @@ def test_limite_de_login_por_ip_429(cliente_http, monkeypatch):
     assert _login(cliente_http).status_code == 201
 
 
+def test_limite_de_login_descarta_ip_e_identificador_ociosos(cliente_http):
+    from app.core import limite_requisicoes
+    limite_requisicoes._acessos_login["1.2.3.4"].append(relogio.agora().timestamp())
+    limite_requisicoes._falhas_login["fulano@exemplo.com.br"].append(relogio.agora().timestamp())
+    relogio.definir_relogio(lambda: AGORA_CONGELADA + timedelta(minutes=16))
+    _login(cliente_http, senha="errada")
+    assert set(limite_requisicoes._acessos_login) == {"testclient"}
+    assert set(limite_requisicoes._falhas_login) == {EMAIL_A}
+
+
 def test_renovacao_201_com_token_novo(cliente_http):
     antigo = _login(cliente_http).json()["token_renovacao"]
     r = _renovar(cliente_http, antigo)
