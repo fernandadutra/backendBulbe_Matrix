@@ -1,12 +1,16 @@
 from datetime import date, datetime, timedelta, timezone
 from typing import List
 
+from app.core import senhas
 from app.models.beneficio import Beneficio, Parceiro, Trilha
 from app.models.cliente import Cliente
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 
 _BRT = timezone(timedelta(hours=-3))
+
+SENHA_DEV = "bulbe-dev-123"
+_hash_senha_dev = None
 
 
 def _dt(ano, mes, dia, hora=9, minuto=0) -> datetime:
@@ -21,9 +25,15 @@ def _etapas(situacoes, iniciadas, concluidas) -> List[Etapa]:
 
 
 def clientes() -> List[Cliente]:
+    global _hash_senha_dev
+    # O hash é caro e reiniciar_estado() roda a cada teste: calcula uma vez por processo.
+    if _hash_senha_dev is None:
+        _hash_senha_dev = senhas.gerar_hash(SENHA_DEV)
     return [
-        Cliente(id="cli_3b9e1f42", nome="Ana Souza"),
-        Cliente(id="cli_8d21c7a0", nome="Bruno Lima"),
+        Cliente(id="cli_3b9e1f42", nome="Ana Souza", email="ana@exemplo.com.br", cpf="52998224725",
+                telefone="+5531999998888", senha_hash=_hash_senha_dev),
+        Cliente(id="cli_8d21c7a0", nome="Bruno Lima", email="bruno@exemplo.com.br", cpf="11144477735",
+                telefone="+5531988887777", senha_hash=_hash_senha_dev),
     ]
 
 
