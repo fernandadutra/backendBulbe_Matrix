@@ -6,6 +6,128 @@ info:
     \ dias).\n    "
   version: 1.0.0
 paths:
+  /api/v1/sessoes:
+    post:
+      tags:
+      - Autenticação
+      summary: Autenticar o cliente
+      description: Público. Aceita e-mail ou CPF como identificador.
+      operationId: criar_sessao_api_v1_sessoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '429':
+          description: Limite de requisições excedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+    delete:
+      tags:
+      - Autenticação
+      summary: Encerrar a sessão
+      description: Invalida o token de renovação. O token de acesso segue válido até
+        expirar.
+      operationId: encerrar_sessao_api_v1_sessoes_delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRenovacaoRequisicao'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/sessoes/renovacao:
+    post:
+      tags:
+      - Autenticação
+      summary: Renovar o token de acesso
+      description: Público, autorizado pelo token de renovação. O token de renovação
+        devolvido substitui o enviado.
+      operationId: renovar_sessao_api_v1_sessoes_renovacao_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRenovacaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/perfil:
+    get:
+      tags:
+      - Autenticação
+      summary: Obter perfil e instalações do cliente
+      operationId: obter_perfil_api_v1_perfil_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Perfil'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
   /api/v1/pedidos:
     get:
       tags:
@@ -615,6 +737,31 @@ components:
       required:
       - texto
       title: BlocoParagrafo
+    ClienteSessao:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - cli_3f81aa02
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        possui_pedido_em_andamento:
+          type: boolean
+          title: Possui Pedido Em Andamento
+        possui_fatura_emitida:
+          type: boolean
+          title: Possui Fatura Emitida
+      type: object
+      required:
+      - id
+      - nome
+      - possui_pedido_em_andamento
+      - possui_fatura_emitida
+      title: ClienteSessao
     CondicoesResgate:
       properties:
         tipo:
@@ -832,6 +979,33 @@ components:
       - descricao
       - situacao
       title: EtapaPedido
+    InstalacaoPerfil:
+      properties:
+        numero:
+          type: string
+          title: Numero
+          examples:
+          - '3013588579'
+        distribuidora:
+          type: string
+          title: Distribuidora
+          examples:
+          - CEMIG
+        pedido_id:
+          type: string
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+        principal:
+          type: boolean
+          title: Principal
+      type: object
+      required:
+      - numero
+      - distribuidora
+      - pedido_id
+      - principal
+      title: InstalacaoPerfil
     ItemLista:
       properties:
         titulo:
@@ -1138,6 +1312,41 @@ components:
       - etapa_atual_nome
       - criado_em
       title: PedidoResumo
+    Perfil:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - cli_3f81aa02
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        email:
+          type: string
+          title: Email
+          examples:
+          - cliente@exemplo.com.br
+        telefone:
+          type: string
+          title: Telefone
+          examples:
+          - '+5531999998888'
+        instalacoes:
+          items:
+            $ref: '#/components/schemas/InstalacaoPerfil'
+          type: array
+          title: Instalacoes
+      type: object
+      required:
+      - id
+      - nome
+      - email
+      - telefone
+      - instalacoes
+      title: Perfil
     PrazoEstimado:
       properties:
         minimo:
@@ -1319,6 +1528,56 @@ components:
       - valor_sem_desconto
       - valor_com_bulbe
       title: RotulosSimulacao
+    SessaoRequisicao:
+      properties:
+        identificador:
+          type: string
+          title: Identificador
+          description: E-mail ou CPF, com ou sem máscara.
+          examples:
+          - cliente@exemplo.com.br
+        senha:
+          type: string
+          title: Senha
+          examples:
+          - '********'
+      type: object
+      required:
+      - identificador
+      - senha
+      title: SessaoRequisicao
+    SessaoResposta:
+      properties:
+        token_acesso:
+          type: string
+          title: Token Acesso
+          examples:
+          - eyJhbGciOiJIUzI1NiIs...
+        tipo_token:
+          type: string
+          title: Tipo Token
+          examples:
+          - Bearer
+        expira_em_segundos:
+          type: integer
+          title: Expira Em Segundos
+          examples:
+          - 900
+        token_renovacao:
+          type: string
+          title: Token Renovacao
+          examples:
+          - trn_9d21ba0c7e
+        cliente:
+          $ref: '#/components/schemas/ClienteSessao'
+      type: object
+      required:
+      - token_acesso
+      - tipo_token
+      - expira_em_segundos
+      - token_renovacao
+      - cliente
+      title: SessaoResposta
     SimulacaoRequisicao:
       properties:
         valor_fatura_centavos:
@@ -1504,6 +1763,17 @@ components:
       - consumo_kwh
       - valor_centavos
       title: SubtotalMemoriaCalculo
+    TokenRenovacaoRequisicao:
+      properties:
+        token_renovacao:
+          type: string
+          title: Token Renovacao
+          examples:
+          - trn_9d21ba0c7e
+      type: object
+      required:
+      - token_renovacao
+      title: TokenRenovacaoRequisicao
     Trilha:
       properties:
         chave:
@@ -1594,6 +1864,8 @@ components:
       description: Token JWT no formato `Bearer <token>`.
       scheme: bearer
 tags:
+- name: Autenticação
+  description: Sessões, renovação de token e perfil do cliente
 - name: Simulações
   description: Cálculo de estimativa de desconto na conta de luz
 - name: Jornada do Cliente
