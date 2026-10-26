@@ -4,6 +4,7 @@ from app.repositories.ajuda_repository import AjudaRepository
 from app.repositories.autenticacao_repository import AutenticacaoRepository
 from app.repositories.beneficio_repository import BeneficioRepository
 from app.repositories.pedido_repository import PedidoRepository
+from app.repositories.sessao_repository import SessaoRepository
 from app.repositories.simulacao_repository import SimulacaoRepository
 
 
@@ -20,6 +21,7 @@ class Repositorios:
         self.simulacoes: SimulacaoRepository
         self.beneficios: BeneficioRepository
         self.ajuda: AjudaRepository
+        self.sessoes: SessaoRepository
 
 
 repositorios = Repositorios()
@@ -33,6 +35,7 @@ def reiniciar_estado() -> None:
         dados_iniciais.parceiros(), dados_iniciais.trilhas(), dados_iniciais.beneficios()
     )
     repositorios.ajuda = AjudaRepository(dados_iniciais.dicas())
+    repositorios.sessoes = SessaoRepository()
     limite_requisicoes.reiniciar()
     relogio.restaurar_relogio()
 

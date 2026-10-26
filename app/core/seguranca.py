@@ -17,7 +17,7 @@ _esquema_bearer = HTTPBearer(auto_error=False, description="Token JWT no formato
 _CABECALHO_401 = {"WWW-Authenticate": "Bearer"}
 
 
-def emitir_token(cliente_id: str, minutos: int = 60) -> str:
+def emitir_token(cliente_id: str, minutos: int = config.MINUTOS_TOKEN_ACESSO) -> str:
     agora = relogio.agora()
     claims = {
         "sub": cliente_id,

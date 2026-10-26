@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 
-from app.controllers import ajuda_controller, beneficios_controller, pedidos_controller, simulacoes_controller
+from app.controllers import (
+    ajuda_controller,
+    autenticacao_controller,
+    beneficios_controller,
+    pedidos_controller,
+    simulacoes_controller,
+)
 from app.core.erros import registrar_tratadores
 
 app = FastAPI(
@@ -11,6 +17,7 @@ app = FastAPI(
     """,
     version="1.0.0",
     openapi_tags=[
+        {"name": "Autenticação", "description": "Sessões, renovação de token e perfil do cliente"},
         {"name": "Simulações", "description": "Cálculo de estimativa de desconto na conta de luz"},
         {"name": "Jornada do Cliente", "description": "Status do pedido e timeline da homologação CEMIG"},
         {"name": "Clube de Benefícios", "description": "Trilhas, benefícios dos parceiros e resgates"},
@@ -19,6 +26,7 @@ app = FastAPI(
 )
 
 registrar_tratadores(app)
+app.include_router(autenticacao_controller.router, prefix="/api/v1")
 app.include_router(pedidos_controller.router, prefix="/api/v1")
 app.include_router(simulacoes_controller.router, prefix="/api/v1")
 app.include_router(beneficios_controller.router, prefix="/api/v1")
