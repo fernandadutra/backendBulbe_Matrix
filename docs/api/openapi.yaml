@@ -6,6 +6,330 @@ info:
     \ dias).\n    "
   version: 1.0.0
 paths:
+  /api/v1/interessados:
+    post:
+      tags:
+      - Adesão
+      summary: Registrar o interessado
+      description: Público. Devolve o `token_fluxo` que autoriza as rotas de adesão.
+      operationId: registrar_interessado_api_v1_interessados_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteressadoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InteressadoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes:
+    post:
+      tags:
+      - Adesão
+      summary: Abrir a adesão
+      description: Autorizado pelo token de fluxo. Se o interessado já tem adesão,
+        devolve a existente.
+      operationId: abrir_adesao_api_v1_adesoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdesaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/adesoes/{id}:
+    patch:
+      tags:
+      - Adesão
+      summary: Salvar o progresso de uma etapa
+      description: Aceita as etapas `contato` e `negocio`. Termos e confirmação têm
+        rotas próprias.
+      operationId: salvar_etapa_api_v1_adesoes__id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtapaRequisicao'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/anexos:
+    post:
+      tags:
+      - Adesão
+      summary: Enviar a fatura de energia
+      description: '`multipart/form-data`. Aceita PDF, JPG e PNG de até 10 MB, conferidos
+        pelo conteúdo.'
+      operationId: enviar_anexo_api_v1_adesoes__id__anexos_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_enviar_anexo_api_v1_adesoes__id__anexos_post'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnexoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '413':
+          description: Arquivo acima do tamanho máximo permitido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '415':
+          description: Formato de arquivo não suportado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/aceites:
+    post:
+      tags:
+      - Adesão
+      summary: Registrar o aceite dos termos
+      description: Guarda também o IP e o user agent da requisição, para auditoria
+        do consentimento.
+      operationId: registrar_aceite_api_v1_adesoes__id__aceites_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AceiteRequisicao'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/submissao:
+    post:
+      tags:
+      - Adesão
+      summary: Submeter a adesão
+      description: Cria o cliente com a senha informada e o pedido de homologação.
+      operationId: submeter_adesao_api_v1_adesoes__id__submissao_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissaoRequisicao'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
   /api/v1/sessoes:
     post:
       tags:
@@ -654,6 +978,136 @@ components:
       - rotulo
       - exige_resgate
       title: AcaoBeneficio
+    AceiteRequisicao:
+      properties:
+        aceite_termo_adesao:
+          type: boolean
+          title: Aceite Termo Adesao
+          examples:
+          - true
+        aceite_politica_privacidade:
+          type: boolean
+          title: Aceite Politica Privacidade
+          examples:
+          - true
+        versao_documentos:
+          type: string
+          title: Versao Documentos
+          examples:
+          - '2026-07-01'
+        aceito_em:
+          type: string
+          format: date-time
+          title: Aceito Em
+          examples:
+          - '2026-08-23T14:36:00-03:00'
+      type: object
+      required:
+      - aceite_termo_adesao
+      - aceite_politica_privacidade
+      - versao_documentos
+      - aceito_em
+      title: AceiteRequisicao
+    AdesaoRequisicao:
+      properties:
+        interessado_id:
+          type: string
+          title: Interessado Id
+          examples:
+          - int_18c4a70b
+      type: object
+      required:
+      - interessado_id
+      title: AdesaoRequisicao
+    AdesaoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - ade_6b2f9013
+        situacao:
+          type: string
+          title: Situacao
+          description: em_preenchimento ou submetida
+          examples:
+          - em_preenchimento
+        etapa_atual:
+          type: string
+          title: Etapa Atual
+          examples:
+          - contato
+        etapas_concluidas:
+          items:
+            type: string
+          type: array
+          title: Etapas Concluidas
+          examples:
+          - - contato
+        etapas_pendentes:
+          items:
+            type: string
+          type: array
+          title: Etapas Pendentes
+          examples:
+          - - negocio
+            - termos
+            - confirmacao
+      type: object
+      required:
+      - id
+      - situacao
+      - etapa_atual
+      - etapas_concluidas
+      - etapas_pendentes
+      title: AdesaoResposta
+    AnexoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - anx_4a71cc80
+        tipo:
+          type: string
+          title: Tipo
+          examples:
+          - fatura_energia
+        nome_arquivo:
+          type: string
+          title: Nome Arquivo
+          examples:
+          - fatura-junho.pdf
+        tamanho_bytes:
+          type: integer
+          title: Tamanho Bytes
+          examples:
+          - 284193
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - recebido
+        recebido_em:
+          type: string
+          format: date-time
+          title: Recebido Em
+          examples:
+          - '2026-08-23T14:35:00-03:00'
+        dados_extraidos:
+          anyOf:
+          - $ref: '#/components/schemas/DadosExtraidos'
+          - type: 'null'
+          description: 'Sempre nulo: ainda não há leitura automática da fatura.'
+      type: object
+      required:
+      - id
+      - tipo
+      - nome_arquivo
+      - tamanho_bytes
+      - situacao
+      - recebido_em
+      title: AnexoResposta
     Beneficio:
       properties:
         id:
@@ -737,6 +1191,22 @@ components:
       required:
       - texto
       title: BlocoParagrafo
+    Body_enviar_anexo_api_v1_adesoes__id__anexos_post:
+      properties:
+        arquivo:
+          type: string
+          contentMediaType: application/octet-stream
+          title: Arquivo
+        tipo:
+          type: string
+          title: Tipo
+          examples:
+          - fatura_energia
+      type: object
+      required:
+      - arquivo
+      - tipo
+      title: Body_enviar_anexo_api_v1_adesoes__id__anexos_post
     ClienteSessao:
       properties:
         id:
@@ -815,6 +1285,35 @@ components:
       - codigo
       - mensagem
       title: CorpoErro
+    DadosExtraidos:
+      properties:
+        numero_instalacao:
+          type: string
+          title: Numero Instalacao
+          examples:
+          - '3013588579'
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+          examples:
+          - 35000
+        consumo_kwh:
+          type: integer
+          title: Consumo Kwh
+          examples:
+          - 249
+        confianca:
+          type: number
+          title: Confianca
+          examples:
+          - 0.92
+      type: object
+      required:
+      - numero_instalacao
+      - valor_centavos
+      - consumo_kwh
+      - confianca
+      title: DadosExtraidos
     DetalheErro:
       properties:
         campo:
@@ -979,6 +1478,30 @@ components:
       - descricao
       - situacao
       title: EtapaPedido
+    EtapaRequisicao:
+      properties:
+        etapa:
+          type: string
+          title: Etapa
+          description: contato ou negocio
+          examples:
+          - negocio
+        dados:
+          additionalProperties: true
+          type: object
+          title: Dados
+          examples:
+          - cep: '30140071'
+            classe_consumo: residencial
+            distribuidora: CEMIG
+            numero_instalacao: '3013588579'
+            titular_documento: '00000000000'
+            titular_nome: Maria Souza
+      type: object
+      required:
+      - etapa
+      - dados
+      title: EtapaRequisicao
     InstalacaoPerfil:
       properties:
         numero:
@@ -1006,6 +1529,75 @@ components:
       - pedido_id
       - principal
       title: InstalacaoPerfil
+    InteressadoRequisicao:
+      properties:
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        email:
+          type: string
+          title: Email
+          examples:
+          - cliente@exemplo.com.br
+        whatsapp:
+          type: string
+          title: Whatsapp
+          examples:
+          - '+5531999998888'
+        simulacao_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Simulacao Id
+          examples:
+          - sim_2c81b40e
+        aceite_comunicacoes:
+          type: boolean
+          title: Aceite Comunicacoes
+          description: Consentimento de marketing, distinto do aceite dos termos.
+          examples:
+          - true
+      type: object
+      required:
+      - nome
+      - email
+      - whatsapp
+      - aceite_comunicacoes
+      title: InteressadoRequisicao
+    InteressadoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - int_18c4a70b
+        situacao:
+          type: string
+          title: Situacao
+          description: novo ou convertido
+          examples:
+          - novo
+        token_fluxo:
+          type: string
+          title: Token Fluxo
+          description: 'Enviar em `Authorization: Bearer` nas rotas de adesão.'
+          examples:
+          - tfl_c93b21ee...
+        expira_em:
+          type: string
+          format: date-time
+          title: Expira Em
+          examples:
+          - '2026-08-24T14:30:00-03:00'
+      type: object
+      required:
+      - id
+      - situacao
+      - token_fluxo
+      - expira_em
+      title: InteressadoResposta
     ItemLista:
       properties:
         titulo:
@@ -1742,6 +2334,62 @@ components:
       - consultado_em
       - dado_desatualizado
       title: StatusPedido
+    SubmissaoRequisicao:
+      properties:
+        senha:
+          type: string
+          title: Senha
+          examples:
+          - '********'
+        aceite_compartilhamento_dados:
+          type: boolean
+          title: Aceite Compartilhamento Dados
+          examples:
+          - true
+      type: object
+      required:
+      - senha
+      - aceite_compartilhamento_dados
+      title: SubmissaoRequisicao
+    SubmissaoResposta:
+      properties:
+        adesao_id:
+          type: string
+          title: Adesao Id
+          examples:
+          - ade_6b2f9013
+        cliente_id:
+          type: string
+          title: Cliente Id
+          examples:
+          - cli_3f81aa02
+        pedido_id:
+          type: string
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - submetida
+        prazo_estimado_dias:
+          $ref: '#/components/schemas/PrazoEstimado'
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - Recebemos sua adesão. A homologação junto à Cemig leva de 90 a 120 dias
+            e você pode acompanhar cada etapa pelo app.
+      type: object
+      required:
+      - adesao_id
+      - cliente_id
+      - pedido_id
+      - situacao
+      - prazo_estimado_dias
+      - mensagem
+      title: SubmissaoResposta
     SubtotalMemoriaCalculo:
       properties:
         rotulo:
@@ -1864,6 +2512,8 @@ components:
       description: Token JWT no formato `Bearer <token>`.
       scheme: bearer
 tags:
+- name: Adesão
+  description: Cadastro do interessado, etapas da adesão, fatura e submissão
 - name: Autenticação
   description: Sessões, renovação de token e perfil do cliente
 - name: Simulações
