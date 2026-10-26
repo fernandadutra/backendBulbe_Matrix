@@ -899,6 +899,71 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erro'
+  /api/v1/indicacoes:
+    get:
+      tags:
+      - Indique e ganhe
+      summary: Consultar indicações do cliente
+      operationId: obter_indicacoes_api_v1_indicacoes_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PainelIndicacoes'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Indique e ganhe
+      summary: Indicar um contato
+      operationId: indicar_contato_api_v1_indicacoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndicacaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndicacaoItem'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
   /api/v1/ajuda/dicas:
     get:
       tags:
@@ -1502,6 +1567,87 @@ components:
       - etapa
       - dados
       title: EtapaRequisicao
+    FaixaIndicacao:
+      properties:
+        chave:
+          type: string
+          title: Chave
+          examples:
+          - economia_com_indicacoes
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Economia + indicações
+        proxima_faixa:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Proxima Faixa
+          description: Nulo na faixa TOP.
+          examples:
+          - top_indicador
+        indicacoes_para_proxima_faixa:
+          type: integer
+          title: Indicacoes Para Proxima Faixa
+          examples:
+          - 7
+      type: object
+      required:
+      - chave
+      - nome
+      - indicacoes_para_proxima_faixa
+      title: FaixaIndicacao
+    IndicacaoItem:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - ind_a10
+        nome_ofuscado:
+          type: string
+          title: Nome Ofuscado
+          description: O nome completo do indicado nunca é exibido.
+          examples:
+          - Jo** S****
+        situacao:
+          type: string
+          title: Situacao
+          description: pendente ou convertida
+          examples:
+          - convertida
+        indicada_em:
+          type: string
+          format: date
+          title: Indicada Em
+          examples:
+          - '2026-07-02'
+      type: object
+      required:
+      - id
+      - nome_ofuscado
+      - situacao
+      - indicada_em
+      title: IndicacaoItem
+    IndicacaoRequisicao:
+      properties:
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - João Silva
+        whatsapp:
+          type: string
+          title: Whatsapp
+          description: Com ou sem máscara; de 12 a 13 dígitos.
+          examples:
+          - '+5531988887777'
+      type: object
+      required:
+      - nome
+      - whatsapp
+      title: IndicacaoRequisicao
     InstalacaoPerfil:
       properties:
         numero:
@@ -1799,6 +1945,56 @@ components:
       - limite
       - total
       title: Paginacao[SimulacaoResumo]
+    PainelIndicacoes:
+      properties:
+        codigo:
+          type: string
+          title: Codigo
+          examples:
+          - MARIA50
+        url_compartilhamento:
+          type: string
+          title: Url Compartilhamento
+          examples:
+          - https://bulbe.com.br/indique/MARIA50
+        recompensa_por_indicacao_centavos:
+          type: integer
+          title: Recompensa Por Indicacao Centavos
+          examples:
+          - 5000
+        total_indicacoes:
+          type: integer
+          title: Total Indicacoes
+          examples:
+          - 3
+        indicacoes_convertidas:
+          type: integer
+          title: Indicacoes Convertidas
+          examples:
+          - 2
+        credito_acumulado_centavos:
+          type: integer
+          title: Credito Acumulado Centavos
+          examples:
+          - 10000
+        faixa_atual:
+          $ref: '#/components/schemas/FaixaIndicacao'
+        indicacoes:
+          items:
+            $ref: '#/components/schemas/IndicacaoItem'
+          type: array
+          title: Indicacoes
+      type: object
+      required:
+      - codigo
+      - url_compartilhamento
+      - recompensa_por_indicacao_centavos
+      - total_indicacoes
+      - indicacoes_convertidas
+      - credito_acumulado_centavos
+      - faixa_atual
+      - indicacoes
+      title: PainelIndicacoes
     ParceiroBeneficio:
       properties:
         id:
@@ -2522,5 +2718,7 @@ tags:
   description: Status do pedido e timeline da homologação CEMIG
 - name: Clube de Benefícios
   description: Trilhas, benefícios dos parceiros e resgates
+- name: Indique e ganhe
+  description: Código de indicação, faixas, crédito e indicados
 - name: Ajuda
   description: Textos de ajuda contextual por tela
