@@ -7,6 +7,7 @@ from app.models.cliente import Cliente
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
 from app.models.fatura import Fatura
 from app.models.indicacao import Indicacao
+from app.models.notificacao import Notificacao
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 
 _BRT = timezone(timedelta(hours=-3))
@@ -222,3 +223,23 @@ def indicacoes() -> List[Indicacao]:
 
 def codigos_de_indicacao() -> Dict[str, str]:
     return {"cli_3b9e1f42": "ANA50"}
+
+
+def notificacoes() -> List[Notificacao]:
+    # Os textos repetem o que notificacao_service.notificar geraria; um teste garante a igualdade.
+    return [
+        Notificacao(
+            "not_5a1c9e07", "cli_8d21c7a0", "mudanca_etapa_pedido", "Seu pedido avançou de etapa",
+            "Seu pedido está agora em: Aprovado.", True, _dt(2026, 7, 14, 9, 0), "pedido", "ped_c41e88d2",
+        ),
+        Notificacao(
+            "not_7d3b2f18", "cli_8d21c7a0", "fatura_emitida", "Sua fatura de outubro chegou",
+            "Sua fatura de outubro já está disponível. Vence em 10 de novembro.", True, _dt(2026, 10, 12, 8, 0),
+            "fatura", "fat_2c9f5a03",
+        ),
+        Notificacao(
+            "not_c410aa7b", "cli_3b9e1f42", "pedido_criado", "Recebemos seu pedido",
+            "Sua adesão foi recebida e a homologação junto à Cemig já começou. Acompanhe cada etapa pelo app.",
+            False, _dt(2026, 6, 2, 9, 14), "pedido", "ped_7f3a9c21",
+        ),
+    ]
