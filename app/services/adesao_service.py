@@ -11,7 +11,9 @@ from app.models.cliente import Cliente
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 from app.repositories.adesao_repository import AdesaoRepository
 from app.repositories.autenticacao_repository import AutenticacaoRepository
+from app.repositories.indicacao_repository import IndicacaoRepository
 from app.repositories.pedido_repository import PedidoRepository
+from app.services import indicacao_service, interessado_service
 from app.services.simulacao_service import DISTRIBUIDORA_ATENDIDA
 
 VERSAO_DOCUMENTOS_VIGENTE = "2026-07-01"
@@ -130,9 +132,12 @@ def salvar_etapa(
         adesao.negocio = _validar_negocio(dados)
         return adesao
     detalhes = _campos_ausentes(dados, ("nome", "whatsapp"))
+    whatsapp = None if detalhes else interessado_service.normalizar_whatsapp(dados["whatsapp"])
+    if not detalhes and whatsapp is None:
+        detalhes.append({"campo": "dados.whatsapp", "problema": "deve ter de 12 a 13 dígitos, com DDI e DDD"})
     if detalhes:
         raise _corpo_invalido(detalhes)
-    interessado.nome, interessado.whatsapp = dados["nome"].strip(), dados["whatsapp"].strip()
+    interessado.nome, interessado.whatsapp = dados["nome"].strip(), whatsapp
     return adesao
 
 
@@ -183,6 +188,7 @@ def registrar_aceite(
 def submeter(
     adesao_id: str, interessado: Interessado, senha: str, aceite_compartilhamento: bool,
     adesoes: AdesaoRepository, clientes: AutenticacaoRepository, pedidos: PedidoRepository,
+    indicacoes: IndicacaoRepository,
 ) -> Submissao:
     adesao = _obter_editavel(adesao_id, interessado, adesoes)
     detalhes = [
@@ -224,6 +230,7 @@ def submeter(
     )
     clientes.salvar(cliente)
     pedidos.salvar(pedido)
+    indicacao_service.converter_indicacao(interessado.whatsapp, agora, indicacoes)
     adesao.situacao, adesao.cliente_id, adesao.pedido_id = "submetida", cliente.id, pedido.id
     interessado.situacao = "convertido"
     return Submissao(adesao, cliente, pedido)

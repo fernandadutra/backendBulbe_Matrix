@@ -1,10 +1,11 @@
 from datetime import date, datetime, timedelta, timezone
-from typing import List
+from typing import Dict, List
 
 from app.core import senhas
 from app.models.beneficio import Beneficio, Parceiro, Trilha
 from app.models.cliente import Cliente
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
+from app.models.indicacao import Indicacao
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 
 _BRT = timezone(timedelta(hours=-3))
@@ -191,3 +192,15 @@ def dicas() -> List[Dica]:
             ],
         ),
     ]
+
+
+def indicacoes() -> List[Indicacao]:
+    return [
+        Indicacao("ind_a10", "cli_3b9e1f42", "João Silva", "+5531977771111", "convertida", date(2026, 7, 2), _dt(2026, 7, 9)),
+        Indicacao("ind_a11", "cli_3b9e1f42", "Marcos Pereira", "+5531977772222", "convertida", date(2026, 7, 20), _dt(2026, 7, 28)),
+        Indicacao("ind_a12", "cli_3b9e1f42", "Carla Lima", "+5531977773333", "pendente", date(2026, 8, 11)),
+    ]
+
+
+def codigos_de_indicacao() -> Dict[str, str]:
+    return {"cli_3b9e1f42": "ANA50"}

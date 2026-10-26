@@ -5,6 +5,7 @@ from app.controllers import (
     ajuda_controller,
     autenticacao_controller,
     beneficios_controller,
+    indicacoes_controller,
     pedidos_controller,
     simulacoes_controller,
 )
@@ -23,6 +24,7 @@ app = FastAPI(
         {"name": "Simulações", "description": "Cálculo de estimativa de desconto na conta de luz"},
         {"name": "Jornada do Cliente", "description": "Status do pedido e timeline da homologação CEMIG"},
         {"name": "Clube de Benefícios", "description": "Trilhas, benefícios dos parceiros e resgates"},
+        {"name": "Indique e ganhe", "description": "Código de indicação, faixas, crédito e indicados"},
         {"name": "Ajuda", "description": "Textos de ajuda contextual por tela"},
     ],
 )
@@ -33,6 +35,7 @@ app.include_router(autenticacao_controller.router, prefix="/api/v1")
 app.include_router(pedidos_controller.router, prefix="/api/v1")
 app.include_router(simulacoes_controller.router, prefix="/api/v1")
 app.include_router(beneficios_controller.router, prefix="/api/v1")
+app.include_router(indicacoes_controller.router, prefix="/api/v1")
 app.include_router(ajuda_controller.router, prefix="/api/v1")
 
 

@@ -14,6 +14,7 @@ from app.repositories.autenticacao_repository import AutenticacaoRepository
 from app.repositories.simulacao_repository import SimulacaoRepository
 
 _FORMATO_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+DIGITOS_WHATSAPP = (12, 13)  # DDI 55 incluído
 
 
 @dataclass
@@ -24,6 +25,12 @@ class InteressadoRegistrado:
 
 def _hash_do_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def normalizar_whatsapp(whatsapp: str) -> Optional[str]:
+    """Regra única do WhatsApp (2.2 e 2.3): "+" e os dígitos, ou None se não tiver de 12 a 13 dígitos."""
+    digitos = re.sub(r"\D", "", whatsapp)
+    return "+" + digitos if DIGITOS_WHATSAPP[0] <= len(digitos) <= DIGITOS_WHATSAPP[1] else None
 
 
 def interessado_do_token(token: str, repositorio: AdesaoRepository) -> Optional[Interessado]:
@@ -50,8 +57,9 @@ def registrar_interessado(
         detalhes.append({"campo": "nome", "problema": "não pode ficar vazio"})
     if not _FORMATO_EMAIL.match(email):
         detalhes.append({"campo": "email", "problema": "formato de e-mail inválido"})
-    if not whatsapp.strip():
-        detalhes.append({"campo": "whatsapp", "problema": "não pode ficar vazio"})
+    whatsapp_normalizado = normalizar_whatsapp(whatsapp)
+    if whatsapp_normalizado is None:
+        detalhes.append({"campo": "whatsapp", "problema": "deve ter de 12 a 13 dígitos, com DDI e DDD"})
     if simulacao_id is not None and simulacoes.obter(simulacao_id) is None:
         detalhes.append({"campo": "simulacao_id", "problema": "simulação não encontrada"})
     if detalhes:
@@ -65,7 +73,7 @@ def registrar_interessado(
         id=gerar_id("int"),
         nome=nome.strip(),
         email=email,
-        whatsapp=whatsapp.strip(),
+        whatsapp=whatsapp_normalizado,
         simulacao_id=simulacao_id,
         aceite_comunicacoes=aceite_comunicacoes,
         criado_em=agora,
