@@ -6,6 +6,21 @@ info:
     \ dias).\n    "
   version: 1.0.0
 paths:
+  /api/v1/conteudos/boas-vindas:
+    get:
+      tags:
+      - Boas-vindas
+      summary: Obter o conteúdo da tela de boas-vindas
+      description: Público. O texto é atualizável sem nova versão do app; use versao
+        para revalidar o conteúdo.
+      operationId: obter_boas_vindas_api_v1_conteudos_boas_vindas_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoasVindasResposta'
   /api/v1/interessados:
     post:
       tags:
@@ -1528,6 +1543,29 @@ components:
       required:
       - texto
       title: BlocoParagrafo
+    BoasVindasResposta:
+      properties:
+        versao:
+          type: string
+          title: Versao
+          examples:
+          - '2026-08-01'
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Como funciona
+        passos:
+          items:
+            $ref: '#/components/schemas/PassoBoasVindas'
+          type: array
+          title: Passos
+      type: object
+      required:
+      - versao
+      - titulo
+      - passos
+      title: BoasVindasResposta
     Body_enviar_anexo_api_v1_adesoes__id__anexos_post:
       properties:
         arquivo:
@@ -2565,6 +2603,41 @@ components:
       - nome
       - url_logo
       title: ParceiroDestaque
+    PassoBoasVindas:
+      properties:
+        ordem:
+          type: integer
+          title: Ordem
+          examples:
+          - 1
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Energia solar que gera economia
+        texto:
+          type: string
+          title: Texto
+          examples:
+          - Nossas fazendas solares produzem energia limpa e renovável.
+        url_ilustracao:
+          type: string
+          title: Url Ilustracao
+          examples:
+          - https://cdn.bulbe.com.br/boas-vindas/passo-1.svg
+        texto_alternativo:
+          type: string
+          title: Texto Alternativo
+          examples:
+          - Painéis solares em uma fazenda solar
+      type: object
+      required:
+      - ordem
+      - titulo
+      - texto
+      - url_ilustracao
+      - texto_alternativo
+      title: PassoBoasVindas
     PedidoResumo:
       properties:
         id:
@@ -3291,6 +3364,8 @@ components:
       description: Token JWT no formato `Bearer <token>`.
       scheme: bearer
 tags:
+- name: Boas-vindas
+  description: 'Conteúdo da tela inicial: título e passos do Como funciona'
 - name: Adesão
   description: Cadastro do interessado, etapas da adesão, fatura e submissão
 - name: Autenticação
