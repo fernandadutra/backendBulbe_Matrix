@@ -13,6 +13,7 @@ from app.models.cliente import Cliente
 from app.models.resgate import Resgate
 from app.repositories.beneficio_repository import BeneficioRepository
 from app.repositories.pedido_repository import PedidoRepository
+from app.services import fatura_service
 
 MOTIVO_PEDIDO_APROVADO = "Disponível após a aprovação do seu pedido pela Cemig."
 MOTIVO_FATURA_ATIVA = "Disponível para clientes com fatura Bulbe ativa."
@@ -58,8 +59,8 @@ def cliente_atende_regra(
             atende = pedidos.cliente_tem_pedido_aprovado(cliente.id)
         return (True, None) if atende else (False, MOTIVO_PEDIDO_APROVADO)
     if regra == "fatura_ativa":
-        # Faturas só existem no Bloco 2: até lá, nenhum cliente atende esta regra.
-        return False, MOTIVO_FATURA_ATIVA
+        atende = fatura_service.cliente_tem_fatura_ativa(cliente.id, pedidos)
+        return (True, None) if atende else (False, MOTIVO_FATURA_ATIVA)
     raise ValueError(f"Regra de acesso desconhecida: {regra}")
 
 

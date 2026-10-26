@@ -8,8 +8,9 @@ from fastapi.security import HTTPBearer
 from app.core import config, relogio
 from app.core.erros import ErroApi
 from app.core.estado import repositorios
+from app.models.adesao import Interessado
 from app.models.cliente import Cliente
-from app.services import autenticacao_service
+from app.services import autenticacao_service, interessado_service
 
 # Só alimenta o cadeado do Swagger. A leitura do cabeçalho é feita à mão abaixo.
 _esquema_bearer = HTTPBearer(auto_error=False, description="Token JWT no formato `Bearer <token>`.")
@@ -17,7 +18,7 @@ _esquema_bearer = HTTPBearer(auto_error=False, description="Token JWT no formato
 _CABECALHO_401 = {"WWW-Authenticate": "Bearer"}
 
 
-def emitir_token(cliente_id: str, minutos: int = 60) -> str:
+def emitir_token(cliente_id: str, minutos: int = config.MINUTOS_TOKEN_ACESSO) -> str:
     agora = relogio.agora()
     claims = {
         "sub": cliente_id,
@@ -60,3 +61,13 @@ def obter_cliente_opcional(request: Request, _credenciais=Depends(_esquema_beare
     if token is None:
         return None
     return _cliente_do_token(token)
+
+
+def obter_interessado_do_fluxo(request: Request, _credenciais=Depends(_esquema_bearer)) -> Interessado:
+    token = _extrair_token(request)
+    if token is None:
+        raise ErroApi(401, "TOKEN_AUSENTE", "Você precisa do código do seu cadastro para continuar a adesão.", cabecalhos=_CABECALHO_401)
+    interessado = interessado_service.interessado_do_token(token, repositorios.adesoes)
+    if interessado is None:
+        raise _token_invalido()
+    return interessado

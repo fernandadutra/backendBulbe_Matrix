@@ -196,7 +196,7 @@ def test_trilhas_desbloqueio_do_cliente_b(cliente_http):
     t = trilhas_de(cliente_http, CLIENTE_B)
     assert t["movement"]["desbloqueada"] is True
     assert t["movement"]["motivo_bloqueio"] is None
-    assert t["experience"]["desbloqueada"] is False
+    assert t["experience"]["desbloqueada"] is True
 
 
 def test_trilha_nao_conta_beneficio_expirado(cliente_http):

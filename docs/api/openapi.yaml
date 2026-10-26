@@ -6,6 +6,467 @@ info:
     \ dias).\n    "
   version: 1.0.0
 paths:
+  /api/v1/conteudos/boas-vindas:
+    get:
+      tags:
+      - Boas-vindas
+      summary: Obter o conteúdo da tela de boas-vindas
+      description: Público. O texto é atualizável sem nova versão do app; use versao
+        para revalidar o conteúdo.
+      operationId: obter_boas_vindas_api_v1_conteudos_boas_vindas_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoasVindasResposta'
+  /api/v1/interessados:
+    post:
+      tags:
+      - Adesão
+      summary: Registrar o interessado
+      description: Público. Devolve o `token_fluxo` que autoriza as rotas de adesão.
+      operationId: registrar_interessado_api_v1_interessados_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteressadoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InteressadoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes:
+    post:
+      tags:
+      - Adesão
+      summary: Abrir a adesão
+      description: Autorizado pelo token de fluxo. Se o interessado já tem adesão,
+        devolve a existente.
+      operationId: abrir_adesao_api_v1_adesoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdesaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/adesoes/{id}:
+    patch:
+      tags:
+      - Adesão
+      summary: Salvar o progresso de uma etapa
+      description: Aceita as etapas `contato` e `negocio`. Termos e confirmação têm
+        rotas próprias.
+      operationId: salvar_etapa_api_v1_adesoes__id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtapaRequisicao'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/anexos:
+    post:
+      tags:
+      - Adesão
+      summary: Enviar a fatura de energia
+      description: '`multipart/form-data`. Aceita PDF, JPG e PNG de até 10 MB, conferidos
+        pelo conteúdo.'
+      operationId: enviar_anexo_api_v1_adesoes__id__anexos_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_enviar_anexo_api_v1_adesoes__id__anexos_post'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnexoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '413':
+          description: Arquivo acima do tamanho máximo permitido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '415':
+          description: Formato de arquivo não suportado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/aceites:
+    post:
+      tags:
+      - Adesão
+      summary: Registrar o aceite dos termos
+      description: Guarda também o IP e o user agent da requisição, para auditoria
+        do consentimento.
+      operationId: registrar_aceite_api_v1_adesoes__id__aceites_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AceiteRequisicao'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdesaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/adesoes/{id}/submissao:
+    post:
+      tags:
+      - Adesão
+      summary: Submeter a adesão
+      description: Cria o cliente com a senha informada e o pedido de homologação.
+      operationId: submeter_adesao_api_v1_adesoes__id__submissao_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissaoRequisicao'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/sessoes:
+    post:
+      tags:
+      - Autenticação
+      summary: Autenticar o cliente
+      description: Público. Aceita e-mail ou CPF como identificador.
+      operationId: criar_sessao_api_v1_sessoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '429':
+          description: Limite de requisições excedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+    delete:
+      tags:
+      - Autenticação
+      summary: Encerrar a sessão
+      description: Invalida o token de renovação. O token de acesso segue válido até
+        expirar.
+      operationId: encerrar_sessao_api_v1_sessoes_delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRenovacaoRequisicao'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/sessoes/renovacao:
+    post:
+      tags:
+      - Autenticação
+      summary: Renovar o token de acesso
+      description: Público, autorizado pelo token de renovação. O token de renovação
+        devolvido substitui o enviado.
+      operationId: renovar_sessao_api_v1_sessoes_renovacao_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRenovacaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/perfil:
+    get:
+      tags:
+      - Autenticação
+      summary: Obter perfil e instalações do cliente
+      operationId: obter_perfil_api_v1_perfil_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Perfil'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
   /api/v1/pedidos:
     get:
       tags:
@@ -453,6 +914,326 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erro'
+  /api/v1/indicacoes:
+    get:
+      tags:
+      - Indique e ganhe
+      summary: Consultar indicações do cliente
+      operationId: obter_indicacoes_api_v1_indicacoes_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PainelIndicacoes'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Indique e ganhe
+      summary: Indicar um contato
+      operationId: indicar_contato_api_v1_indicacoes_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndicacaoRequisicao'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndicacaoItem'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '409':
+          description: Conflito com o estado atual do recurso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '422':
+          description: Regra de negócio violada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+      security:
+      - HTTPBearer: []
+  /api/v1/faturas:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Listar faturas do cliente
+      operationId: listar_faturas_api_v1_faturas_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: situacao
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filtra por situação da fatura.
+          enum:
+          - aberta
+          - paga
+          - vencida
+          title: Situacao
+        description: Filtra por situação da fatura.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginaFaturas'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/faturas/{id}:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Obter uma fatura
+      operationId: obter_fatura_api_v1_faturas__id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaturaResposta'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/consumo:
+    get:
+      tags:
+      - Faturas e Consumo
+      summary: Consultar série de consumo e economia
+      operationId: consultar_consumo_api_v1_consumo_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: instalacao
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 'Número da instalação. Padrão: a principal.'
+          title: Instalacao
+        description: 'Número da instalação. Padrão: a principal.'
+      - name: de
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Primeira competência, no formato AAAA-MM.
+          title: De
+        description: Primeira competência, no formato AAAA-MM.
+      - name: ate
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Última competência, no formato AAAA-MM.
+          title: Ate
+        description: Última competência, no formato AAAA-MM.
+      - name: granularidade
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - mensal
+          - anual
+          default: mensal
+          title: Granularidade
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsumoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/notificacoes:
+    get:
+      tags:
+      - Notificações
+      summary: Listar notificações do cliente
+      operationId: listar_notificacoes_api_v1_notificacoes_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: apenas_nao_lidas
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Quando verdadeiro, devolve só as não lidas.
+          default: false
+          title: Apenas Nao Lidas
+        description: Quando verdadeiro, devolve só as não lidas.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginaNotificacoes'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/notificacoes/{id}:
+    patch:
+      tags:
+      - Notificações
+      summary: Marcar uma notificação como lida ou não lida
+      operationId: atualizar_notificacao_api_v1_notificacoes__id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificacaoRequisicao'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
   /api/v1/ajuda/dicas:
     get:
       tags:
@@ -532,6 +1313,153 @@ components:
       - rotulo
       - exige_resgate
       title: AcaoBeneficio
+    AcaoSugerida:
+      properties:
+        rotulo:
+          type: string
+          title: Rotulo
+          examples:
+          - Ver status do pedido
+        destino:
+          type: string
+          title: Destino
+          examples:
+          - status-pedido
+      type: object
+      required:
+      - rotulo
+      - destino
+      title: AcaoSugerida
+    AceiteRequisicao:
+      properties:
+        aceite_termo_adesao:
+          type: boolean
+          title: Aceite Termo Adesao
+          examples:
+          - true
+        aceite_politica_privacidade:
+          type: boolean
+          title: Aceite Politica Privacidade
+          examples:
+          - true
+        versao_documentos:
+          type: string
+          title: Versao Documentos
+          examples:
+          - '2026-07-01'
+        aceito_em:
+          type: string
+          format: date-time
+          title: Aceito Em
+          examples:
+          - '2026-08-23T14:36:00-03:00'
+      type: object
+      required:
+      - aceite_termo_adesao
+      - aceite_politica_privacidade
+      - versao_documentos
+      - aceito_em
+      title: AceiteRequisicao
+    AdesaoRequisicao:
+      properties:
+        interessado_id:
+          type: string
+          title: Interessado Id
+          examples:
+          - int_18c4a70b
+      type: object
+      required:
+      - interessado_id
+      title: AdesaoRequisicao
+    AdesaoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - ade_6b2f9013
+        situacao:
+          type: string
+          title: Situacao
+          description: em_preenchimento ou submetida
+          examples:
+          - em_preenchimento
+        etapa_atual:
+          type: string
+          title: Etapa Atual
+          examples:
+          - contato
+        etapas_concluidas:
+          items:
+            type: string
+          type: array
+          title: Etapas Concluidas
+          examples:
+          - - contato
+        etapas_pendentes:
+          items:
+            type: string
+          type: array
+          title: Etapas Pendentes
+          examples:
+          - - negocio
+            - termos
+            - confirmacao
+      type: object
+      required:
+      - id
+      - situacao
+      - etapa_atual
+      - etapas_concluidas
+      - etapas_pendentes
+      title: AdesaoResposta
+    AnexoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - anx_4a71cc80
+        tipo:
+          type: string
+          title: Tipo
+          examples:
+          - fatura_energia
+        nome_arquivo:
+          type: string
+          title: Nome Arquivo
+          examples:
+          - fatura-junho.pdf
+        tamanho_bytes:
+          type: integer
+          title: Tamanho Bytes
+          examples:
+          - 284193
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - recebido
+        recebido_em:
+          type: string
+          format: date-time
+          title: Recebido Em
+          examples:
+          - '2026-08-23T14:35:00-03:00'
+        dados_extraidos:
+          anyOf:
+          - $ref: '#/components/schemas/DadosExtraidos'
+          - type: 'null'
+          description: 'Sempre nulo: ainda não há leitura automática da fatura.'
+      type: object
+      required:
+      - id
+      - tipo
+      - nome_arquivo
+      - tamanho_bytes
+      - situacao
+      - recebido_em
+      title: AnexoResposta
     Beneficio:
       properties:
         id:
@@ -615,6 +1543,70 @@ components:
       required:
       - texto
       title: BlocoParagrafo
+    BoasVindasResposta:
+      properties:
+        versao:
+          type: string
+          title: Versao
+          examples:
+          - '2026-08-01'
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Como funciona
+        passos:
+          items:
+            $ref: '#/components/schemas/PassoBoasVindas'
+          type: array
+          title: Passos
+      type: object
+      required:
+      - versao
+      - titulo
+      - passos
+      title: BoasVindasResposta
+    Body_enviar_anexo_api_v1_adesoes__id__anexos_post:
+      properties:
+        arquivo:
+          type: string
+          contentMediaType: application/octet-stream
+          title: Arquivo
+        tipo:
+          type: string
+          title: Tipo
+          examples:
+          - fatura_energia
+      type: object
+      required:
+      - arquivo
+      - tipo
+      title: Body_enviar_anexo_api_v1_adesoes__id__anexos_post
+    ClienteSessao:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - cli_3f81aa02
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        possui_pedido_em_andamento:
+          type: boolean
+          title: Possui Pedido Em Andamento
+        possui_fatura_emitida:
+          type: boolean
+          title: Possui Fatura Emitida
+      type: object
+      required:
+      - id
+      - nome
+      - possui_pedido_em_andamento
+      - possui_fatura_emitida
+      title: ClienteSessao
     CondicoesResgate:
       properties:
         tipo:
@@ -643,6 +1635,40 @@ components:
       - elegivel
       - motivo_inelegibilidade
       title: CondicoesResgate
+    ConsumoResposta:
+      properties:
+        instalacao:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instalacao
+          examples:
+          - '3013588579'
+        granularidade:
+          type: string
+          title: Granularidade
+          description: mensal ou anual
+          examples:
+          - mensal
+        serie:
+          items:
+            $ref: '#/components/schemas/PontoConsumo'
+          type: array
+          title: Serie
+        totais:
+          $ref: '#/components/schemas/TotaisConsumo'
+        estado_vazio:
+          anyOf:
+          - $ref: '#/components/schemas/EstadoVazioComAcao'
+          - type: 'null'
+          description: Só vem preenchido quando o cliente não tem nenhuma fatura.
+      type: object
+      required:
+      - instalacao
+      - granularidade
+      - serie
+      - totais
+      title: ConsumoResposta
     CorpoErro:
       properties:
         codigo:
@@ -668,6 +1694,35 @@ components:
       - codigo
       - mensagem
       title: CorpoErro
+    DadosExtraidos:
+      properties:
+        numero_instalacao:
+          type: string
+          title: Numero Instalacao
+          examples:
+          - '3013588579'
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+          examples:
+          - 35000
+        consumo_kwh:
+          type: integer
+          title: Consumo Kwh
+          examples:
+          - 249
+        confianca:
+          type: number
+          title: Confianca
+          examples:
+          - 0.92
+      type: object
+      required:
+      - numero_instalacao
+      - valor_centavos
+      - consumo_kwh
+      - confianca
+      title: DadosExtraidos
     DetalheErro:
       properties:
         campo:
@@ -746,6 +1801,35 @@ components:
       - titulo
       - mensagem
       title: EstadoVazio
+    EstadoVazioComAcao:
+      properties:
+        chave:
+          type: string
+          title: Chave
+          description: sem_instalacao, aguardando_homologacao ou homologado_sem_fatura
+          examples:
+          - aguardando_homologacao
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Oops... Não encontrei nenhuma fatura.
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - Seu pedido ainda está em análise pela Cemig. A primeira fatura chega depois
+            da aprovação.
+        acao_sugerida:
+          anyOf:
+          - $ref: '#/components/schemas/AcaoSugerida'
+          - type: 'null'
+      type: object
+      required:
+      - chave
+      - titulo
+      - mensagem
+      title: EstadoVazioComAcao
     EtapaAtualPedido:
       properties:
         ordem:
@@ -832,6 +1916,262 @@ components:
       - descricao
       - situacao
       title: EtapaPedido
+    EtapaRequisicao:
+      properties:
+        etapa:
+          type: string
+          title: Etapa
+          description: contato ou negocio
+          examples:
+          - negocio
+        dados:
+          additionalProperties: true
+          type: object
+          title: Dados
+          examples:
+          - cep: '30140071'
+            classe_consumo: residencial
+            distribuidora: CEMIG
+            numero_instalacao: '3013588579'
+            titular_documento: '00000000000'
+            titular_nome: Maria Souza
+      type: object
+      required:
+      - etapa
+      - dados
+      title: EtapaRequisicao
+    FaixaIndicacao:
+      properties:
+        chave:
+          type: string
+          title: Chave
+          examples:
+          - economia_com_indicacoes
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Economia + indicações
+        proxima_faixa:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Proxima Faixa
+          description: Nulo na faixa TOP.
+          examples:
+          - top_indicador
+        indicacoes_para_proxima_faixa:
+          type: integer
+          title: Indicacoes Para Proxima Faixa
+          examples:
+          - 7
+      type: object
+      required:
+      - chave
+      - nome
+      - indicacoes_para_proxima_faixa
+      title: FaixaIndicacao
+    FaturaResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - fat_08a2ce31
+        competencia:
+          type: string
+          title: Competencia
+          examples:
+          - 2026-08
+        vencimento:
+          type: string
+          format: date
+          title: Vencimento
+          examples:
+          - '2026-09-10'
+        valor_centavos:
+          type: integer
+          title: Valor Centavos
+          examples:
+          - 29750
+        economia_centavos:
+          type: integer
+          title: Economia Centavos
+          examples:
+          - 5250
+        situacao:
+          type: string
+          title: Situacao
+          description: aberta, paga ou vencida
+          examples:
+          - aberta
+        linha_digitavel:
+          type: string
+          title: Linha Digitavel
+          examples:
+          - 00190000090123456789012345678901234567890123
+        url_pdf:
+          type: string
+          title: Url Pdf
+          examples:
+          - https://cdn.bulbe.com.br/faturas/fat_08a2ce31.pdf
+      type: object
+      required:
+      - id
+      - competencia
+      - vencimento
+      - valor_centavos
+      - economia_centavos
+      - situacao
+      - linha_digitavel
+      - url_pdf
+      title: FaturaResposta
+    IndicacaoItem:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - ind_a10
+        nome_ofuscado:
+          type: string
+          title: Nome Ofuscado
+          description: O nome completo do indicado nunca é exibido.
+          examples:
+          - Jo** S****
+        situacao:
+          type: string
+          title: Situacao
+          description: pendente ou convertida
+          examples:
+          - convertida
+        indicada_em:
+          type: string
+          format: date
+          title: Indicada Em
+          examples:
+          - '2026-07-02'
+      type: object
+      required:
+      - id
+      - nome_ofuscado
+      - situacao
+      - indicada_em
+      title: IndicacaoItem
+    IndicacaoRequisicao:
+      properties:
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - João Silva
+        whatsapp:
+          type: string
+          title: Whatsapp
+          description: Com ou sem máscara; de 12 a 13 dígitos.
+          examples:
+          - '+5531988887777'
+      type: object
+      required:
+      - nome
+      - whatsapp
+      title: IndicacaoRequisicao
+    InstalacaoPerfil:
+      properties:
+        numero:
+          type: string
+          title: Numero
+          examples:
+          - '3013588579'
+        distribuidora:
+          type: string
+          title: Distribuidora
+          examples:
+          - CEMIG
+        pedido_id:
+          type: string
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+        principal:
+          type: boolean
+          title: Principal
+      type: object
+      required:
+      - numero
+      - distribuidora
+      - pedido_id
+      - principal
+      title: InstalacaoPerfil
+    InteressadoRequisicao:
+      properties:
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        email:
+          type: string
+          title: Email
+          examples:
+          - cliente@exemplo.com.br
+        whatsapp:
+          type: string
+          title: Whatsapp
+          examples:
+          - '+5531999998888'
+        simulacao_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Simulacao Id
+          examples:
+          - sim_2c81b40e
+        aceite_comunicacoes:
+          type: boolean
+          title: Aceite Comunicacoes
+          description: Consentimento de marketing, distinto do aceite dos termos.
+          examples:
+          - true
+      type: object
+      required:
+      - nome
+      - email
+      - whatsapp
+      - aceite_comunicacoes
+      title: InteressadoRequisicao
+    InteressadoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - int_18c4a70b
+        situacao:
+          type: string
+          title: Situacao
+          description: novo ou convertido
+          examples:
+          - novo
+        token_fluxo:
+          type: string
+          title: Token Fluxo
+          description: 'Enviar em `Authorization: Bearer` nas rotas de adesão.'
+          examples:
+          - tfl_c93b21ee...
+        expira_em:
+          type: string
+          format: date-time
+          title: Expira Em
+          examples:
+          - '2026-08-24T14:30:00-03:00'
+      type: object
+      required:
+      - id
+      - situacao
+      - token_fluxo
+      - expira_em
+      title: InteressadoResposta
     ItemLista:
       properties:
         titulo:
@@ -912,6 +2252,64 @@ components:
       - subtotal
       - observacao
       title: MemoriaCalculo
+    NotificacaoRequisicao:
+      properties:
+        lida:
+          type: boolean
+          title: Lida
+          examples:
+          - true
+      type: object
+      required:
+      - lida
+      title: NotificacaoRequisicao
+    NotificacaoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - not_c410aa7b
+        tipo:
+          type: string
+          title: Tipo
+          description: mudanca_etapa_pedido, pedido_criado, indicacao_convertida ou
+            fatura_emitida
+          examples:
+          - mudanca_etapa_pedido
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Seu pedido avançou de etapa
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - 'Seu pedido está agora em: Enviado para Cemig.'
+        lida:
+          type: boolean
+          title: Lida
+          examples:
+          - false
+        criada_em:
+          type: string
+          format: date-time
+          title: Criada Em
+          examples:
+          - '2026-08-22T09:00:00-03:00'
+        referencia:
+          $ref: '#/components/schemas/ReferenciaNotificacao'
+      type: object
+      required:
+      - id
+      - tipo
+      - titulo
+      - mensagem
+      - lida
+      - criada_em
+      - referencia
+      title: NotificacaoResposta
     PaginaBeneficios:
       properties:
         dados:
@@ -946,6 +2344,76 @@ components:
       - limite
       - total
       title: PaginaBeneficios
+    PaginaFaturas:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/FaturaResposta'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+        estado_vazio:
+          anyOf:
+          - $ref: '#/components/schemas/EstadoVazioComAcao'
+          - type: 'null'
+          description: Só vem preenchido quando o cliente não tem nenhuma fatura.
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      title: PaginaFaturas
+    PaginaNotificacoes:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/NotificacaoResposta'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+        nao_lidas:
+          type: integer
+          title: Nao Lidas
+          description: Total de não lidas do cliente, sem paginação nem filtro.
+          examples:
+          - 1
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      - nao_lidas
+      title: PaginaNotificacoes
     Paginacao_PedidoResumo_:
       properties:
         dados:
@@ -1033,6 +2501,56 @@ components:
       - limite
       - total
       title: Paginacao[SimulacaoResumo]
+    PainelIndicacoes:
+      properties:
+        codigo:
+          type: string
+          title: Codigo
+          examples:
+          - MARIA50
+        url_compartilhamento:
+          type: string
+          title: Url Compartilhamento
+          examples:
+          - https://bulbe.com.br/indique/MARIA50
+        recompensa_por_indicacao_centavos:
+          type: integer
+          title: Recompensa Por Indicacao Centavos
+          examples:
+          - 5000
+        total_indicacoes:
+          type: integer
+          title: Total Indicacoes
+          examples:
+          - 3
+        indicacoes_convertidas:
+          type: integer
+          title: Indicacoes Convertidas
+          examples:
+          - 2
+        credito_acumulado_centavos:
+          type: integer
+          title: Credito Acumulado Centavos
+          examples:
+          - 10000
+        faixa_atual:
+          $ref: '#/components/schemas/FaixaIndicacao'
+        indicacoes:
+          items:
+            $ref: '#/components/schemas/IndicacaoItem'
+          type: array
+          title: Indicacoes
+      type: object
+      required:
+      - codigo
+      - url_compartilhamento
+      - recompensa_por_indicacao_centavos
+      - total_indicacoes
+      - indicacoes_convertidas
+      - credito_acumulado_centavos
+      - faixa_atual
+      - indicacoes
+      title: PainelIndicacoes
     ParceiroBeneficio:
       properties:
         id:
@@ -1085,6 +2603,41 @@ components:
       - nome
       - url_logo
       title: ParceiroDestaque
+    PassoBoasVindas:
+      properties:
+        ordem:
+          type: integer
+          title: Ordem
+          examples:
+          - 1
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Energia solar que gera economia
+        texto:
+          type: string
+          title: Texto
+          examples:
+          - Nossas fazendas solares produzem energia limpa e renovável.
+        url_ilustracao:
+          type: string
+          title: Url Ilustracao
+          examples:
+          - https://cdn.bulbe.com.br/boas-vindas/passo-1.svg
+        texto_alternativo:
+          type: string
+          title: Texto Alternativo
+          examples:
+          - Painéis solares em uma fazenda solar
+      type: object
+      required:
+      - ordem
+      - titulo
+      - texto
+      - url_ilustracao
+      - texto_alternativo
+      title: PassoBoasVindas
     PedidoResumo:
       properties:
         id:
@@ -1138,6 +2691,71 @@ components:
       - etapa_atual_nome
       - criado_em
       title: PedidoResumo
+    Perfil:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - cli_3f81aa02
+        nome:
+          type: string
+          title: Nome
+          examples:
+          - Maria Souza
+        email:
+          type: string
+          title: Email
+          examples:
+          - cliente@exemplo.com.br
+        telefone:
+          type: string
+          title: Telefone
+          examples:
+          - '+5531999998888'
+        instalacoes:
+          items:
+            $ref: '#/components/schemas/InstalacaoPerfil'
+          type: array
+          title: Instalacoes
+      type: object
+      required:
+      - id
+      - nome
+      - email
+      - telefone
+      - instalacoes
+      title: Perfil
+    PontoConsumo:
+      properties:
+        competencia:
+          type: string
+          title: Competencia
+          description: AAAA-MM na série mensal, AAAA na anual
+          examples:
+          - 2026-08
+        consumo_kwh:
+          type: integer
+          title: Consumo Kwh
+          examples:
+          - 249
+        valor_pago_centavos:
+          type: integer
+          title: Valor Pago Centavos
+          examples:
+          - 29750
+        economia_centavos:
+          type: integer
+          title: Economia Centavos
+          examples:
+          - 5250
+      type: object
+      required:
+      - competencia
+      - consumo_kwh
+      - valor_pago_centavos
+      - economia_centavos
+      title: PontoConsumo
     PrazoEstimado:
       properties:
         minimo:
@@ -1155,6 +2773,24 @@ components:
       - minimo
       - maximo
       title: PrazoEstimado
+    ReferenciaNotificacao:
+      properties:
+        tipo:
+          type: string
+          title: Tipo
+          description: pedido, indicacao ou fatura
+          examples:
+          - pedido
+        id:
+          type: string
+          title: Id
+          examples:
+          - ped_7f3a9c21
+      type: object
+      required:
+      - tipo
+      - id
+      title: ReferenciaNotificacao
     ResgateCriado:
       properties:
         id:
@@ -1319,6 +2955,56 @@ components:
       - valor_sem_desconto
       - valor_com_bulbe
       title: RotulosSimulacao
+    SessaoRequisicao:
+      properties:
+        identificador:
+          type: string
+          title: Identificador
+          description: E-mail ou CPF, com ou sem máscara.
+          examples:
+          - cliente@exemplo.com.br
+        senha:
+          type: string
+          title: Senha
+          examples:
+          - '********'
+      type: object
+      required:
+      - identificador
+      - senha
+      title: SessaoRequisicao
+    SessaoResposta:
+      properties:
+        token_acesso:
+          type: string
+          title: Token Acesso
+          examples:
+          - eyJhbGciOiJIUzI1NiIs...
+        tipo_token:
+          type: string
+          title: Tipo Token
+          examples:
+          - Bearer
+        expira_em_segundos:
+          type: integer
+          title: Expira Em Segundos
+          examples:
+          - 900
+        token_renovacao:
+          type: string
+          title: Token Renovacao
+          examples:
+          - trn_9d21ba0c7e
+        cliente:
+          $ref: '#/components/schemas/ClienteSessao'
+      type: object
+      required:
+      - token_acesso
+      - tipo_token
+      - expira_em_segundos
+      - token_renovacao
+      - cliente
+      title: SessaoResposta
     SimulacaoRequisicao:
       properties:
         valor_fatura_centavos:
@@ -1483,6 +3169,62 @@ components:
       - consultado_em
       - dado_desatualizado
       title: StatusPedido
+    SubmissaoRequisicao:
+      properties:
+        senha:
+          type: string
+          title: Senha
+          examples:
+          - '********'
+        aceite_compartilhamento_dados:
+          type: boolean
+          title: Aceite Compartilhamento Dados
+          examples:
+          - true
+      type: object
+      required:
+      - senha
+      - aceite_compartilhamento_dados
+      title: SubmissaoRequisicao
+    SubmissaoResposta:
+      properties:
+        adesao_id:
+          type: string
+          title: Adesao Id
+          examples:
+          - ade_6b2f9013
+        cliente_id:
+          type: string
+          title: Cliente Id
+          examples:
+          - cli_3f81aa02
+        pedido_id:
+          type: string
+          title: Pedido Id
+          examples:
+          - ped_7f3a9c21
+        situacao:
+          type: string
+          title: Situacao
+          examples:
+          - submetida
+        prazo_estimado_dias:
+          $ref: '#/components/schemas/PrazoEstimado'
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - Recebemos sua adesão. A homologação junto à Cemig leva de 90 a 120 dias
+            e você pode acompanhar cada etapa pelo app.
+      type: object
+      required:
+      - adesao_id
+      - cliente_id
+      - pedido_id
+      - situacao
+      - prazo_estimado_dias
+      - mensagem
+      title: SubmissaoResposta
     SubtotalMemoriaCalculo:
       properties:
         rotulo:
@@ -1504,6 +3246,34 @@ components:
       - consumo_kwh
       - valor_centavos
       title: SubtotalMemoriaCalculo
+    TokenRenovacaoRequisicao:
+      properties:
+        token_renovacao:
+          type: string
+          title: Token Renovacao
+          examples:
+          - trn_9d21ba0c7e
+      type: object
+      required:
+      - token_renovacao
+      title: TokenRenovacaoRequisicao
+    TotaisConsumo:
+      properties:
+        economia_acumulada_centavos:
+          type: integer
+          title: Economia Acumulada Centavos
+          examples:
+          - 10330
+        consumo_medio_kwh:
+          type: integer
+          title: Consumo Medio Kwh
+          examples:
+          - 245
+      type: object
+      required:
+      - economia_acumulada_centavos
+      - consumo_medio_kwh
+      title: TotaisConsumo
     Trilha:
       properties:
         chave:
@@ -1594,11 +3364,23 @@ components:
       description: Token JWT no formato `Bearer <token>`.
       scheme: bearer
 tags:
+- name: Boas-vindas
+  description: 'Conteúdo da tela inicial: título e passos do Como funciona'
+- name: Adesão
+  description: Cadastro do interessado, etapas da adesão, fatura e submissão
+- name: Autenticação
+  description: Sessões, renovação de token e perfil do cliente
 - name: Simulações
   description: Cálculo de estimativa de desconto na conta de luz
 - name: Jornada do Cliente
   description: Status do pedido e timeline da homologação CEMIG
 - name: Clube de Benefícios
   description: Trilhas, benefícios dos parceiros e resgates
+- name: Indique e ganhe
+  description: Código de indicação, faixas, crédito e indicados
+- name: Faturas e Consumo
+  description: Faturas Bulbe, série de consumo e economia
+- name: Notificações
+  description: 'Avisos do sino: mudança de etapa, pedido criado e indicação convertida'
 - name: Ajuda
   description: Textos de ajuda contextual por tela

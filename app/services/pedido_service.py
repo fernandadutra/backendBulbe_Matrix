@@ -7,7 +7,9 @@ from app.core import relogio
 from app.core.erros import ErroApi
 from app.models.cliente import Cliente
 from app.models.pedido import SITUACOES_PEDIDO, Etapa, Pedido
+from app.repositories.notificacao_repository import NotificacaoRepository
 from app.repositories.pedido_repository import PedidoRepository
+from app.services import notificacao_service
 from app.services.integracao_cemig import IntegracaoCemig
 
 PRAZO_ESTIMADO_DIAS = {"minimo": 90, "maximo": 120}
@@ -36,7 +38,8 @@ def listar_pedidos(cliente: Cliente, situacao: Optional[str], repositorio: Pedid
 
 
 def obter_status(
-    pedido_id: str, cliente: Cliente, repositorio: PedidoRepository, integracao: IntegracaoCemig
+    pedido_id: str, cliente: Cliente, repositorio: PedidoRepository, integracao: IntegracaoCemig,
+    notificacoes: NotificacaoRepository,
 ) -> StatusDoPedido:
     pedido = repositorio.obter(pedido_id)
     # Pedido de outro cliente recebe a mesma resposta de pedido inexistente.
@@ -53,7 +56,11 @@ def obter_status(
         desatualizado = True
 
     if etapas is not None:
+        chave_anterior = pedido.etapa_atual.chave if pedido.etapa_atual else None
         repositorio.salvar_consulta(pedido, etapas, relogio.agora())
+        atual = pedido.etapa_atual
+        if atual and atual.chave != chave_anterior:
+            notificacao_service.notificar(pedido.cliente_id, "mudanca_etapa_pedido", "pedido", pedido.id, notificacoes, atual.nome)
 
     if pedido.consultado_em is None:
         raise ErroApi(

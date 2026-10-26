@@ -41,4 +41,14 @@ def test_openapi_sem_validacao_automatica_do_fastapi(cliente_http):
         assert nome in esquemas
     assert any(n.startswith("Paginacao") for n in esquemas)
     assert "/api/v1/simulacoes" in r.json()["paths"]
+    for caminho in ("/api/v1/sessoes", "/api/v1/sessoes/renovacao", "/api/v1/perfil"):
+        assert caminho in r.json()["paths"]
+    for caminho in ("/api/v1/interessados", "/api/v1/adesoes/{id}/submissao"):
+        assert caminho in r.json()["paths"]
+    assert "/api/v1/indicacoes" in r.json()["paths"]
+    assert "/api/v1/notificacoes" in r.json()["paths"]
+    assert "/api/v1/conteudos/boas-vindas" in r.json()["paths"]
+    for caminho in ("/api/v1/faturas", "/api/v1/faturas/{id}", "/api/v1/consumo"):
+        assert caminho in r.json()["paths"]
+    assert "EstadoVazioComAcao" in esquemas and "EstadoVazio" in esquemas
     assert "/v1/usinas" not in r.json()["paths"]

@@ -1,12 +1,20 @@
 from datetime import date, datetime, timedelta, timezone
-from typing import List
+from typing import Dict, List
 
+from app.core import senhas
 from app.models.beneficio import Beneficio, Parceiro, Trilha
 from app.models.cliente import Cliente
+from app.models.conteudo import ConteudoBoasVindas, Passo
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
+from app.models.fatura import Fatura
+from app.models.indicacao import Indicacao
+from app.models.notificacao import Notificacao
 from app.models.pedido import CATALOGO_ETAPAS, Etapa, Pedido
 
 _BRT = timezone(timedelta(hours=-3))
+
+SENHA_DEV = "bulbe-dev-123"
+_hash_senha_dev = None
 
 
 def _dt(ano, mes, dia, hora=9, minuto=0) -> datetime:
@@ -21,9 +29,15 @@ def _etapas(situacoes, iniciadas, concluidas) -> List[Etapa]:
 
 
 def clientes() -> List[Cliente]:
+    global _hash_senha_dev
+    # O hash é caro e reiniciar_estado() roda a cada teste: calcula uma vez por processo.
+    if _hash_senha_dev is None:
+        _hash_senha_dev = senhas.gerar_hash(SENHA_DEV)
     return [
-        Cliente(id="cli_3b9e1f42", nome="Ana Souza"),
-        Cliente(id="cli_8d21c7a0", nome="Bruno Lima"),
+        Cliente(id="cli_3b9e1f42", nome="Ana Souza", email="ana@exemplo.com.br", cpf="52998224725",
+                telefone="+5531999998888", senha_hash=_hash_senha_dev),
+        Cliente(id="cli_8d21c7a0", nome="Bruno Lima", email="bruno@exemplo.com.br", cpf="11144477735",
+                telefone="+5531988887777", senha_hash=_hash_senha_dev),
     ]
 
 
@@ -59,6 +73,23 @@ def pedidos() -> List[Pedido]:
         consultado_em=_dt(2026, 8, 23, 14, 30),
     )
     return [pedido_a, pedido_b]
+
+
+def faturas() -> List[Fatura]:
+    def fatura(sufixo, competencia, vencimento, consumo, valor, economia, situacao):
+        id_ = f"fat_{sufixo}"
+        return Fatura(
+            id=id_, cliente_id="cli_8d21c7a0", pedido_id="ped_c41e88d2", competencia=competencia,
+            vencimento=vencimento, valor_centavos=valor, economia_centavos=economia, consumo_kwh=consumo,
+            situacao=situacao, linha_digitavel=f"001900000901234567890123456789012345678901{competencia[-2:]}",
+            url_pdf=f"https://cdn.bulbe.com.br/faturas/{id_}.pdf",
+        )
+
+    return [
+        fatura("08a2ce31", "2026-08", date(2026, 9, 10), 241, 28800, 5080, "paga"),
+        fatura("1b7d4e92", "2026-09", date(2026, 10, 10), 249, 29750, 5250, "paga"),
+        fatura("2c9f5a03", "2026-10", date(2026, 11, 10), 255, 30600, 5400, "aberta"),
+    ]
 
 
 def parceiros() -> List[Parceiro]:
@@ -181,3 +212,62 @@ def dicas() -> List[Dica]:
             ],
         ),
     ]
+
+
+def indicacoes() -> List[Indicacao]:
+    return [
+        Indicacao("ind_a10", "cli_3b9e1f42", "João Silva", "+5531977771111", "convertida", date(2026, 7, 2), _dt(2026, 7, 9)),
+        Indicacao("ind_a11", "cli_3b9e1f42", "Marcos Pereira", "+5531977772222", "convertida", date(2026, 7, 20), _dt(2026, 7, 28)),
+        Indicacao("ind_a12", "cli_3b9e1f42", "Carla Lima", "+5531977773333", "pendente", date(2026, 8, 11)),
+    ]
+
+
+def codigos_de_indicacao() -> Dict[str, str]:
+    return {"cli_3b9e1f42": "ANA50"}
+
+
+def notificacoes() -> List[Notificacao]:
+    # Os textos repetem o que notificacao_service.notificar geraria; um teste garante a igualdade.
+    return [
+        Notificacao(
+            "not_5a1c9e07", "cli_8d21c7a0", "mudanca_etapa_pedido", "Seu pedido avançou de etapa",
+            "Seu pedido está agora em: Aprovado.", True, _dt(2026, 7, 14, 9, 0), "pedido", "ped_c41e88d2",
+        ),
+        Notificacao(
+            "not_7d3b2f18", "cli_8d21c7a0", "fatura_emitida", "Sua fatura de outubro chegou",
+            "Sua fatura de outubro já está disponível. Vence em 10 de novembro.", True, _dt(2026, 10, 12, 8, 0),
+            "fatura", "fat_2c9f5a03",
+        ),
+        Notificacao(
+            "not_c410aa7b", "cli_3b9e1f42", "pedido_criado", "Recebemos seu pedido",
+            "Sua adesão foi recebida e a homologação junto à Cemig já começou. Acompanhe cada etapa pelo app.",
+            False, _dt(2026, 6, 2, 9, 14), "pedido", "ped_7f3a9c21",
+        ),
+    ]
+
+
+def boas_vindas() -> ConteudoBoasVindas:
+    return ConteudoBoasVindas(
+        versao="2026-08-01",
+        titulo="Como funciona",
+        passos=[
+            Passo(
+                1, "Energia solar que gera economia",
+                "Nossas fazendas solares produzem energia limpa e renovável.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-1.svg",
+                "Painéis solares em uma fazenda solar",
+            ),
+            Passo(
+                2, "Energia que chega até você",
+                "Essa energia solar é enviada para a rede de distribuição da CEMIG.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-2.svg",
+                "Linhas de transmissão levando energia à rede da distribuidora",
+            ),
+            Passo(
+                3, "Créditos que viram desconto na sua conta de luz",
+                "A energia chega em forma de créditos que se transformam em desconto.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-3.svg",
+                "Fatura de energia com valor reduzido pelo desconto",
+            ),
+        ],
+    )

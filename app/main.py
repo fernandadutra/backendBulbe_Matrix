@@ -1,6 +1,17 @@
 from fastapi import FastAPI
 
-from app.controllers import ajuda_controller, beneficios_controller, pedidos_controller, simulacoes_controller
+from app.controllers import (
+    adesoes_controller,
+    ajuda_controller,
+    autenticacao_controller,
+    beneficios_controller,
+    conteudos_controller,
+    faturas_controller,
+    indicacoes_controller,
+    notificacoes_controller,
+    pedidos_controller,
+    simulacoes_controller,
+)
 from app.core.erros import registrar_tratadores
 
 app = FastAPI(
@@ -11,17 +22,29 @@ app = FastAPI(
     """,
     version="1.0.0",
     openapi_tags=[
+        {"name": "Boas-vindas", "description": "Conteúdo da tela inicial: título e passos do Como funciona"},
+        {"name": "Adesão", "description": "Cadastro do interessado, etapas da adesão, fatura e submissão"},
+        {"name": "Autenticação", "description": "Sessões, renovação de token e perfil do cliente"},
         {"name": "Simulações", "description": "Cálculo de estimativa de desconto na conta de luz"},
         {"name": "Jornada do Cliente", "description": "Status do pedido e timeline da homologação CEMIG"},
         {"name": "Clube de Benefícios", "description": "Trilhas, benefícios dos parceiros e resgates"},
+        {"name": "Indique e ganhe", "description": "Código de indicação, faixas, crédito e indicados"},
+        {"name": "Faturas e Consumo", "description": "Faturas Bulbe, série de consumo e economia"},
+        {"name": "Notificações", "description": "Avisos do sino: mudança de etapa, pedido criado e indicação convertida"},
         {"name": "Ajuda", "description": "Textos de ajuda contextual por tela"},
     ],
 )
 
 registrar_tratadores(app)
+app.include_router(conteudos_controller.router, prefix="/api/v1")
+app.include_router(adesoes_controller.router, prefix="/api/v1")
+app.include_router(autenticacao_controller.router, prefix="/api/v1")
 app.include_router(pedidos_controller.router, prefix="/api/v1")
 app.include_router(simulacoes_controller.router, prefix="/api/v1")
 app.include_router(beneficios_controller.router, prefix="/api/v1")
+app.include_router(indicacoes_controller.router, prefix="/api/v1")
+app.include_router(faturas_controller.router, prefix="/api/v1")
+app.include_router(notificacoes_controller.router, prefix="/api/v1")
 app.include_router(ajuda_controller.router, prefix="/api/v1")
 
 

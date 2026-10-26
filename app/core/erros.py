@@ -44,6 +44,8 @@ _PROBLEMAS = {
     "int_from_float": "deve ser um número inteiro, sem casas decimais",
     "int_type": "deve ser um número inteiro",
     "string_type": "deve ser um texto",
+    "bool_type": "deve ser true ou false",
+    "bool_parsing": "deve ser true ou false",
     "json_invalid": "JSON malformado",
     "model_attributes_type": "o corpo deve ser um objeto JSON",
     "dict_type": "o corpo deve ser um objeto JSON",
