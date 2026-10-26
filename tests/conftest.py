@@ -7,6 +7,7 @@ from app.core import relogio
 from app.core.estado import reiniciar_estado
 from app.core.seguranca import emitir_token
 from app.main import app
+from app.repositories.dados_iniciais import SENHA_DEV  # noqa: F401  (reexportada para os testes)
 
 AGORA_CONGELADA = datetime(2026, 10, 21, 10, 0, tzinfo=relogio.FUSO)
 
@@ -14,6 +15,9 @@ CLIENTE_A = "cli_3b9e1f42"
 CLIENTE_B = "cli_8d21c7a0"
 PEDIDO_A = "ped_7f3a9c21"
 PEDIDO_B = "ped_c41e88d2"
+EMAIL_A = "ana@exemplo.com.br"
+CPF_A = "52998224725"
+EMAIL_B = "bruno@exemplo.com.br"
 
 
 @pytest.fixture(autouse=True)
