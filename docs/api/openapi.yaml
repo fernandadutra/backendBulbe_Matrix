@@ -1122,6 +1122,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erro'
+  /api/v1/notificacoes:
+    get:
+      tags:
+      - Notificações
+      summary: Listar notificações do cliente
+      operationId: listar_notificacoes_api_v1_notificacoes_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: apenas_nao_lidas
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Quando verdadeiro, devolve só as não lidas.
+          default: false
+          title: Apenas Nao Lidas
+        description: Quando verdadeiro, devolve só as não lidas.
+      - name: pagina
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          title: Pagina
+      - name: limite
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limite
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginaNotificacoes'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  /api/v1/notificacoes/{id}:
+    patch:
+      tags:
+      - Notificações
+      summary: Marcar uma notificação como lida ou não lida
+      operationId: atualizar_notificacao_api_v1_notificacoes__id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificacaoRequisicao'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificacaoResposta'
+        '400':
+          description: Corpo malformado ou parâmetro inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '401':
+          description: Token ausente, expirado ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Recurso inexistente ou não pertencente ao cliente autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
   /api/v1/ajuda/dicas:
     get:
       tags:
@@ -2117,6 +2214,64 @@ components:
       - subtotal
       - observacao
       title: MemoriaCalculo
+    NotificacaoRequisicao:
+      properties:
+        lida:
+          type: boolean
+          title: Lida
+          examples:
+          - true
+      type: object
+      required:
+      - lida
+      title: NotificacaoRequisicao
+    NotificacaoResposta:
+      properties:
+        id:
+          type: string
+          title: Id
+          examples:
+          - not_c410aa7b
+        tipo:
+          type: string
+          title: Tipo
+          description: mudanca_etapa_pedido, pedido_criado, indicacao_convertida ou
+            fatura_emitida
+          examples:
+          - mudanca_etapa_pedido
+        titulo:
+          type: string
+          title: Titulo
+          examples:
+          - Seu pedido avançou de etapa
+        mensagem:
+          type: string
+          title: Mensagem
+          examples:
+          - 'Seu pedido está agora em: Enviado para Cemig.'
+        lida:
+          type: boolean
+          title: Lida
+          examples:
+          - false
+        criada_em:
+          type: string
+          format: date-time
+          title: Criada Em
+          examples:
+          - '2026-08-22T09:00:00-03:00'
+        referencia:
+          $ref: '#/components/schemas/ReferenciaNotificacao'
+      type: object
+      required:
+      - id
+      - tipo
+      - titulo
+      - mensagem
+      - lida
+      - criada_em
+      - referencia
+      title: NotificacaoResposta
     PaginaBeneficios:
       properties:
         dados:
@@ -2185,6 +2340,42 @@ components:
       - limite
       - total
       title: PaginaFaturas
+    PaginaNotificacoes:
+      properties:
+        dados:
+          items:
+            $ref: '#/components/schemas/NotificacaoResposta'
+          type: array
+          title: Dados
+        pagina:
+          type: integer
+          title: Pagina
+          examples:
+          - 1
+        limite:
+          type: integer
+          title: Limite
+          examples:
+          - 20
+        total:
+          type: integer
+          title: Total
+          examples:
+          - 1
+        nao_lidas:
+          type: integer
+          title: Nao Lidas
+          description: Total de não lidas do cliente, sem paginação nem filtro.
+          examples:
+          - 1
+      type: object
+      required:
+      - dados
+      - pagina
+      - limite
+      - total
+      - nao_lidas
+      title: PaginaNotificacoes
     Paginacao_PedidoResumo_:
       properties:
         dados:
@@ -2509,6 +2700,24 @@ components:
       - minimo
       - maximo
       title: PrazoEstimado
+    ReferenciaNotificacao:
+      properties:
+        tipo:
+          type: string
+          title: Tipo
+          description: pedido, indicacao ou fatura
+          examples:
+          - pedido
+        id:
+          type: string
+          title: Id
+          examples:
+          - ped_7f3a9c21
+      type: object
+      required:
+      - tipo
+      - id
+      title: ReferenciaNotificacao
     ResgateCriado:
       properties:
         id:
@@ -3096,5 +3305,7 @@ tags:
   description: Código de indicação, faixas, crédito e indicados
 - name: Faturas e Consumo
   description: Faturas Bulbe, série de consumo e economia
+- name: Notificações
+  description: 'Avisos do sino: mudança de etapa, pedido criado e indicação convertida'
 - name: Ajuda
   description: Textos de ajuda contextual por tela
