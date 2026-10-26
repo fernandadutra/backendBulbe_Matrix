@@ -4,6 +4,7 @@ from typing import Dict, List
 from app.core import senhas
 from app.models.beneficio import Beneficio, Parceiro, Trilha
 from app.models.cliente import Cliente
+from app.models.conteudo import ConteudoBoasVindas, Passo
 from app.models.dica import BlocoLista, BlocoParagrafo, Dica, ItemLista
 from app.models.fatura import Fatura
 from app.models.indicacao import Indicacao
@@ -243,3 +244,30 @@ def notificacoes() -> List[Notificacao]:
             False, _dt(2026, 6, 2, 9, 14), "pedido", "ped_7f3a9c21",
         ),
     ]
+
+
+def boas_vindas() -> ConteudoBoasVindas:
+    return ConteudoBoasVindas(
+        versao="2026-08-01",
+        titulo="Como funciona",
+        passos=[
+            Passo(
+                1, "Energia solar que gera economia",
+                "Nossas fazendas solares produzem energia limpa e renovável.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-1.svg",
+                "Painéis solares em uma fazenda solar",
+            ),
+            Passo(
+                2, "Energia que chega até você",
+                "Essa energia solar é enviada para a rede de distribuição da CEMIG.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-2.svg",
+                "Linhas de transmissão levando energia à rede da distribuidora",
+            ),
+            Passo(
+                3, "Créditos que viram desconto na sua conta de luz",
+                "A energia chega em forma de créditos que se transformam em desconto.",
+                "https://cdn.bulbe.com.br/boas-vindas/passo-3.svg",
+                "Fatura de energia com valor reduzido pelo desconto",
+            ),
+        ],
+    )

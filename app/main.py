@@ -5,6 +5,7 @@ from app.controllers import (
     ajuda_controller,
     autenticacao_controller,
     beneficios_controller,
+    conteudos_controller,
     faturas_controller,
     indicacoes_controller,
     notificacoes_controller,
@@ -21,6 +22,7 @@ app = FastAPI(
     """,
     version="1.0.0",
     openapi_tags=[
+        {"name": "Boas-vindas", "description": "Conteúdo da tela inicial: título e passos do Como funciona"},
         {"name": "Adesão", "description": "Cadastro do interessado, etapas da adesão, fatura e submissão"},
         {"name": "Autenticação", "description": "Sessões, renovação de token e perfil do cliente"},
         {"name": "Simulações", "description": "Cálculo de estimativa de desconto na conta de luz"},
@@ -34,6 +36,7 @@ app = FastAPI(
 )
 
 registrar_tratadores(app)
+app.include_router(conteudos_controller.router, prefix="/api/v1")
 app.include_router(adesoes_controller.router, prefix="/api/v1")
 app.include_router(autenticacao_controller.router, prefix="/api/v1")
 app.include_router(pedidos_controller.router, prefix="/api/v1")

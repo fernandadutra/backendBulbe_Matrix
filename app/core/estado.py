@@ -4,6 +4,7 @@ from app.repositories.adesao_repository import AdesaoRepository
 from app.repositories.ajuda_repository import AjudaRepository
 from app.repositories.autenticacao_repository import AutenticacaoRepository
 from app.repositories.beneficio_repository import BeneficioRepository
+from app.repositories.conteudo_repository import ConteudoRepository
 from app.repositories.indicacao_repository import IndicacaoRepository
 from app.repositories.notificacao_repository import NotificacaoRepository
 from app.repositories.pedido_repository import PedidoRepository
@@ -28,6 +29,7 @@ class Repositorios:
         self.adesoes: AdesaoRepository
         self.indicacoes: IndicacaoRepository
         self.notificacoes: NotificacaoRepository
+        self.conteudos: ConteudoRepository
 
 
 repositorios = Repositorios()
@@ -45,6 +47,7 @@ def reiniciar_estado() -> None:
     repositorios.adesoes = AdesaoRepository()
     repositorios.indicacoes = IndicacaoRepository(dados_iniciais.indicacoes(), dados_iniciais.codigos_de_indicacao())
     repositorios.notificacoes = NotificacaoRepository(dados_iniciais.notificacoes())
+    repositorios.conteudos = ConteudoRepository(dados_iniciais.boas_vindas())
     limite_requisicoes.reiniciar()
     relogio.restaurar_relogio()
 
