@@ -1,4 +1,8 @@
+import os
 from datetime import datetime
+
+# PBKDF2 com 600 mil iterações custa ~0,2 s por hash; nos testes a segurança do hash não importa.
+os.environ.setdefault("BULBE_PBKDF2_ITERACOES", "1000")
 
 import pytest
 from fastapi.testclient import TestClient

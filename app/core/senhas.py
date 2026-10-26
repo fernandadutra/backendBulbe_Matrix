@@ -2,11 +2,11 @@ import hashlib
 import hmac
 import secrets
 
-ITERACOES = 600_000
+from app.core import config
 
 
 def _derivar(senha: str, salt: bytes) -> bytes:
-    return hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), salt, ITERACOES)
+    return hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), salt, config.PBKDF2_ITERACOES)
 
 
 def gerar_hash(senha: str) -> str:
