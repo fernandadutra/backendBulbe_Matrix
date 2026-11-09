@@ -1,0 +1,274 @@
+@startuml
+' Gerado a partir de app/db/models.py. Mesmo schema da migration inicial.
+hide circle
+skinparam linetype ortho
+
+entity "clientes" as clientes {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * nome : VARCHAR(120)
+    email : VARCHAR(254) <<unique>>
+    cpf : VARCHAR(11) <<unique>>
+    telefone : VARCHAR(20)
+    senha_hash : VARCHAR(255)
+  * ordem_gravacao : INTEGER
+}
+
+entity "conteudos_boas_vindas" as conteudos_boas_vindas {
+  * versao : VARCHAR(20) <<PK>>
+  --
+  * titulo : VARCHAR(200)
+}
+
+entity "dicas" as dicas {
+  * id : INTEGER <<PK>>
+  --
+  * tela : VARCHAR(40)
+  * elemento : VARCHAR(60)
+  * titulo : VARCHAR(200)
+  * rotulo_acessivel : VARCHAR(200)
+  * atualizado_em : DATETIME
+  * blocos : JSON
+}
+
+entity "parceiros" as parceiros {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * url_logo : VARCHAR(500)
+  * cor_marca : VARCHAR(20)
+  * destaque : BOOLEAN
+  * ordem_gravacao : INTEGER
+}
+
+entity "trilhas" as trilhas {
+  * chave : VARCHAR(20) <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * descricao : VARCHAR(500)
+  * regra_acesso : VARCHAR(20)
+  * cor_tema : VARCHAR(20)
+  * url_icone : VARCHAR(500)
+  * ordem_gravacao : INTEGER
+}
+
+entity "beneficios" as beneficios {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * trilha : VARCHAR(20) <<FK>>
+  * parceiro_id : VARCHAR(40) <<FK>>
+  * titulo : VARCHAR(120)
+  * descricao : VARCHAR(500)
+  * regras_de_uso : VARCHAR(1000)
+  * tipo : VARCHAR(20)
+  * regra_acesso : VARCHAR(20)
+  * validade_inicio : DATE
+    validade_fim : DATE
+  * ativo : BOOLEAN
+  * dias_validade_resgate : INTEGER
+  * instrucoes : VARCHAR(1000)
+  * prefixo_codigo : VARCHAR(20)
+  * url_acesso : VARCHAR(500)
+  * total_resgates : INTEGER
+  * ordem_gravacao : INTEGER
+}
+
+entity "codigos_indicacao" as codigos_indicacao {
+  * cliente_id : VARCHAR(40) <<PK>> <<FK>>
+  --
+  * codigo : VARCHAR(20) <<unique>>
+}
+
+entity "indicacoes" as indicacoes {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * nome : VARCHAR(120)
+  * whatsapp : VARCHAR(20)
+  * situacao : VARCHAR(20)
+  * indicada_em : DATE
+    convertida_em : DATETIME
+  * ordem_gravacao : INTEGER
+}
+
+entity "notificacoes" as notificacoes {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * tipo : VARCHAR(40)
+  * titulo : VARCHAR(200)
+  * mensagem : VARCHAR(1000)
+  * lida : BOOLEAN
+  * criada_em : DATETIME
+  * referencia_tipo : VARCHAR(20)
+  * referencia_id : VARCHAR(40)
+  * ordem_gravacao : INTEGER
+}
+
+entity "passos_boas_vindas" as passos_boas_vindas {
+  * versao : VARCHAR(20) <<PK>> <<FK>>
+  * ordem : INTEGER <<PK>>
+  --
+  * titulo : VARCHAR(200)
+  * texto : TEXT
+  * url_ilustracao : VARCHAR(500)
+  * texto_alternativo : VARCHAR(300)
+}
+
+entity "pedidos" as pedidos {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * numero_instalacao : VARCHAR(20)
+  * distribuidora : VARCHAR(40)
+  * situacao : VARCHAR(20)
+  * criado_em : DATETIME
+    previsao_proxima_atualizacao : DATE
+    consultado_em : DATETIME
+  * ordem_gravacao : INTEGER
+}
+
+entity "sessoes" as sessoes {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * criada_em : DATETIME
+  * expira_em : DATETIME
+  * hash_token : VARCHAR(64) <<unique>>
+  * revogada : BOOLEAN
+}
+
+entity "simulacoes" as simulacoes {
+  * id : VARCHAR(40) <<PK>>
+  --
+    cliente_id : VARCHAR(40) <<FK>>
+  * calculado_em : DATETIME
+  * distribuidora : VARCHAR(40)
+    consumo_kwh : INTEGER
+  * percentual_desconto : FLOAT
+  * valor_sem_desconto_centavos : INTEGER
+  * valor_com_bulbe_centavos : INTEGER
+  * economia_mensal_centavos : INTEGER
+  * economia_anual_centavos : INTEGER
+  * ordem_gravacao : INTEGER
+}
+
+entity "etapas_pedido" as etapas_pedido {
+  * pedido_id : VARCHAR(40) <<PK>> <<FK>>
+  * ordem : INTEGER <<PK>>
+  --
+  * chave : VARCHAR(40)
+  * nome : VARCHAR(120)
+  * descricao : VARCHAR(500)
+  * situacao : VARCHAR(20)
+    iniciada_em : DATETIME
+    concluida_em : DATETIME
+}
+
+entity "faturas" as faturas {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * pedido_id : VARCHAR(40) <<FK>>
+  * competencia : VARCHAR(7)
+  * vencimento : DATE
+  * valor_centavos : INTEGER
+  * economia_centavos : INTEGER
+  * consumo_kwh : INTEGER
+  * situacao : VARCHAR(20)
+  * linha_digitavel : VARCHAR(60)
+  * url_pdf : VARCHAR(500)
+  * ordem_gravacao : INTEGER
+}
+
+entity "hashes_token_usados" as hashes_token_usados {
+  * hash : VARCHAR(64) <<PK>>
+  --
+  * sessao_id : VARCHAR(40) <<FK>>
+}
+
+entity "interessados" as interessados {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * email : VARCHAR(254)
+  * whatsapp : VARCHAR(20)
+    simulacao_id : VARCHAR(40) <<FK>>
+  * aceite_comunicacoes : BOOLEAN
+  * criado_em : DATETIME
+  * hash_token_fluxo : VARCHAR(64) <<unique>>
+  * token_expira_em : DATETIME
+  * situacao : VARCHAR(20)
+}
+
+entity "resgates" as resgates {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * cliente_id : VARCHAR(40) <<FK>>
+  * beneficio_id : VARCHAR(40) <<FK>>
+  * resgatado_em : DATETIME
+  * situacao : VARCHAR(20)
+  * instrucoes : VARCHAR(1000)
+  * codigo : VARCHAR(40)
+  * url_acesso : VARCHAR(500)
+  * expira_em : DATETIME
+  * chave_idempotencia : VARCHAR(100)
+    pedido_id : VARCHAR(40) <<FK>>
+  * ordem_gravacao : INTEGER
+}
+
+entity "adesoes" as adesoes {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * interessado_id : VARCHAR(40) <<FK>> <<unique>>
+  * criada_em : DATETIME
+  * situacao : VARCHAR(20)
+    cliente_id : VARCHAR(40) <<FK>>
+    pedido_id : VARCHAR(40) <<FK>>
+    negocio_numero_instalacao : VARCHAR(20)
+    negocio_distribuidora : VARCHAR(40)
+    negocio_titular_nome : VARCHAR(120)
+    negocio_titular_documento : VARCHAR(14)
+    negocio_cep : VARCHAR(8)
+    negocio_classe_consumo : VARCHAR(20)
+    aceite_versao_documentos : VARCHAR(20)
+    aceite_aceito_em : DATETIME
+    aceite_registrado_em : DATETIME
+    aceite_ip : VARCHAR(45)
+    aceite_user_agent : VARCHAR(500)
+}
+
+entity "anexos" as anexos {
+  * id : VARCHAR(40) <<PK>>
+  --
+  * adesao_id : VARCHAR(40) <<FK>>
+  * tipo : VARCHAR(40)
+  * nome_arquivo : VARCHAR(255)
+  * tamanho_bytes : INTEGER
+  * conteudo : BLOB
+  * recebido_em : DATETIME
+  * ordem_gravacao : INTEGER
+}
+
+trilhas ||--o{ beneficios
+parceiros ||--o{ beneficios
+clientes ||--o{ codigos_indicacao
+clientes ||--o{ indicacoes
+clientes ||--o{ notificacoes
+conteudos_boas_vindas ||--o{ passos_boas_vindas
+clientes ||--o{ pedidos
+clientes ||--o{ sessoes
+clientes ||--o{ simulacoes
+pedidos ||--o{ etapas_pedido
+clientes ||--o{ faturas
+pedidos ||--o{ faturas
+sessoes ||--o{ hashes_token_usados
+simulacoes ||--o{ interessados
+clientes ||--o{ resgates
+beneficios ||--o{ resgates
+pedidos ||--o{ resgates
+interessados ||--o{ adesoes
+clientes ||--o{ adesoes
+pedidos ||--o{ adesoes
+adesoes ||--o{ anexos
+@enduml
