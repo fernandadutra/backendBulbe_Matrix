@@ -125,7 +125,7 @@ def test_interessado_com_email_de_cliente_409(cliente_http):
 
 def test_token_fluxo_guardado_so_como_hash(cliente_http):
     token = _interessado(cliente_http).json()["token_fluxo"]
-    guardado = next(iter(repositorios.adesoes._interessados.values()))
+    guardado = repositorios.adesoes.interessado_por_email("maria@exemplo.com.br")
     assert token not in vars(guardado).values()
 
 
@@ -269,7 +269,7 @@ def test_patch_contato_atualiza_o_nome(cliente_http):
     dados = {"nome": "Maria da Silva", "whatsapp": "+5531977776666"}
     r = cliente_http.patch(f"/api/v1/adesoes/{adesao_id}", json={"etapa": "contato", "dados": dados}, headers=cab)
     assert r.status_code == 200
-    interessado = next(iter(repositorios.adesoes._interessados.values()))
+    interessado = repositorios.adesoes.interessado_por_email("maria@exemplo.com.br")
     assert (interessado.nome, interessado.whatsapp) == ("Maria da Silva", "+5531977776666")
 
 

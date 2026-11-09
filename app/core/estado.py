@@ -1,22 +1,23 @@
 from app.core import limite_requisicoes, relogio
-from app.repositories import dados_iniciais
-from app.repositories.adesao_repository import AdesaoRepository
-from app.repositories.ajuda_repository import AjudaRepository
-from app.repositories.autenticacao_repository import AutenticacaoRepository
-from app.repositories.beneficio_repository import BeneficioRepository
-from app.repositories.conteudo_repository import ConteudoRepository
-from app.repositories.indicacao_repository import IndicacaoRepository
-from app.repositories.notificacao_repository import NotificacaoRepository
-from app.repositories.pedido_repository import PedidoRepository
-from app.repositories.sessao_repository import SessaoRepository
-from app.repositories.simulacao_repository import SimulacaoRepository
+from app.db.database import SessionLocal
+from app.repositories.adesao_repository import AdesaoRepository, SqlAdesaoRepository
+from app.repositories.ajuda_repository import AjudaRepository, SqlAjudaRepository
+from app.repositories.autenticacao_repository import AutenticacaoRepository, SqlAutenticacaoRepository
+from app.repositories.beneficio_repository import BeneficioRepository, SqlBeneficioRepository
+from app.repositories.conteudo_repository import ConteudoRepository, SqlConteudoRepository
+from app.repositories.indicacao_repository import IndicacaoRepository, SqlIndicacaoRepository
+from app.repositories.notificacao_repository import NotificacaoRepository, SqlNotificacaoRepository
+from app.repositories.pedido_repository import PedidoRepository, SqlPedidoRepository
+from app.repositories.sessao_repository import SessaoRepository, SqlSessaoRepository
+from app.repositories.simulacao_repository import SimulacaoRepository, SqlSimulacaoRepository
 
 
 class Repositorios:
-    """Repositórios em memória do processo. Quem precisa de dados lê daqui.
+    """Repositórios usados pela aplicação. Quem precisa de dados lê daqui.
 
-    Para acrescentar um repositório: declare o atributo em __init__ e
-    monte-o a partir da semente em reiniciar_estado().
+    Os atributos são tipados pelo CONTRATO (Protocol); as instâncias são as
+    versões SQL, que leem e gravam no banco. Para acrescentar um repositório:
+    declare o atributo em __init__ e monte-o em reiniciar_estado().
     """
 
     def __init__(self):
@@ -36,18 +37,18 @@ repositorios = Repositorios()
 
 
 def reiniciar_estado() -> None:
-    repositorios.clientes = AutenticacaoRepository(dados_iniciais.clientes())
-    repositorios.pedidos = PedidoRepository(dados_iniciais.pedidos(), dados_iniciais.faturas())
-    repositorios.simulacoes = SimulacaoRepository()
-    repositorios.beneficios = BeneficioRepository(
-        dados_iniciais.parceiros(), dados_iniciais.trilhas(), dados_iniciais.beneficios()
-    )
-    repositorios.ajuda = AjudaRepository(dados_iniciais.dicas())
-    repositorios.sessoes = SessaoRepository()
-    repositorios.adesoes = AdesaoRepository()
-    repositorios.indicacoes = IndicacaoRepository(dados_iniciais.indicacoes(), dados_iniciais.codigos_de_indicacao())
-    repositorios.notificacoes = NotificacaoRepository(dados_iniciais.notificacoes())
-    repositorios.conteudos = ConteudoRepository(dados_iniciais.boas_vindas())
+    """Monta os repositórios SQL e zera o estado que vive só na memória do processo
+    (limites de requisição e relógio). Os dados ficam no banco: para popular, rode o seed."""
+    repositorios.clientes = SqlAutenticacaoRepository(SessionLocal)
+    repositorios.pedidos = SqlPedidoRepository(SessionLocal)
+    repositorios.simulacoes = SqlSimulacaoRepository(SessionLocal)
+    repositorios.beneficios = SqlBeneficioRepository(SessionLocal)
+    repositorios.ajuda = SqlAjudaRepository(SessionLocal)
+    repositorios.sessoes = SqlSessaoRepository(SessionLocal)
+    repositorios.adesoes = SqlAdesaoRepository(SessionLocal)
+    repositorios.indicacoes = SqlIndicacaoRepository(SessionLocal)
+    repositorios.notificacoes = SqlNotificacaoRepository(SessionLocal)
+    repositorios.conteudos = SqlConteudoRepository(SessionLocal)
     limite_requisicoes.reiniciar()
     relogio.restaurar_relogio()
 

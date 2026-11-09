@@ -24,7 +24,7 @@ def _adicionar_fatura(competencia, vencimento, consumo=250, situacao="aberta", c
         vencimento=vencimento, valor_centavos=30000, economia_centavos=5000, consumo_kwh=consumo,
         situacao=situacao, linha_digitavel="001", url_pdf="https://cdn.bulbe.com.br/faturas/teste.pdf",
     )
-    repositorios.pedidos._faturas.append(fatura)
+    repositorios.pedidos.salvar_fatura(fatura)
     return fatura
 
 

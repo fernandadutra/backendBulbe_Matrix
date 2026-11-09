@@ -177,7 +177,9 @@ def test_status_indisponivel_com_cache_200_desatualizado(cliente_http):
 
 def test_status_indisponivel_sem_cache_503(cliente_http):
     from app.core.estado import repositorios
-    repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
+    from app.db.unidade_de_trabalho import unidade_de_trabalho
+    with unidade_de_trabalho():
+        repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
     usar_integracao(IntegracaoFalsa(indisponivel=True))
     r = cliente_http.get(f"/api/v1/pedidos/{PEDIDO_A}/status", headers=cabecalho_de(CLIENTE_A))
     assert r.status_code == 503
@@ -193,7 +195,9 @@ def test_status_erro_inesperado_da_integracao_com_cache_200_desatualizado(client
 
 def test_status_erro_inesperado_da_integracao_sem_cache_503(cliente_http):
     from app.core.estado import repositorios
-    repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
+    from app.db.unidade_de_trabalho import unidade_de_trabalho
+    with unidade_de_trabalho():
+        repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
     usar_integracao(IntegracaoFalsa(erro=RuntimeError("timeout")))
     r = cliente_http.get(f"/api/v1/pedidos/{PEDIDO_A}/status", headers=cabecalho_de(CLIENTE_A))
     assert r.status_code == 503
@@ -202,7 +206,9 @@ def test_status_erro_inesperado_da_integracao_sem_cache_503(cliente_http):
 
 def test_status_sem_consulta_guardada_e_integracao_sem_dados_503(cliente_http):
     from app.core.estado import repositorios
-    repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
+    from app.db.unidade_de_trabalho import unidade_de_trabalho
+    with unidade_de_trabalho():
+        repositorios.pedidos.obter(PEDIDO_A).consultado_em = None
     usar_integracao(IntegracaoFalsa(etapas=None))
     r = cliente_http.get(f"/api/v1/pedidos/{PEDIDO_A}/status", headers=cabecalho_de(CLIENTE_A))
     assert r.status_code == 503

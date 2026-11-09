@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from app.core import relogio
 from app.core.estado import repositorios
+from app.db.unidade_de_trabalho import unidade_de_trabalho
 from app.main import app
 from tests.conftest import CLIENTE_A, CLIENTE_B, PEDIDO_A, PEDIDO_B, cabecalho_de
 
@@ -121,7 +122,9 @@ def test_beneficio_expirado_some_da_lista_e_do_detalhe(cliente_http):
 
 
 def test_beneficio_desativado_some(cliente_http):
-    repositorios.beneficios.obter_beneficio(FROSSARD).ativo = False
+    # Fora de uma requisição, a alteração só vai ao banco dentro de uma unidade de trabalho.
+    with unidade_de_trabalho():
+        repositorios.beneficios.obter_beneficio(FROSSARD).ativo = False
     r = cliente_http.get("/api/v1/beneficios", headers=cabecalho_de(CLIENTE_A))
     assert FROSSARD not in [b["id"] for b in r.json()["dados"]]
     assert cliente_http.get(f"/api/v1/beneficios/{FROSSARD}", headers=cabecalho_de(CLIENTE_A)).status_code == 404
@@ -311,13 +314,17 @@ def test_resgate_expirado_410(cliente_http):
 
 
 def test_resgate_desativado_410(cliente_http):
-    repositorios.beneficios.obter_beneficio(FROSSARD).ativo = False
+    # Fora de uma requisição, a alteração só vai ao banco dentro de uma unidade de trabalho.
+    with unidade_de_trabalho():
+        repositorios.beneficios.obter_beneficio(FROSSARD).ativo = False
     assert resgatar(cliente_http, CLIENTE_A, FROSSARD).status_code == 410
 
 
 def test_resgate_de_beneficio_que_ainda_nao_comecou_404(cliente_http):
     from datetime import date
-    repositorios.beneficios.obter_beneficio(INTER).validade_inicio = date(2026, 11, 1)
+    # Fora de uma requisição, a alteração só vai ao banco dentro de uma unidade de trabalho.
+    with unidade_de_trabalho():
+        repositorios.beneficios.obter_beneficio(INTER).validade_inicio = date(2026, 11, 1)
     r = resgatar(cliente_http, CLIENTE_A, INTER)
     assert r.status_code == 404
     assert r.json()["erro"]["codigo"] == "BENEFICIO_NAO_ENCONTRADO"
@@ -384,12 +391,12 @@ def test_dois_resgates_simultaneos_de_uso_unico_geram_um_so(cliente_http):
     assert repositorios.beneficios.obter_beneficio(INTER).total_resgates == 1
 
 
-def test_falha_ao_gravar_nao_deixa_resgate_nem_contador():
-    class ChavesQuebradas(dict):
-        def __setitem__(self, *_):
-            raise RuntimeError("falha simulada")
+def test_falha_ao_gravar_nao_deixa_resgate_nem_contador(monkeypatch):
+    # O resgate já foi inserido na transação quando o contador falha: tudo tem de ser desfeito.
+    def contador_quebrado(*_):
+        raise RuntimeError("falha simulada")
 
-    repositorios.beneficios._chaves = ChavesQuebradas()
+    monkeypatch.setattr(repositorios.beneficios, "_incrementar_contador", contador_quebrado)
     erro = TestClient(app, raise_server_exceptions=False)
     cabecalhos = {**cabecalho_de(CLIENTE_A), "Idempotency-Key": str(uuid4())}
     r = erro.post(f"/api/v1/beneficios/{INTER}/resgates", headers=cabecalhos)

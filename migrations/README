@@ -1,0 +1,8 @@
+Migrations do banco da Bulbe (Alembic). O schema é criado SOMENTE por aqui.
+
+  alembic upgrade head                              aplica as migrations pendentes
+  alembic revision --autogenerate -m "mensagem"     gera uma nova migration a partir de app/db/models.py
+  alembic downgrade -1                              desfaz a última
+  alembic current / alembic history                 versão atual / histórico
+
+Sempre leia a migration gerada antes de aplicar.

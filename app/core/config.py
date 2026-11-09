@@ -20,3 +20,7 @@ if USANDO_SEGREDO_PADRAO:
         "BULBE_JWT_SEGREDO não está definida: usando o segredo padrão, que serve só para desenvolvimento. "
         "Em produção a variável é obrigatória."
     )
+
+# Endereço do banco. SQLite em arquivo local por padrão; o arquivo fica fora do Git (.gitignore).
+# Para PostgreSQL, por exemplo: postgresql+psycopg://bulbe:bulbe@localhost:5432/bulbe
+DATABASE_URL = os.getenv("BULBE_DATABASE_URL", "sqlite:///./bulbe.db")
