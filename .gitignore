@@ -2,3 +2,7 @@
 __pycache__/
 .pytest_cache/
 *.pyc
+
+# Bancos SQLite locais (cada um gera o seu com "alembic upgrade head")
+*.db
+*.db-journal
