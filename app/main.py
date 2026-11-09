@@ -13,6 +13,7 @@ from app.controllers import (
     simulacoes_controller,
 )
 from app.core.erros import registrar_tratadores
+from app.db.unidade_de_trabalho import UnidadeDeTrabalhoMiddleware
 
 app = FastAPI(
     title="Bulbe Energia - API da Jornada do Cliente",
@@ -36,6 +37,8 @@ app = FastAPI(
 )
 
 registrar_tratadores(app)
+# Uma sessão do banco por requisição, com commit único no fim (ver app/db/unidade_de_trabalho.py).
+app.add_middleware(UnidadeDeTrabalhoMiddleware)
 app.include_router(conteudos_controller.router, prefix="/api/v1")
 app.include_router(adesoes_controller.router, prefix="/api/v1")
 app.include_router(autenticacao_controller.router, prefix="/api/v1")
