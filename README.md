@@ -55,7 +55,7 @@ flowchart LR
 | **Autenticação** | Token JWT (PyJWT) |
 | **Documentação da API** | OpenAPI 3 (Swagger UI automática em `/docs`) |
 | **Testes** | Pytest + HTTPX |
-| **Dados** | Em memória, com clientes e benefícios de exemplo (ver [Banco de dados](#-banco-de-dados)) |
+| **Banco de dados** | SQLAlchemy + Alembic, com SQLite por padrão (ver [Banco de dados](#-banco-de-dados)) |
 
 ## 🏗️ Arquitetura
 
@@ -84,9 +84,6 @@ git clone https://github.com/fernandadutra/backendBulbe_Matrix.git
 cd backendBulbe_Matrix
 ```
 
-> 🔀 Enquanto o Pull Request do Bloco 1 não for aprovado, o código completo está na branch `feature/endpoints-bloco1-api`.
-> Troque para ela com `git checkout feature/endpoints-bloco1-api`.
-
 ### 2. Criar o ambiente e instalar as dependências
 
 <details open>
@@ -109,7 +106,19 @@ python3 -m venv .venv
 
 </details>
 
-### 3. Iniciar o servidor
+### 3. Criar o banco e os dados de exemplo
+
+```bash
+.venv/Scripts/python -m alembic upgrade head     # Windows
+.venv/Scripts/python -m app.db.seed
+
+.venv/bin/python -m alembic upgrade head         # macOS / Linux
+.venv/bin/python -m app.db.seed
+```
+
+O primeiro comando cria as tabelas no arquivo `bulbe.db`. O segundo grava os dados de demonstração (rodar de novo não duplica nada). Para entrar, use `ana@exemplo.com.br` ou `bruno@exemplo.com.br`, ambos com a senha `bulbe-dev-123`.
+
+### 4. Iniciar o servidor
 
 ```bash
 .venv/Scripts/python -m uvicorn app.main:app --reload     # Windows
@@ -130,6 +139,7 @@ A API sobe em **http://127.0.0.1:8000**. Para conferir, abra:
 |---|---|---|
 | `BULBE_JWT_SEGREDO` | Segredo que assina os tokens. **Obrigatória em produção.** | Segredo de desenvolvimento (o servidor avisa no terminal) |
 | `BULBE_LIMITE_SIMULACOES_POR_MINUTO` | Limite de simulações por minuto | `30` |
+| `BULBE_DATABASE_URL` | Endereço do banco de dados | `sqlite:///./bulbe.db` |
 
 ---
 
@@ -159,7 +169,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/simulacoes \
 
 Resposta esperada (resumo): `economia_mensal_centavos: 5250`, `valor_com_bulbe_centavos: 29750`, `economia_anual_centavos: 63000`.
 
-**Rotas que exigem login:** enquanto `POST /sessoes` não existir, gere um token de desenvolvimento.
+**Rotas que exigem login:** entre com `POST /sessoes` (usuário e senha de exemplo no passo 3) ou gere um token de desenvolvimento.
 
 ```bash
 .venv/Scripts/python gerar_token_dev.py                 # cliente Ana Souza (cli_3b9e1f42)
@@ -212,7 +222,7 @@ Resultado esperado: **105 testes passando** (conferido em 25/10/2026).
 | `GET` | `/resgates` | Resgates já feitos | Sim |
 | `GET` | `/ajuda/dicas` | Textos de ajuda do Bulbinho por tela | Não |
 
-### 🛠️ Bloco 2 — planejados (contrato pronto, código em andamento)
+### ✅ Bloco 2 — implementados
 
 | Frente | Rotas | Prioridade | Responsável |
 |---|---|---|---|
@@ -300,9 +310,9 @@ Já o código aplica os 15% sobre **a fatura inteira**. Se a regra real for a do
 
 ## 🗄️ Banco de dados
 
-Hoje os dados ficam **em memória**: clientes, pedidos, benefícios e dicas são carregados de `app/repositories/dados_iniciais.py` quando o servidor inicia. Ao reiniciar, tudo volta ao estado inicial e o que foi criado se perde (simulações e resgates, por exemplo).
+Os dados ficam num banco relacional, com **SQLAlchemy** (tabelas) e **Alembic** (migrations). Por padrão é um SQLite em arquivo (`bulbe.db`, fora do Git); para usar PostgreSQL, basta mudar `BULBE_DATABASE_URL`. Os testes usam um banco separado (`bulbe_test.db`), que é recriado a cada teste.
 
-A troca por um banco de verdade está planejada. Como os dados são acessados só pela camada `repositories`, a mudança fica concentrada ali. O modelo e o dicionário de dados ainda **não foram escritos**: o espaço reservado para eles é `docs/banco-de-dados`.
+O guia completo, com o papel de cada arquivo e o diagrama das tabelas, está em [`docs/banco-de-dados/README.md`](docs/banco-de-dados/README.md).
 
 ## 📁 Estrutura de pastas
 
@@ -311,11 +321,14 @@ app/
 ├── main.py              cria a API e registra as rotas
 ├── controllers/         recebem a requisição e devolvem a resposta
 ├── services/            regras de negócio (ex.: simulacao_service.py)
-├── repositories/        acesso aos dados (hoje em memória)
+├── repositories/        acesso aos dados (versões SQL e em memória)
+├── db/                  conexão, tabelas (models.py) e dados de exemplo (seed.py)
 ├── models/              entidades do domínio
 ├── schemas/             formato de entrada e saída de cada rota
 └── core/                erros, segurança (JWT), relógio, paginação, limite de requisições
-tests/                   testes automáticos (105)
+migrations/              migrations do Alembic
+alembic.ini              configuração do Alembic
+tests/                   testes automáticos
 requirements.txt         dependências do projeto
 pytest.ini               configuração dos testes
 docs/
@@ -324,7 +337,7 @@ docs/
 ├── api/                 lista de endpoints e openapi.yaml
 ├── diagramas/           casos de uso, atividades e sequências (PlantUML)
 ├── arquitetura          (reservado: diagrama de camadas, ainda vazio)
-└── banco-de-dados       (reservado: modelo e dicionário de dados, ainda vazio)
+└── banco-de-dados/      guia do banco e diagrama das tabelas (schema.puml)
 gerar_token_dev.py       gera token de teste para as rotas com login
 gerar_openapi.py         exporta o contrato OpenAPI
 ```
@@ -336,7 +349,9 @@ gerar_openapi.py         exporta o contrato OpenAPI
 | [`docs/requisitos.md`](docs/requisitos.md) | Requisitos RF-01 a RF-04 e RNF-01 a RNF-03 |
 | [`docs/sprints/user-stories.md`](docs/sprints/user-stories.md) | Histórias de usuário |
 | [`docs/api/lista-endpoints.md`](docs/api/lista-endpoints.md) | Contrato de cada rota |
+| [`docs/banco-de-dados/README.md`](docs/banco-de-dados/README.md) | Guia do banco de dados |
 | [`docs/apresentacao-sprint1.html`](docs/apresentacao-sprint1.html) | Apresentação da Sprint 1 |
+| [`docs/apresentacao-sprint2.html`](docs/apresentacao-sprint2.html) | Apresentação da Sprint 2 |
 | [`docs/apresentacao-backend.html`](docs/apresentacao-backend.html) | Apresentação do backend |
 
 ## 🔀 Convenção de commits e branches
