@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Resultado da simulação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="consumo"></bulbe-header-desktop>
+    <bulbe-header></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet tipo="resultado">
+      <h1 class="title title--compact">
+        Sua <span class="title--accent">simulação</span>
+      </h1>
+
+      <bulbe-metric-card
+        label="Você vai economizar por mês"
+        value="52,50"
+        data-result="monthlySavings"
+      ></bulbe-metric-card>
+
+      <h2 class="section-title">Comparativo mensal</h2>
+
+      <div class="compare">
+        <article class="compare__card compare__card--bad">
+          <h3 class="compare__head">
+            <svg class="compare__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="8" cy="8" r="7.5" stroke="currentColor" stroke-width="1"/>
+              <path d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Sem desconto
+          </h3>
+          <p class="compare__sub">Você paga</p>
+          <p class="compare__value">
+            <span class="compare__currency">R$</span>
+            <span class="compare__amount" data-result="fullPrice">350,00</span>
+          </p>
+          <p class="compare__tag">Tarifa cheia</p>
+        </article>
+
+        <span class="compare__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </span>
+
+        <article class="compare__card compare__card--good">
+          <h3 class="compare__head">
+            <svg class="compare__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="8" cy="8" r="7.5" stroke="currentColor" stroke-width="1"/>
+              <path d="M5 8.5L7 10.5L11 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Com Bulbe
+          </h3>
+          <p class="compare__sub">Você paga</p>
+          <p class="compare__value">
+            <span class="compare__currency">R$</span>
+            <span class="compare__amount" data-result="bulbePrice">297,50</span>
+          </p>
+          <p class="compare__tag">até 15% desconto</p>
+        </article>
+      </div>
+
+      <bulbe-metric-card
+        label="Sua economia anual estimada"
+        value="630,00"
+        data-result="annualSavings"
+      ></bulbe-metric-card>
+      <div id="resultado-detalhamento" class="resultado-detalhamento" style="display:none;">
+        <p class="resultado-detalhamento__titulo">Detalhamento da simulação</p>
+        <div class="sim-detalhe__linhas">
+          <div class="sim-detalhe__linha">
+            <div class="sim-detalhe__linha-esq">
+              <span class="sim-detalhe__fonte">CEMIG</span>
+              <span class="sim-detalhe__kwh">50 kWh</span>
+            </div>
+            <span class="sim-detalhe__preco">R$ 51,18</span>
+          </div>
+          <div class="sim-detalhe__linha">
+            <div class="sim-detalhe__linha-esq">
+              <span class="sim-detalhe__fonte">Bulbe Energia</span>
+              <span class="sim-detalhe__kwh">199 kWh</span>
+            </div>
+            <div class="sim-detalhe__preco-duplo">
+              <span class="sim-detalhe__preco-riscado">R$ 199,13</span>
+              <span class="sim-detalhe__preco-novo">R$ 169,26</span>
+            </div>
+          </div>
+          <hr class="sim-detalhe__divisor" />
+          <div class="sim-detalhe__linha sim-detalhe__linha--subtotal">
+            <div class="sim-detalhe__linha-esq">
+              <span class="sim-detalhe__fonte">Subtotal 1</span>
+              <span class="sim-detalhe__kwh">249 kWh</span>
+            </div>
+            <span class="sim-detalhe__preco">R$ 220,44</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-result__container">
+        <a href="adesao.html" class="btn btn--success" id="ctaStart" onclick="alert('Funcionalidade em desenvolvimento!'); return false;">
+          Comece agora <span aria-hidden="true">→</span>
+        </a>
+        <a href="simular-desconto.html" class="btn btn--ghost">
+          <span aria-hidden="true" class="txt--ghost">←</span> Simular novamente
+        </a>
+      </div>
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="consumo"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Status do pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="faturas"></bulbe-header-desktop>
+    <bulbe-header variant="app"></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet>
+      <div class="sheet__head">
+        <h1 class="status-titulo">Status do seu pedido</h1>
+        <button class="icon-btn title__help" aria-label="Entender as etapas do pedido" type="button">
+          <img src="../public/tooltip.png" alt="" style="width: 26px; height: 26px; object-fit: contain;" aria-hidden="true" />
+        </button>
+      </div>
+      <p class="status-card__descricao">Acompanhe em tempo real cada etapa da implementação do seu serviço.</p>
+
+      <div class="progress-tracker">
+        <div class="progress-tracker__steps">
+          <div class="progress-tracker__step is-active">
+            <img src="../public/status-step-1.png" alt="Em análise pela Bulbe" class="progress-tracker__icone" />
+            <span class="progress-tracker__badge">1</span>
+            <span class="progress-tracker__label">Em análise<br>pela Bulbe</span>
+          </div>
+
+          <div class="progress-tracker__step">
+            <img src="../public/status-step-2.png" alt="Enviado para Cemig" class="progress-tracker__icone" />
+            <span class="progress-tracker__badge">2</span>
+            <span class="progress-tracker__label">Enviado para<br>Cemig</span>
+          </div>
+
+          <div class="progress-tracker__step">
+            <img src="../public/status-step-3.png" alt="Em análise pela Cemig" class="progress-tracker__icone" />
+            <span class="progress-tracker__badge">3</span>
+            <span class="progress-tracker__label">Em análise<br>pela Cemig</span>
+          </div>
+
+          <div class="progress-tracker__step">
+            <img src="../public/status-step-4.png" alt="Aprovado" class="progress-tracker__icone" />
+            <span class="progress-tracker__badge">4</span>
+            <span class="progress-tracker__label">Aprovado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-card__header">
+          <svg class="status-card__icone" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8.5L6.5 12L13 5" stroke="#18814D" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <p class="status-card__label">Status atual</p>
+        </div>
+        <h2 class="status-card__titulo">Em análise pela Bulbe</h2>
+        <p class="status-card__descricao">Sua solicitação está sendo analisada pela equipe Bulbe.</p>
+      </div>
+
+      <div class="status-pedido__acoes">
+        <a href="impulsione-fatura.html" class="btn btn--success">
+          Impulsione sua primeira fatura &nbsp;→
+        </a>
+        <a href="simular-desconto.html" class="btn btn--ghost">
+          <span aria-hidden="true" class="txt--ghost">←</span> Voltar
+        </a>
+      </div>
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="faturas"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

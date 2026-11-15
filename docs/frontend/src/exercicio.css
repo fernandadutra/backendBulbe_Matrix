@@ -1,0 +1,35 @@
+.container {
+    display: grid;
+    grid-template-areas:
+        "cabecalho cabecalho"
+        "barra-lateral conteudo-principal"
+        "rodape rodape";
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: 1fr 3fr 1fr;
+}
+
+.cabecalho {
+    grid-area: cabecalho;
+    width: 100%;
+    height: 100px;
+    background-color: blue;
+}
+
+.barra-lateral {
+    grid-area: barra-lateral;
+    width: auto;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.rodape {
+    grid-area: rodape;
+    width: auto;
+    background-color: red;
+}
+
+.conteudo-principal {
+    grid-area: "conteudo-principal";
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Consumo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="consumo"></bulbe-header-desktop>
+    <bulbe-header></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet tipo="consumo">
+      <img
+        src="../public/pre-grafico.png"
+        alt="Gráficos de consumo em breve"
+        class="pre-grafico__ilustracao"
+      />
+      <div class="pre-grafico__corpo">
+        <p class="pre-grafico__titulo">Seus gráficos aparecerão em breve...</p>
+        <p class="pre-grafico__descricao">
+          Essa tela mostrará gráficos de seu consumo de energia e de sua
+          economia após o recebimento de sua primeira conta.
+        </p>
+        <a href="simular-desconto.html" class="btn btn--success pre-grafico__btn">Simular sua economia →</a>
+        <div class="pre-fatura__divisor" aria-hidden="true"></div>
+        <a href="faturas.html" class="btn btn--ghost pre-grafico__btn">← Voltar</a>
+      </div>
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="consumo"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
