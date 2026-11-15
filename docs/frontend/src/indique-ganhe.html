@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Indique e Ganhe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="indicacoes"></bulbe-header-desktop>
+    <bulbe-header variant="app"></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet tipo="placeholder">
+
+      <div class="placeholder__icone" aria-hidden="true">🎁</div>
+
+      <h1 class="placeholder__titulo">Indique e Ganhe</h1>
+
+      <p class="placeholder__descricao">
+        Aqui entra o fluxo completo de indicações e recompensas da Bulbe.
+      </p>
+
+      <div class="placeholder__fluxo" aria-label="Estados do fluxo de indicações">
+        <div class="placeholder__etapa">
+          <span class="placeholder__num">1</span>
+          <span>I&amp;G :: 0 economia + 0 indicações — estado inicial</span>
+        </div>
+        <div class="placeholder__etapa">
+          <span class="placeholder__num">2</span>
+          <span>I&amp;G :: Economia + 0 indicações — com desconto ativo</span>
+        </div>
+        <div class="placeholder__etapa">
+          <span class="placeholder__num">3</span>
+          <span>I&amp;G :: Economia + indicações — progressão de recompensas</span>
+        </div>
+        <div class="placeholder__etapa">
+          <span class="placeholder__num">4</span>
+          <span>I&amp;G :: 10+ indicações — TOP indicador</span>
+        </div>
+      </div>
+
+      <a href="faturas.html" class="btn btn--ghost pre-grafico__btn">← Voltar</a>
+
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="indicacoes"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+</body>
+
+</html>

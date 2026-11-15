@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Como funciona</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="consumo"></bulbe-header-desktop>
+    <bulbe-header></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet style="padding-bottom: 230px;">
+      <h1 class="titulo-como-funciona">Como funciona</h1>
+
+      <div class="passos">
+        <img src="../public/como-funciona-1.png"
+          alt="Passo 01: Energia solar que gera economia — nossas fazendas solares produzem energia limpa e renovável."
+          class="passo__imagem" />
+
+        <div class="seta-separador" aria-hidden="true">
+          <img src="../public/seta-baixo.png" alt="" class="seta-separador__icone" />
+        </div>
+
+        <img src="../public/como-funciona-2.png"
+          alt="Passo 02: Energia que chega até você — essa energia solar é enviada para a rede de distribuição da CEMIG."
+          class="passo__imagem" />
+
+        <div class="seta-separador" aria-hidden="true">
+          <img src="../public/seta-baixo.png" alt="" class="seta-separador__icone" />
+        </div>
+
+        <img src="../public/como-funciona-3.png"
+          alt="Passo 03: Créditos que viram desconto na sua conta de luz — chega em forma de créditos de energia que se transformam em desconto."
+          class="passo__imagem" />
+      </div>
+    </bulbe-sheet>
+
+    <div class="cta-stack">
+      <a href="simular-desconto-nao-logado.html" class="btn-quero-economizar">
+        Quero economizar <span aria-hidden="true">→</span>
+      </a>
+      <div class="cta-divisor">ou</div>
+      <a href="status-pedido.html" class="btn-entrar" id="btn-entrar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="7" r="3.5" stroke="#08068d" stroke-width="1.5" />
+          <path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="#08068d" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <span>Já possui conta? <span class="btn-entrar__accent">Entre aqui</span></span>
+      </a>
+    </div>
+  </div>
+
+  <script src="components.js"></script>
+</body>
+
+</html>

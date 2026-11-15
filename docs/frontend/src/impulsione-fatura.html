@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Impulsione sua fatura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="faturas"></bulbe-header-desktop>
+    <bulbe-header variant="app"></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet>
+      <h1 class="impulsione-titulo">
+        <span class="impulsione-titulo__verde">Impulsione sua 1ª fatura </span><span
+          class="impulsione-titulo__azul">enquanto ativamos sua conta</span>
+      </h1>
+      <p class="impulsione-descricao">Acesse vantagens especiais e desbloqueie novas experiências dentro do ecossistema
+        Bulbe.</p>
+
+      <div class="parceiro-grid">
+
+        <div class="parceiro-card">
+          <div class="parceiro-card__topo" style="background: #ff7200;">
+            <img src="../public/inter.png" alt="Inter" />
+          </div>
+          <div class="parceiro-card__corpo">
+            <p class="parceiro-card__nome">Inter</p>
+            <p class="parceiro-card__beneficio">Até 77% de cashback!</p>
+            <a href="#" class="parceiro-card__btn">Acessar →</a>
+          </div>
+        </div>
+
+        <div class="parceiro-card">
+          <div class="parceiro-card__topo" style="background: #f62791;">
+            <img src="../public/livelo.png" alt="Livelo" />
+          </div>
+          <div class="parceiro-card__corpo">
+            <p class="parceiro-card__nome">Livelo</p>
+            <p class="parceiro-card__beneficio">12 pontos por R$ 1,00</p>
+            <a href="#" class="parceiro-card__btn">Acessar →</a>
+          </div>
+        </div>
+
+        <div class="parceiro-card">
+          <div class="parceiro-card__topo parceiro-card__topo--frossard">
+            <img src="../public/frossard.png" alt="Canal do Frossard" />
+          </div>
+          <div class="parceiro-card__corpo">
+            <p class="parceiro-card__nome">Canal do Frossard</p>
+            <p class="parceiro-card__beneficio">Economia em dobro</p>
+            <a href="#" class="parceiro-card__btn">Acessar →</a>
+          </div>
+        </div>
+
+        <div class="parceiro-card">
+          <div class="parceiro-card__topo parceiro-card__topo--araujo">
+            <img src="../public/araujo.png" alt="Araújo" />
+          </div>
+          <div class="parceiro-card__corpo">
+            <p class="parceiro-card__nome">Araujo</p>
+            <p class="parceiro-card__beneficio">Descontos exclusivos</p>
+            <a href="#" class="parceiro-card__btn">Acessar →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <a href="simular-desconto.html" class="btn btn--success">
+        Simular sua economia &nbsp;→
+      </a>
+
+      <a href="status-pedido.html" class="btn btn--ghost" style="margin-top: 8px;">
+        <span aria-hidden="true" class="txt--ghost">←</span> Voltar
+      </a>
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="faturas"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

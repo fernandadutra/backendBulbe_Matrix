@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulbe — Faturas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="screen">
+    <bulbe-header-desktop active-tab="faturas"></bulbe-header-desktop>
+    <bulbe-header></bulbe-header>
+
+    <bulbe-banner></bulbe-banner>
+
+    <bulbe-sheet tipo="pre-fatura">
+
+      <img src="../public/pre-fatura-bulbinho.png" alt="" class="pre-fatura__ilustracao" aria-hidden="true" />
+
+      <h1 class="pre-fatura__titulo">Oops... Não encontrei nenhuma fatura.</h1>
+
+      <p class="pre-fatura__descricao">Verifique se seu pedido já foi aprovado, e então tente novamente.</p>
+
+      <div class="pre-fatura__acoes">
+        <a href="status-pedido.html" class="btn btn--primary">Ver status do pedido →</a>
+        <div class="pre-fatura__divisor" aria-hidden="true"></div>
+        <a href="impulsione-fatura.html" class="btn btn--success">Impulsione sua primeira fatura →</a>
+      </div>
+
+    </bulbe-sheet>
+
+    <bulbe-footer active-tab="faturas"></bulbe-footer>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
