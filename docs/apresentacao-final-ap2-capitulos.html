@@ -200,7 +200,8 @@ kbd { font-family: var(--mono); font-size: 10.5px; background: rgba(255,255,255,
 /* ---------- app no celular ---------- */
 .lado { display: grid; grid-template-columns: 330px 1fr; gap: 36px; align-items: center; flex: 1; }
 .celular { width: 300px; height: 600px; border-radius: 44px; background: var(--noite); padding: 12px; box-shadow: 0 30px 70px rgba(4,6,63,.35), 0 0 0 2px #1d2b9c; justify-self: center; }
-.celular iframe { width: 100%; height: 100%; border: 0; border-radius: 34px; background: #fff; }
+.celular-tela { width: 100%; height: 100%; border-radius: 34px; overflow: hidden; background: #fff; }
+.celular-tela iframe { width: 375px; height: 783px; border: 0; transform: scale(.736); transform-origin: top left; background: #fff; }
 .abas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .abas button { all: unset; cursor: pointer; font-size: 13.5px; font-weight: 700; padding: 8px 14px; border-radius: 999px; background: #fff; color: var(--noite); box-shadow: var(--sombra); }
 .abas button.ativa { background: var(--noite); color: var(--neon); }
@@ -440,7 +441,7 @@ kbd { font-family: var(--mono); font-size: 10.5px; background: rgba(255,255,255,
 <!-- 4 O APP -->
 <section class="slide" data-cap="problema" data-fala="Teste o nosso app ao vivo!" hidden>
   <div class="lado">
-    <div class="celular"><iframe id="app-iframe" data-src="frontend/src/index.html" title="App mobile da Bulbe" scrolling="no"></iframe></div>
+    <div class="celular"><div class="celular-tela"><iframe id="app-iframe" data-src="frontend/src/index.html" title="App mobile da Bulbe"></iframe></div></div>
     <div class="cab">
       <p class="rotulo">Do app para a API</p>
       <h2 class="titulo">O app<span class="hl">.</span></h2>
