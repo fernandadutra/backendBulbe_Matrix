@@ -1,0 +1,68 @@
+{
+  "1-inicio": {
+    "arquivo": "telas-endpoints/1-inicio.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 20,
+      "y": 704,
+      "w": 335,
+      "h": 59
+    }
+  },
+  "2-simular": {
+    "arquivo": "telas-endpoints/2-simular.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 22,
+      "y": 393.328125,
+      "w": 331,
+      "h": 302.796875
+    }
+  },
+  "2-resultado": {
+    "arquivo": "telas-endpoints/2-resultado.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 54.203125,
+      "y": 257.515625,
+      "w": 256.71875,
+      "h": 407.078125
+    }
+  },
+  "3-status": {
+    "arquivo": "telas-endpoints/3-status.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 22,
+      "y": 280.203125,
+      "w": 331,
+      "h": 272.171875
+    }
+  },
+  "4-resgate": {
+    "arquivo": "telas-endpoints/4-resgate.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 32,
+      "y": 533.734375,
+      "w": 137.5,
+      "h": 32
+    }
+  },
+  "5-detalhe": {
+    "arquivo": "telas-endpoints/5-detalhe.png",
+    "largura": 375,
+    "altura": 783,
+    "alvo": {
+      "x": 22,
+      "y": 487.125,
+      "w": 331,
+      "h": 82
+    }
+  }
+}
